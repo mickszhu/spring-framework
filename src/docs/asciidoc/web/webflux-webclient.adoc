@@ -38,7 +38,7 @@ The `retrieve()` method is the easiest way to get a response body and decode it:
 [source,java,intent=0]
 [subs="verbatim,quotes"]
 ----
-	WebClient client = WebClient.create("http://example.org");
+	WebClient client = WebClient.create("https://example.org");
 
 	Mono<Person> result = client.get()
 			.uri("/persons/{id}", id).accept(MediaType.APPLICATION_JSON)
@@ -70,6 +70,10 @@ By default, responses with 4xx or 5xx status codes result in an error of type
 			.onStatus(HttpStatus::is5xxServerError, response -> ...)
 			.bodyToMono(Person.class);
 ----
+
+When `onStatus` is used, if the response is expected to have content, then the `onStatus`
+callback should consume it. If not, the content will be automatically drained to ensure
+resources are released.
 
 
 
@@ -370,7 +374,7 @@ WebClient client = WebClient.builder()
 		})
 		.build();
 
-client.get().uri("http://example.org/")
+client.get().uri("https://example.org/")
 		.attribute("myAttribute", "...")
 		.retrieve()
 		.bodyToMono(Void.class);
