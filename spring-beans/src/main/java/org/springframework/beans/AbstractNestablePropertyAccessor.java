@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -194,7 +194,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		this.wrappedObject = ObjectUtils.unwrapOptional(object);
 		Assert.notNull(this.wrappedObject, "Target object must not be null");
 		this.nestedPath = (nestedPath != null ? nestedPath : "");
-		this.rootObject = (!"".equals(this.nestedPath) ? rootObject : this.wrappedObject);
+		this.rootObject = (!this.nestedPath.isEmpty() ? rootObject : this.wrappedObject);
 		this.nestedPropertyAccessors = null;
 		this.typeConverterDelegate = new TypeConverterDelegate(this, this.wrappedObject);
 	}
@@ -248,44 +248,43 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 	@Override
 	public void setPropertyValue(PropertyValue pv) throws BeansException {
-		// è·å–å±æ€§åˆ†è¯å™¨æŒæœ‰è€…
+		// »ñÈ¡ÊôĞÔ·Ö´ÊÆ÷³ÖÓĞÕß
 		//user.name
 		//map["key"]
 		PropertyTokenHolder tokens = (PropertyTokenHolder) pv.resolvedTokens;
 		if (tokens == null) {
-			// è·å–å±æ€§åç§°
+			// »ñÈ¡ÊôĞÔÃû³Æ
 			String propertyName = pv.getName();
-			// è·å–å†…åµŒå±æ€§è®¿é—®å™¨
+			// »ñÈ¡ÄÚÇ¶ÊôĞÔ·ÃÎÊÆ÷
 			AbstractNestablePropertyAccessor nestedPa;
 			try {
-				//æ ¹æ®å±æ€§åç§°è·å–æŒ‡å®šçš„å±æ€§è®¿é—®å™¨
+				//¸ù¾İÊôĞÔÃû³Æ»ñÈ¡Ö¸¶¨µÄÊôĞÔ·ÃÎÊÆ÷
 				nestedPa = getPropertyAccessorForPropertyPath(propertyName);
 			}
 			catch (NotReadablePropertyException ex) {
 				throw new NotWritablePropertyException(getRootClass(), this.nestedPath + propertyName,
 						"Nested property in path '" + propertyName + "' does not exist", ex);
 			}
-			// é€šè¿‡å±æ€§è®¿é—®å™¨ï¼Œå¯¹å±æ€§è¿›è¡Œåˆ†è¯å¤„ç†
+			// Í¨¹ıÊôĞÔ·ÃÎÊÆ÷£¬¶ÔÊôĞÔ½øĞĞ·Ö´Ê´¦Àí
 			tokens = getPropertyNameTokens(getFinalPath(nestedPa, propertyName));
-			
 			if (nestedPa == this) {
 				pv.getOriginalPropertyValue().resolvedTokens = tokens;
 			}
-			// å±æ€§æ³¨å…¥
+			// ÊôĞÔ×¢Èë
 			nestedPa.setPropertyValue(tokens, pv);
 		}
 		else {
-			// å±æ€§æ³¨å…¥
+			// ÊôĞÔ×¢Èë
 			setPropertyValue(tokens, pv);
 		}
 	}
 
 	protected void setPropertyValue(PropertyTokenHolder tokens, PropertyValue pv) throws BeansException {
-		// tokens.keysåªè¦ä¸ä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºè¦ä¾èµ–çš„å±æ€§æ˜¯é›†åˆç±»å‹çš„å±æ€§
+		// tokens.keysÖ»Òª²»Îª¿Õ£¬Ôò±íÊ¾ÒªÒÀÀµµÄÊôĞÔÊÇ¼¯ºÏÀàĞÍµÄÊôĞÔ
 		if (tokens.keys != null) {
 			processKeyedProperty(tokens, pv);
 		}
-		else { // è®¾ç½®éé›†åˆç±»å‹çš„å±æ€§
+		else { // ÉèÖÃ·Ç¼¯ºÏÀàĞÍµÄÊôĞÔ
 			processLocalProperty(tokens, pv);
 		}
 	}
@@ -301,7 +300,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		Assert.state(tokens.keys != null, "No token keys");
 		String lastKey = tokens.keys[tokens.keys.length - 1];
 
-		// å¤„ç†æ•°ç»„
+		// ´¦ÀíÊı×é
 		if (propValue.getClass().isArray()) {
 			Class<?> requiredType = propValue.getClass().getComponentType();
 			int arrayIndex = Integer.parseInt(lastKey);
@@ -327,7 +326,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 						"Invalid array index in property path '" + tokens.canonicalName + "'", ex);
 			}
 		}
-		//å¤„ç†Listé›†åˆ
+		//´¦ÀíList¼¯ºÏ
 		else if (propValue instanceof List) {
 			Class<?> requiredType = ph.getCollectionType(tokens.keys.length);
 			List<Object> list = (List<Object>) propValue;
@@ -363,7 +362,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 				}
 			}
 		}
-		// å¤„ç†Mapé›†åˆ
+		// ´¦ÀíMap¼¯ºÏ
 		else if (propValue instanceof Map) {
 			Class<?> mapKeyType = ph.getMapKeyType(tokens.keys.length);
 			Class<?> mapValueType = ph.getMapValueType(tokens.keys.length);
@@ -425,7 +424,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 	private void processLocalProperty(PropertyTokenHolder tokens, PropertyValue pv) {
-		// è·å–å±æ€§å¤„ç†å™¨
+		// »ñÈ¡ÊôĞÔ´¦ÀíÆ÷
 		PropertyHandler ph = getLocalPropertyHandler(tokens.actualName);
 		if (ph == null || !ph.isWritable()) {
 			if (pv.isOptional()) {
@@ -442,7 +441,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 		Object oldValue = null;
 		try {
-			// è·å–åŸå§‹çš„å€¼
+			// »ñÈ¡Ô­Ê¼µÄÖµ
 			Object originalValue = pv.getValue();
 			Object valueToApply = originalValue;
 			if (!Boolean.FALSE.equals(pv.conversionNecessary)) {
@@ -469,7 +468,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 				}
 				pv.getOriginalPropertyValue().conversionNecessary = (valueToApply != originalValue);
 			}
-			// é€šè¿‡PropertyHandlerå»å®Œæˆä¾èµ–æ³¨å…¥
+			// Í¨¹ıPropertyHandlerÈ¥Íê³ÉÒÀÀµ×¢Èë
 			ph.setValue(valueToApply);
 		}
 		catch (TypeMismatchException ex) {
@@ -736,7 +735,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	@Nullable
 	protected PropertyHandler getPropertyHandler(String propertyName) throws BeansException {
 		Assert.notNull(propertyName, "Property name must not be null");
-		// è·å–å†…åµŒå±æ€§è®¿é—®å™¨
+		// »ñÈ¡ÄÚÇ¶ÊôĞÔ·ÃÎÊÆ÷
 		AbstractNestablePropertyAccessor nestedPa = getPropertyAccessorForPropertyPath(propertyName);
 		return nestedPa.getLocalPropertyHandler(getFinalPath(nestedPa, propertyName));
 	}
@@ -824,17 +823,17 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 */
 	@SuppressWarnings("unchecked")  // avoid nested generic
 	protected AbstractNestablePropertyAccessor getPropertyAccessorForPropertyPath(String propertyPath) {
-		// å…ˆè·å–ç¬¬ä¸€ä¸ªå±æ€§ä¹‹é—´çš„åˆ†éš”ç¬¦çš„ä½ç½®
+		// ÏÈ»ñÈ¡µÚÒ»¸öÊôĞÔÖ®¼äµÄ·Ö¸ô·ûµÄÎ»ÖÃ
 		int pos = PropertyAccessorUtils.getFirstNestedPropertySeparatorIndex(propertyPath);
 		// Handle nested properties recursively.
 		if (pos > -1) {
-			// è·å–å†…ç½®å±æ€§åç§°ï¼Œå…¶å®ä¹Ÿå°±æ˜¯å±æ€§åˆ†éš”ç¬¦å‰é¢çš„å±æ€§åç§°
+			// »ñÈ¡ÄÚÖÃÊôĞÔÃû³Æ£¬ÆäÊµÒ²¾ÍÊÇÊôĞÔ·Ö¸ô·ûÇ°ÃæµÄÊôĞÔÃû³Æ
 			String nestedProperty = propertyPath.substring(0, pos);
-			// è·å–å±æ€§åˆ†éš”ç¬¦åé¢çš„å±æ€§åç§°
+			// »ñÈ¡ÊôĞÔ·Ö¸ô·ûºóÃæµÄÊôĞÔÃû³Æ
 			String nestedPath = propertyPath.substring(pos + 1);
 			// 
 			AbstractNestablePropertyAccessor nestedPa = getNestedPropertyAccessor(nestedProperty);
-			// é€’å½’è·å–åˆ†éš”ç¬¦åé¢å±æ€§çš„å±æ€§æœåŠ¡å™¨
+			// µİ¹é»ñÈ¡·Ö¸ô·ûºóÃæÊôĞÔµÄÊôĞÔ·şÎñÆ÷
 			return nestedPa.getPropertyAccessorForPropertyPath(nestedPath);
 		}
 		else {
@@ -951,42 +950,43 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		List<String> keys = new ArrayList<>(2);
 		int searchIndex = 0;
 		while (searchIndex != -1) {
-			// è·å–å±æ€§åç§°ä¸­"["å¯¹åº”çš„ä¸‹æ ‡
+			// »ñÈ¡ÊôĞÔÃû³ÆÖĞ"["¶ÔÓ¦µÄÏÂ±ê
 			int keyStart = propertyName.indexOf(PROPERTY_KEY_PREFIX, searchIndex);
 			searchIndex = -1;
-			// è¯´æ˜å±æ€§åç§°ä¸­åŒ…å«"["
+			// ËµÃ÷ÊôĞÔÃû³ÆÖĞ°üº¬"["
 			if (keyStart != -1) {
-				// è·å–å±æ€§åç§°ä¸­"]"å¯¹åº”çš„ä¸‹æ ‡
+				// »ñÈ¡ÊôĞÔÃû³ÆÖĞ"]"¶ÔÓ¦µÄÏÂ±ê
 				int keyEnd = propertyName.indexOf(PROPERTY_KEY_SUFFIX, keyStart + PROPERTY_KEY_PREFIX.length());
 				if (keyEnd != -1) {
-					// è·å–çœŸæ­£çš„å±æ€§åç§°ï¼ˆuser[0]ä¸­çš„userï¼‰
+					// »ñÈ¡ÕæÕıµÄÊôĞÔÃû³Æ£¨user[0]ÖĞµÄuser£©
 					if (actualName == null) {
 						actualName = propertyName.substring(0, keyStart);
 					}
-					//å–å‡º[]ä¸­çš„key
+					//È¡³ö[]ÖĞµÄkey
 					String key = propertyName.substring(keyStart + PROPERTY_KEY_PREFIX.length(), keyEnd);
 					if (key.length() > 1 && (key.startsWith("'") && key.endsWith("'")) ||
 							(key.startsWith("\"") && key.endsWith("\""))) {
-						// å–å‡º[]ä¸­""æˆ–è€…''ä¸­çš„å†…å®¹
+						// È¡³ö[]ÖĞ""»òÕß''ÖĞµÄÄÚÈİ
 						key = key.substring(1, key.length() - 1);
 					}
-					//å°†å–å‡ºçš„å†…å®¹æ”¾å…¥keysé›†åˆä¸­
+					//½«È¡³öµÄÄÚÈİ·ÅÈëkeys¼¯ºÏÖĞ
 					keys.add(key);
 					searchIndex = keyEnd + PROPERTY_KEY_SUFFIX.length();
 				}
 			}
 		}
-		// å°†çœŸæ­£çš„å±æ€§åç§°å°è£…åˆ°PropertyTokenHolder
+		// ½«ÕæÕıµÄÊôĞÔÃû³Æ·â×°µ½PropertyTokenHolder
 		PropertyTokenHolder tokens = new PropertyTokenHolder(actualName != null ? actualName : propertyName);
 		if (!keys.isEmpty()) {
 			tokens.canonicalName += PROPERTY_KEY_PREFIX +
 					StringUtils.collectionToDelimitedString(keys, PROPERTY_KEY_SUFFIX + PROPERTY_KEY_PREFIX) +
 					PROPERTY_KEY_SUFFIX;
-			// tokençš„keysé›†åˆï¼Œå¦‚æœä¸ä¸ºç©ºï¼Œå…¶å®ä¹Ÿå°±è¡¨ç¤ºè¯¥keyæ˜¯
+			// tokenµÄkeys¼¯ºÏ£¬Èç¹û²»Îª¿Õ£¬ÆäÊµÒ²¾Í±íÊ¾¸ÃkeyÊÇ
 			tokens.keys = StringUtils.toStringArray(keys);
 		}
 		return tokens;
 	}
+
 
 	@Override
 	public String toString() {
@@ -1001,6 +1001,9 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 
+	/**
+	 * A handler for a specific property.
+	 */
 	protected abstract static class PropertyHandler {
 
 		private final Class<?> propertyType;
@@ -1056,6 +1059,9 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 
+	/**
+	 * Holder class used to store property tokens.
+	 */
 	protected static class PropertyTokenHolder {
 
 		public PropertyTokenHolder(String name) {

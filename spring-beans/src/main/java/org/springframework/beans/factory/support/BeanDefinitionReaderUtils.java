@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -147,7 +147,7 @@ public class BeanDefinitionReaderUtils {
 
 		// Register bean definition under primary name.
 		String beanName = definitionHolder.getBeanName();
-		// ä»¥nameä¸ºkeyï¼Œä»¥BeanDefinitionä¸ºValueï¼Œæ³¨å†Œåˆ°Registry
+		// ÒÔnameÎªkey£¬ÒÔBeanDefinitionÎªValue£¬×¢²áµ½Registry
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
 		// Register aliases for bean name, if any.

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +22,9 @@ import org.springframework.core.AttributeAccessor;
 import org.springframework.lang.Nullable;
 
 /**
+ * 在平时的Java中，我们有Class类来描述我们的对象，然而在Spring中Bean需要描述更多的信息，比如
+ * 是否单例、是否懒加载等，所以Spring使用BeanDefinition该类来描述Spring中的Bean。
+ *
  * A BeanDefinition describes a bean instance, which has property values,
  * constructor argument values, and further information supplied by
  * concrete implementations.

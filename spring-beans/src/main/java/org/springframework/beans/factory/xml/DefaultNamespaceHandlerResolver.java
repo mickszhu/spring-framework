@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -115,9 +115,9 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Override
 	@Nullable
 	public NamespaceHandler resolve(String namespaceUri) {
-		// è¯»å–springæ‰€æœ‰å·¥ç¨‹çš„META-INF/spring.handlersæ–‡ä»¶ï¼Œè·å–namespaceUriå’ŒNamespaceHandlerçš„æ˜ å°„å…³ç³»
+		// ¶ÁÈ¡springËùÓĞ¹¤³ÌµÄMETA-INF/spring.handlersÎÄ¼ş£¬»ñÈ¡namespaceUriºÍNamespaceHandlerµÄÓ³Éä¹ØÏµ
 		Map<String, Object> handlerMappings = getHandlerMappings();
-		// è·å– æŒ‡å®šnamespaceUriå¯¹åº”çš„namespaceHandler
+		// »ñÈ¡ Ö¸¶¨namespaceUri¶ÔÓ¦µÄnamespaceHandler
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
 			return null;
@@ -126,20 +126,20 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 			return (NamespaceHandler) handlerOrClassName;
 		}
 		else {
-			// META-INF/spring.handlersæ–‡ä»¶ä¸­å­˜å‚¨çš„valueéƒ½æ˜¯Stringç±»å‹çš„ç±»å
+			// META-INF/spring.handlersÎÄ¼şÖĞ´æ´¢µÄvalue¶¼ÊÇStringÀàĞÍµÄÀàÃû
 			String className = (String) handlerOrClassName;
 			try {
-				// æ ¹æ®ç±»åé€šè¿‡åå°„è·å–åˆ°NamespaceHandlerçš„Classç±»å¯¹è±¡
+				// ¸ù¾İÀàÃûÍ¨¹ı·´Éä»ñÈ¡µ½NamespaceHandlerµÄClassÀà¶ÔÏó
 				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);
 				if (!NamespaceHandler.class.isAssignableFrom(handlerClass)) {
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
-				// å®ä¾‹åŒ–NamespaceHandler
+				// ÊµÀı»¯NamespaceHandler
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
-				// è°ƒç”¨NamespaceHandlerç±»çš„initæ–¹æ³•ï¼Œåˆå§‹åŒ–ä¸€äº›ä¸“é—¨å¤„ç†æŒ‡å®šæ ‡ç­¾çš„BeanDefinitionParsersç±»
+				// µ÷ÓÃNamespaceHandlerÀàµÄinit·½·¨£¬³õÊ¼»¯Ò»Ğ©×¨ÃÅ´¦ÀíÖ¸¶¨±êÇ©µÄBeanDefinitionParsersÀà
 				namespaceHandler.init();
-				// å°†namespaceUriå¯¹åº”çš„Stringç±»å‹çš„ç±»åï¼Œæ›¿æ¢ä¸ºNamespaceHandlerå¯¹è±¡,ä¸‹ä¸€æ¬¡å†è·å–çš„è¯ï¼Œå°±ä¸ä¼šé‡å¤åˆ›å»ºå®ä¾‹
+				// ½«namespaceUri¶ÔÓ¦µÄStringÀàĞÍµÄÀàÃû£¬Ìæ»»ÎªNamespaceHandler¶ÔÏó,ÏÂÒ»´ÎÔÙ»ñÈ¡µÄ»°£¬¾Í²»»áÖØ¸´´´½¨ÊµÀı
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
 			}
@@ -163,16 +163,18 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 			synchronized (this) {
 				handlerMappings = this.handlerMappings;
 				if (handlerMappings == null) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Loading NamespaceHandler mappings from [" + this.handlerMappingsLocation + "]");
+					}
 					try {
-						// ä¼šåŠ è½½æ‰€æœ‰çš„springæºç å·¥ç¨‹ä¸‹/META-INF/spring.handlersæ–‡ä»¶
+						// »á¼ÓÔØËùÓĞµÄspringÔ´Âë¹¤³ÌÏÂ/META-INF/spring.handlersÎÄ¼ş
 						Properties mappings =
 								PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Loaded NamespaceHandler mappings: " + mappings);
 						}
-						Map<String, Object> mappingsToUse = new ConcurrentHashMap<>(mappings.size());
-						CollectionUtils.mergePropertiesIntoMap(mappings, mappingsToUse);
-						handlerMappings = mappingsToUse;
+						handlerMappings = new ConcurrentHashMap<>(mappings.size());
+						CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);
 						this.handlerMappings = handlerMappings;
 					}
 					catch (IOException ex) {

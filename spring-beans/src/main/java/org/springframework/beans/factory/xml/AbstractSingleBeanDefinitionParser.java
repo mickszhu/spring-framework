@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,12 @@
 
 package org.springframework.beans.factory.xml;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.lang.Nullable;
-import org.w3c.dom.Element;
 
 /**
  * Base class for those {@link BeanDefinitionParser} implementations that
@@ -59,18 +60,18 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 */
 	@Override
 	protected final AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-		// é€šè¿‡BeanDefinitionæ„å»ºå™¨ï¼Œåˆ›å»ºGenericBeanDefinitionå¯¹è±¡
+		// Í¨¹ıBeanDefinition¹¹½¨Æ÷£¬´´½¨GenericBeanDefinition¶ÔÏó
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
-		// è·å–çˆ¶å…ƒç´ çš„åç§°
+		// »ñÈ¡¸¸ÔªËØµÄÃû³Æ
 		String parentName = getParentName(element);
-		// ç¡®å®šBeanDefinitionçš„classçš„çˆ¶ç±»beanName
+		// È·¶¨BeanDefinitionµÄclassµÄ¸¸ÀàbeanName
 		if (parentName != null) {
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
-		// è°ƒç”¨å­ç±»çš„getBeanClassæ–¹æ³•ï¼Œè·å–BeanDefinitionå¯¹åº”çš„BeanClass
-		// TxAdviceBeanDefinitionParserå­ç±»å¯¹åº”çš„BeanClassæ˜¯TransactionInterceptor.class
+		// µ÷ÓÃ×ÓÀàµÄgetBeanClass·½·¨£¬»ñÈ¡BeanDefinition¶ÔÓ¦µÄBeanClass
+		// TxAdviceBeanDefinitionParser×ÓÀà¶ÔÓ¦µÄBeanClassÊÇTransactionInterceptor.class
 		Class<?> beanClass = getBeanClass(element);
-		// å¦‚æœBeanClassä¸ä¸ºç©ºï¼Œåˆ™å°†BeanClassè®¾ç½®åˆ°BeanDefinitionå¯¹è±¡ä¸­
+		// Èç¹ûBeanClass²»Îª¿Õ£¬Ôò½«BeanClassÉèÖÃµ½BeanDefinition¶ÔÏóÖĞ
 		if (beanClass != null) {
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
@@ -90,10 +91,10 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 			// Default-lazy-init applies to custom bean definitions as well.
 			builder.setLazyInit(true);
 		}
-		// è°ƒç”¨å­ç±»çš„doParseæ–¹æ³•
-		// å¦‚æœæ˜¯tx:adviceæ ‡ç­¾ï¼Œåˆ™æ­¤å¤„è°ƒç”¨çš„æ˜¯TxAdviceBeanDefinitionParserç±»çš„doParseæ–¹æ³•
+		// µ÷ÓÃ×ÓÀàµÄdoParse·½·¨
+		// Èç¹ûÊÇtx:advice±êÇ©£¬Ôò´Ë´¦µ÷ÓÃµÄÊÇTxAdviceBeanDefinitionParserÀàµÄdoParse·½·¨
 		doParse(element, parserContext, builder);
-		// è¿”å›BeanDefinitionå¯¹è±¡
+		// ·µ»ØBeanDefinition¶ÔÏó
 		return builder.getBeanDefinition();
 	}
 

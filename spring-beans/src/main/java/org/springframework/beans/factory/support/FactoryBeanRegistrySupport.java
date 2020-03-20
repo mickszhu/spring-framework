@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -98,6 +98,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			synchronized (getSingletonMutex()) {
 				Object object = this.factoryBeanObjectCache.get(beanName);
 				if (object == null) {
+					//从FactoryBean获取bean
 					object = doGetObjectFromFactoryBean(factory, beanName);
 					// Only post-process and store if not put there already during getObject() call above
 					// (e.g. because of circular reference processing triggered by custom getBean calls)
@@ -106,6 +107,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 						object = alreadyThere;
 					}
 					else {
+						// 调用ObjectFactory后置处理器
 						if (shouldPostProcess) {
 							if (isSingletonCurrentlyInCreation(beanName)) {
 								// Temporarily return non-post-processed object, not storing it yet..
@@ -113,6 +115,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 							}
 							beforeSingletonCreation(beanName);
 							try {
+								//实例化bean后处理操作，用户可以自定义参与
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -132,9 +135,11 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			}
 		}
 		else {
+			//从FactoryBean获取bean
 			Object object = doGetObjectFromFactoryBean(factory, beanName);
 			if (shouldPostProcess) {
 				try {
+					//实例化bean后处理操作，用户可以自定义参与
 					object = postProcessObjectFromFactoryBean(object, beanName);
 				}
 				catch (Throwable ex) {
@@ -168,6 +173,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}
 			}
 			else {
+				// 终于在这里调用factoryBean的getObject来获取bean
 				object = factory.getObject();
 			}
 		}

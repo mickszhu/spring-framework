@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,6 +44,7 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.ConstructorArgumentValues.ValueHolder;
 import org.springframework.beans.factory.config.DependencyDescriptor;
@@ -107,8 +108,8 @@ class ConstructorResolver {
 	 * or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 */
-	public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefinition mbd,
-			@Nullable Constructor<?>[] chosenCtors, @Nullable final Object[] explicitArgs) {
+	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
+			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
 
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
@@ -116,31 +117,38 @@ class ConstructorResolver {
 		Constructor<?> constructorToUse = null;
 		ArgumentsHolder argsHolderToUse = null;
 		Object[] argsToUse = null;
-
+		//explicitArgs通过getBean方法传入
+		//如果getBean方法调用的时候指定方法参数那么直接使用
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
 		}
 		else {
+			//如果在getBean方法时候没有指定则尝试从配置文件中解析
 			Object[] argsToResolve = null;
+			//尝试从缓存中获取
 			synchronized (mbd.constructorArgumentLock) {
 				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
 				if (constructorToUse != null && mbd.constructorArgumentsResolved) {
 					// Found a cached constructor...
 					argsToUse = mbd.resolvedConstructorArguments;
 					if (argsToUse == null) {
+						//配置的构造函数参数
 						argsToResolve = mbd.preparedConstructorArguments;
 					}
 				}
 			}
+			//如果缓存中存在
 			if (argsToResolve != null) {
+				//解析参数类型，如给定方法的构造函数A(int,int)则通过此方法后就会把配置文件中的("1", "1")转换为(1,1)
+				// 缓存中的值可能是原始值也有可能是最终值
 				argsToUse = resolvePreparedArguments(beanName, mbd, bw, constructorToUse, argsToResolve);
 			}
 		}
-
+		//如果缓存中不存在
 		if (constructorToUse == null) {
 			// Need to resolve the constructor.
 			boolean autowiring = (chosenCtors != null ||
-					mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			ConstructorArgumentValues resolvedValues = null;
 
 			int minNrOfArgs;
@@ -148,8 +156,11 @@ class ConstructorResolver {
 				minNrOfArgs = explicitArgs.length;
 			}
 			else {
+				//提取配置文件中配置的构造函数参数
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
+				//用于承载解析后的构造函数参数的值
 				resolvedValues = new ConstructorArgumentValues();
+				//能解析到的参数个数
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
@@ -167,6 +178,7 @@ class ConstructorResolver {
 							"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 				}
 			}
+			//排序给定的构造函数，public构造函数优先参数数量降序，非public构造函数参数数量降序
 			AutowireUtils.sortConstructors(candidates);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Constructor<?>> ambiguousConstructors = null;
@@ -186,11 +198,15 @@ class ConstructorResolver {
 
 				ArgumentsHolder argsHolder;
 				if (resolvedValues != null) {
+					//有参数则根据值构造对应参数类型的参数
 					try {
+						//注释上获得参数名称
 						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, paramTypes.length);
 						if (paramNames == null) {
+							//获取参数名称探索器
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
+								//获取指定构造函数的参数名称
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
@@ -217,6 +233,7 @@ class ConstructorResolver {
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
+				//探测是否有不确定性的构造函数存在，例如不同构造函数的参数为父子关系
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
@@ -256,6 +273,7 @@ class ConstructorResolver {
 			}
 
 			if (explicitArgs == null) {
+				//将解析的构造函数存入缓存
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
 		}
@@ -267,6 +285,7 @@ class ConstructorResolver {
 			if (System.getSecurityManager() != null) {
 				final Constructor<?> ctorToUse = constructorToUse;
 				final Object[] argumentsToUse = argsToUse;
+				//实例化策略
 				beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () ->
 						strategy.instantiate(mbd, beanName, beanFactory, ctorToUse, argumentsToUse),
 						beanFactory.getAccessControlContext());
@@ -275,6 +294,7 @@ class ConstructorResolver {
 				beanInstance = strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse);
 			}
 
+			//将构建的实例加入BeanWrapper中
 			bw.setBeanInstance(beanInstance);
 			return bw;
 		}
@@ -326,7 +346,7 @@ class ConstructorResolver {
 	 * the {@link RootBeanDefinition#isNonPublicAccessAllowed()} flag.
 	 * Called as the starting point for factory method determination.
 	 */
-	private Method[] getCandidateMethods(final Class<?> factoryClass, final RootBeanDefinition mbd) {
+	private Method[] getCandidateMethods(Class<?> factoryClass, RootBeanDefinition mbd) {
 		if (System.getSecurityManager() != null) {
 			return AccessController.doPrivileged((PrivilegedAction<Method[]>) () ->
 					(mbd.isNonPublicAccessAllowed() ?
@@ -354,7 +374,7 @@ class ConstructorResolver {
 	 * @return a BeanWrapper for the new instance
 	 */
 	public BeanWrapper instantiateUsingFactoryMethod(
-			final String beanName, final RootBeanDefinition mbd, @Nullable final Object[] explicitArgs) {
+			String beanName, RootBeanDefinition mbd, @Nullable Object[] explicitArgs) {
 
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
@@ -417,17 +437,17 @@ class ConstructorResolver {
 			factoryClass = ClassUtils.getUserClass(factoryClass);
 
 			Method[] rawCandidates = getCandidateMethods(factoryClass, mbd);
-			List<Method> candidateSet = new ArrayList<>();
+			List<Method> candidateList = new ArrayList<>();
 			for (Method candidate : rawCandidates) {
 				if (Modifier.isStatic(candidate.getModifiers()) == isStatic && mbd.isFactoryMethod(candidate)) {
-					candidateSet.add(candidate);
+					candidateList.add(candidate);
 				}
 			}
-			Method[] candidates = candidateSet.toArray(new Method[0]);
+			Method[] candidates = candidateList.toArray(new Method[0]);
 			AutowireUtils.sortFactoryMethods(candidates);
 
 			ConstructorArgumentValues resolvedValues = null;
-			boolean autowiring = (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+			boolean autowiring = (mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Method> ambiguousFactoryMethods = null;
 
@@ -456,7 +476,7 @@ class ConstructorResolver {
 				if (paramTypes.length >= minNrOfArgs) {
 					ArgumentsHolder argsHolder;
 
-					if (explicitArgs != null){
+					if (explicitArgs != null) {
 						// Explicit arguments given -> arguments length must match exactly.
 						if (paramTypes.length != explicitArgs.length) {
 							continue;
@@ -529,7 +549,7 @@ class ConstructorResolver {
 						argTypes.add(arg != null ? arg.getClass().getSimpleName() : "null");
 					}
 				}
-				else if (resolvedValues != null){
+				else if (resolvedValues != null) {
 					Set<ValueHolder> valueHolders = new LinkedHashSet<>(resolvedValues.getArgumentCount());
 					valueHolders.addAll(resolvedValues.getIndexedArgumentValues().values());
 					valueHolders.addAll(resolvedValues.getGenericArgumentValues());

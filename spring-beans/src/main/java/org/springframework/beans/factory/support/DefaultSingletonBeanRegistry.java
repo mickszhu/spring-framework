@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -172,6 +172,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Override
 	@Nullable
 	public Object getSingleton(String beanName) {
+		//参数true设置标示允许早起依赖
 		return getSingleton(beanName, true);
 	}
 
@@ -186,8 +187,17 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// 从一级缓存中获取单例对象
+		/**
+		 * 1、singletonObjects：用于保存BeanName和创建bean实例之间的关系
+		 * 2、singletonFactories：用于保存BeanName和创建bean的工厂之间的关系
+		 * 3、earlySingletonObjects：也是用于保存BeanName和创建bean实例之间的关系，不同的是当一个单例bean被放到
+		 * 这里面后，那么当bean还在创建过程中就可以通过getBean方法获取到，目的是为了检测循环引用
+		 * 4、registeredSingletons：用来保存当前所有已注册的bean
+		 */
+		// 就是从单例池（Map）中取出Bean，检查缓存中是否存在实例
 		Object singletonObject = this.singletonObjects.get(beanName);
-		// isSingletonCurrentlyInCreation : 
+		//第二个条件是判断当前bean是不是正常创建中，因为循环依赖会有中间状态
+		//isSingletonCurrentlyInCreation :
 		// 		判断当前单例bean是否正在创建中，也就是没有初始化完成
 		//		比如A的构造器依赖了B对象所以得先去创建B对象，或者在A的populateBean过程中依赖了B对象，得先去创建B对象
 		//		这时的A就是处于创建中的状态。
@@ -224,8 +234,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
+			// 首先检查对应的bean是否已经加载过，因为singleton模式其实就是复用以创建bean
 			Object singletonObject = this.singletonObjects.get(beanName);
 			if (singletonObject == null) {
+				//如果工厂在销毁
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
 							"Singleton bean creation not allowed while singletons of this factory are in destruction " +
@@ -272,6 +284,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				// 将产生的单例Bean放入缓存中（总共三级缓存）
 				if (newSingleton) {
+					//加入缓存
 					addSingleton(beanName, singletonObject);
 				}
 			}

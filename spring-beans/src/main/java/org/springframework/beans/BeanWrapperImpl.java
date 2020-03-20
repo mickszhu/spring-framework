@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -311,7 +311,7 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 
 		@Override
 		public void setValue(final @Nullable Object value) throws Exception {
-			// ä½¿ç”¨JDK å†…çœæŠ€æœ¯ï¼Œè·å–å¯¹æŒ‡å®šå±æ€§çš„setteræ–¹æ³•çš„è·å–(writeMethod)
+			// Ê¹ÓÃJDK ÄÚÊ¡¼¼Êõ£¬»ñÈ¡¶ÔÖ¸¶¨ÊôĞÔµÄsetter·½·¨µÄ»ñÈ¡(writeMethod)
 			final Method writeMethod = (this.pd instanceof GenericTypeAwarePropertyDescriptor ?
 					((GenericTypeAwarePropertyDescriptor) this.pd).getWriteMethodForActualAccess() :
 					this.pd.getWriteMethod());
@@ -329,9 +329,9 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 				}
 			}
 			else {
-				// é€šè¿‡åå°„å·¥å…·ç±»ï¼Œå¯¹setteræ–¹æ³•å¼€å¯æš´åŠ›ç ´è§£ï¼ˆç§æœ‰çš„æ–¹æ³•ï¼Œæˆ‘ä¹Ÿå¯ä»¥è°ƒç”¨ï¼‰
+				// Í¨¹ı·´Éä¹¤¾ßÀà£¬¶Ôsetter·½·¨¿ªÆô±©Á¦ÆÆ½â£¨Ë½ÓĞµÄ·½·¨£¬ÎÒÒ²¿ÉÒÔµ÷ÓÃ£©
 				ReflectionUtils.makeAccessible(writeMethod);
-				// åˆ©ç”¨åå°„æŠ€æœ¯ï¼Œå»æ‰§è¡Œå¯¹åº”çš„setteræ–¹æ³•ï¼ˆä¸ä¸€å®šçœŸæ­£æ‹¥æœ‰è¯¥å±æ€§ï¼Œä½†æ˜¯ä¸€å®šè¦æœ‰å¯¹åº”çš„setteræ–¹æ³•ï¼‰
+				// ÀûÓÃ·´Éä¼¼Êõ£¬È¥Ö´ĞĞ¶ÔÓ¦µÄsetter·½·¨£¨²»Ò»¶¨ÕæÕıÓµÓĞ¸ÃÊôĞÔ£¬µ«ÊÇÒ»¶¨ÒªÓĞ¶ÔÓ¦µÄsetter·½·¨£©
 				writeMethod.invoke(getWrappedInstance(), value);
 				// method.invoke(obj,args);
 			}

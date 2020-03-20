@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -143,9 +143,9 @@ public class XmlReaderContext extends ReaderContext {
 	 * @see BeanDefinitionRegistry#registerBeanDefinition
 	 */
 	public String registerWithGeneratedName(BeanDefinition beanDefinition) {
-		// ç”ŸæˆbeanNameï¼Œé»˜è®¤å°±æ˜¯className
+		// Éú³ÉbeanName£¬Ä¬ÈÏ¾ÍÊÇclassName
 		String generatedName = generateBeanName(beanDefinition);
-		// å°†advisorçš„BeanDefinitionæ·»åŠ åˆ°IoCå®¹å™¨ä¸­
+		// ½«advisorµÄBeanDefinitionÌí¼Óµ½IoCÈİÆ÷ÖĞ
 		getRegistry().registerBeanDefinition(generatedName, beanDefinition);
 		return generatedName;
 	}

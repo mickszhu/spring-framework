@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -70,10 +70,10 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		// NamespaceHandleré‡Œé¢åˆå§‹åŒ–äº†å¤§é‡çš„BeanDefinitionParseræ¥åˆ†åˆ«å¤„ç†ä¸åŒçš„è‡ªå®šä¹‰æ ‡ç­¾
-		// ä»æŒ‡å®šçš„NamespaceHandlerä¸­ï¼ŒåŒ¹é…åˆ°æŒ‡å®šçš„BeanDefinitionParser
+		// NamespaceHandlerÀïÃæ³õÊ¼»¯ÁË´óÁ¿µÄBeanDefinitionParserÀ´·Ö±ğ´¦Àí²»Í¬µÄ×Ô¶¨Òå±êÇ©
+		// ´ÓÖ¸¶¨µÄNamespaceHandlerÖĞ£¬Æ¥Åäµ½Ö¸¶¨µÄBeanDefinitionParser
 		BeanDefinitionParser parser = findParserForElement(element, parserContext);
-		// è°ƒç”¨æŒ‡å®šè‡ªå®šä¹‰æ ‡ç­¾çš„è§£æå™¨ï¼Œå®Œæˆå…·ä½“è§£æå·¥ä½œ
+		// µ÷ÓÃÖ¸¶¨×Ô¶¨Òå±êÇ©µÄ½âÎöÆ÷£¬Íê³É¾ßÌå½âÎö¹¤×÷
 		return (parser != null ? parser.parse(element, parserContext) : null);
 	}
 
@@ -83,9 +83,9 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 */
 	@Nullable
 	private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) {
-		// è·å–è‡ªå®šä¹‰æ ‡ç­¾åï¼Œæ¯”å¦‚<aop:config>æ ‡ç­¾ï¼Œæ­¤å¤„è·å–çš„æ ‡ç­¾åå­—æ˜¯config
+		// »ñÈ¡×Ô¶¨Òå±êÇ©Ãû£¬±ÈÈç<aop:config>±êÇ©£¬´Ë´¦»ñÈ¡µÄ±êÇ©Ãû×ÖÊÇconfig
 		String localName = parserContext.getDelegate().getLocalName(element);
-		// æ ¹æ®æ ‡ç­¾åç§°æ‰¾åˆ°å¯¹åº”çš„BeanDefinitionParser
+		// ¸ù¾İ±êÇ©Ãû³ÆÕÒµ½¶ÔÓ¦µÄBeanDefinitionParser
 		BeanDefinitionParser parser = this.parsers.get(localName);
 		if (parser == null) {
 			parserContext.getReaderContext().fatal(

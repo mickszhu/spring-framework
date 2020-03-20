@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -312,7 +312,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Populate the given DocumentDefaultsDefinition instance with the default lazy-init,
 	 * autowire, dependency check settings, init-method, destroy-method and merge settings.
-	 * Support nested 'beans' element use cases by falling back to <literal>parentDefaults</literal>
+	 * Support nested 'beans' element use cases by falling back to {@code parentDefaults}
 	 * in case the defaults are not explicitly set locally.
 	 * @param defaults the defaults to populate
 	 * @param parentDefaults the parent BeanDefinitionParserDelegate (if any) defaults to fall back to
@@ -320,21 +320,21 @@ public class BeanDefinitionParserDelegate {
 	 */
 	protected void populateDefaults(DocumentDefaultsDefinition defaults, @Nullable DocumentDefaultsDefinition parentDefaults, Element root) {
 		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(lazyInit)) {
+		if (isDefaultValue(lazyInit)) {
 			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
 			lazyInit = (parentDefaults != null ? parentDefaults.getLazyInit() : FALSE_VALUE);
 		}
 		defaults.setLazyInit(lazyInit);
 
 		String merge = root.getAttribute(DEFAULT_MERGE_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(merge)) {
+		if (isDefaultValue(merge)) {
 			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
 			merge = (parentDefaults != null ? parentDefaults.getMerge() : FALSE_VALUE);
 		}
 		defaults.setMerge(merge);
 
 		String autowire = root.getAttribute(DEFAULT_AUTOWIRE_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(autowire)) {
+		if (isDefaultValue(autowire)) {
 			// Potentially inherited from outer <beans> sections, otherwise falling back to 'no'.
 			autowire = (parentDefaults != null ? parentDefaults.getAutowire() : AUTOWIRE_NO_VALUE);
 		}
@@ -377,7 +377,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	public BeanDefinitionDefaults getBeanDefinitionDefaults() {
 		BeanDefinitionDefaults bdd = new BeanDefinitionDefaults();
-		bdd.setLazyInit("TRUE".equalsIgnoreCase(this.defaults.getLazyInit()));
+		bdd.setLazyInit(TRUE_VALUE.equalsIgnoreCase(this.defaults.getLazyInit()));
 		bdd.setAutowireMode(getAutowireMode(DEFAULT_VALUE));
 		bdd.setInitMethodName(this.defaults.getInitMethod());
 		bdd.setDestroyMethodName(this.defaults.getDestroyMethod());
@@ -402,7 +402,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele) {
-		// è§£æ<bean>æ ‡ç­¾ï¼Œè·å–BeanDefinitionå¯¹è±¡
+		// ½âÎö<bean>±êÇ©£¬»ñÈ¡BeanDefinition¶ÔÏó
 		return parseBeanDefinitionElement(ele, null);
 	}
 
@@ -413,9 +413,9 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		// è·å–beançš„id
+		// »ñÈ¡beanµÄid
 		String id = ele.getAttribute(ID_ATTRIBUTE);
-		// è·å–beançš„name
+		// »ñÈ¡beanµÄname
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
 		List<String> aliases = new ArrayList<>();
@@ -434,10 +434,10 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		if (containingBean == null) {
-			// æ£€æŸ¥beançš„idæˆ–è€…nameæ˜¯å¦å”¯ä¸€
+			// ¼ì²ébeanµÄid»òÕßnameÊÇ·ñÎ¨Ò»
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-		// è§£æ<bean>æ ‡ç­¾ï¼Œè·å–BeanDefinitionå¯¹è±¡
+		// ½âÎö<bean>±êÇ©£¬»ñÈ¡BeanDefinition¶ÔÏó
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -469,7 +469,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
-			// å°†BeanDefinitionå¯¹è±¡å’ŒBeanNameå°è£…åˆ°BeanDefinitionHolderå¯¹è±¡ä¸­
+			// ½«BeanDefinition¶ÔÏóºÍBeanName·â×°µ½BeanDefinitionHolder¶ÔÏóÖĞ
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -508,39 +508,39 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		// è·å–beanæ ‡ç­¾çš„classå±æ€§
+		// »ñÈ¡bean±êÇ©µÄclassÊôĞÔ
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 		String parent = null;
-		// è·å–beanæ ‡ç­¾çš„parentå±æ€§
+		// »ñÈ¡bean±êÇ©µÄparentÊôĞÔ
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
-			// åˆ›å»ºBeanDefinitionå¯¹è±¡GenericBeanDefinition
+			// ´´½¨BeanDefinition¶ÔÏóGenericBeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-			
-			// è§£æ<bean>æ ‡ç­¾çš„å±æ€§
+
+			// ½âÎö<bean>±êÇ©µÄÊôĞÔ
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			/** è§£æ<bean>æ ‡ç­¾çš„å­æ ‡ç­¾  --- begin**/
-			// è§£æ<description>æ ‡ç­¾
+			/** ½âÎö<bean>±êÇ©µÄ×Ó±êÇ©  --- begin**/
+			// ½âÎö<description>±êÇ©
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-			// è§£æ<meta>æ ‡ç­¾
+			// ½âÎö<meta>±êÇ©
 			parseMetaElements(ele, bd);
-			// è§£æ<lookup-method>æ ‡ç­¾
+			// ½âÎö<lookup-method>±êÇ©
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
-			// è§£æ<replaced-method>æ ‡ç­¾
+			// ½âÎö<replaced-method>±êÇ©
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 			
-			// è§£æ<constructor-arg>æ ‡ç­¾
+			// ½âÎö<constructor-arg>±êÇ©
 			parseConstructorArgElements(ele, bd);
-			// è§£æ<property>æ ‡ç­¾
+			// ½âÎö<property>±êÇ©
 			parsePropertyElements(ele, bd);
-			// è§£æ<qualifier>æ ‡ç­¾
+			// ½âÎö<qualifier>±êÇ©
 			parseQualifierElements(ele, bd);
-			/** è§£æ<bean>æ ‡ç­¾çš„å­æ ‡ç­¾  --- end**/
+			/** ½âÎö<bean>±êÇ©µÄ×Ó±êÇ©  --- end**/
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
@@ -573,11 +573,11 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
-		// è§£æ<bean>æ ‡ç­¾çš„singletonå±æ€§
+		// ½âÎö<bean>±êÇ©µÄsingletonÊôĞÔ
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
-		// è§£æ<bean>æ ‡ç­¾çš„scopeå±æ€§
+		// ½âÎö<bean>±êÇ©µÄscopeÊôĞÔ
 		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 		}
@@ -586,30 +586,30 @@ public class BeanDefinitionParserDelegate {
 			bd.setScope(containingBean.getScope());
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„abstractå±æ€§
+		// ½âÎö<bean>±êÇ©µÄabstractÊôĞÔ
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
-		// è§£æ<bean>æ ‡ç­¾çš„lazy-initå±æ€§
+		// ½âÎö<bean>±êÇ©µÄlazy-initÊôĞÔ
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(lazyInit)) {
+		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
-		// è§£æ<bean>æ ‡ç­¾çš„autowireå±æ€§
+		// ½âÎö<bean>±êÇ©µÄautowireÊôĞÔ
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
-		// è§£æ<bean>æ ‡ç­¾çš„depends-onå±æ€§
+		// ½âÎö<bean>±êÇ©µÄdepends-onÊôĞÔ
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„autowire-candidateå±æ€§
+		// ½âÎö<bean>±êÇ©µÄautowire-candidateÊôĞÔ
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
-		if ("".equals(autowireCandidate) || DEFAULT_VALUE.equals(autowireCandidate)) {
+		if (isDefaultValue(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
 			if (candidatePattern != null) {
 				String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);
@@ -620,12 +620,12 @@ public class BeanDefinitionParserDelegate {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„primaryå±æ€§
+		// ½âÎö<bean>±êÇ©µÄprimaryÊôĞÔ
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„init-methodå±æ€§
+		// ½âÎö<bean>±êÇ©µÄinit-methodÊôĞÔ
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			bd.setInitMethodName(initMethodName);
@@ -635,7 +635,7 @@ public class BeanDefinitionParserDelegate {
 			bd.setEnforceInitMethod(false);
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„destroy-methodå±æ€§
+		// ½âÎö<bean>±êÇ©µÄdestroy-methodÊôĞÔ
 		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
 			String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
 			bd.setDestroyMethodName(destroyMethodName);
@@ -645,11 +645,11 @@ public class BeanDefinitionParserDelegate {
 			bd.setEnforceDestroyMethod(false);
 		}
 
-		// è§£æ<bean>æ ‡ç­¾çš„factory-methodå±æ€§
+		// ½âÎö<bean>±êÇ©µÄfactory-methodÊôĞÔ
 		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) {
 			bd.setFactoryMethodName(ele.getAttribute(FACTORY_METHOD_ATTRIBUTE));
 		}
-		// è§£æ<bean>æ ‡ç­¾çš„factory-beanå±æ€§
+		// ½âÎö<bean>±êÇ©µÄfactory-beanÊôĞÔ
 		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) {
 			bd.setFactoryBeanName(ele.getAttribute(FACTORY_BEAN_ATTRIBUTE));
 		}
@@ -671,6 +671,9 @@ public class BeanDefinitionParserDelegate {
 				parentName, className, this.readerContext.getBeanClassLoader());
 	}
 
+	/**
+	 * Parse the meta elements underneath the given element, if any.
+	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
 		NodeList nl = ele.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
@@ -686,23 +689,27 @@ public class BeanDefinitionParserDelegate {
 		}
 	}
 
+	/**
+	 * Parse the given autowire attribute value into
+	 * {@link AbstractBeanDefinition} autowire constants.
+	 */
 	@SuppressWarnings("deprecation")
-	public int getAutowireMode(String attValue) {
-		String att = attValue;
-		if (DEFAULT_VALUE.equals(att)) {
-			att = this.defaults.getAutowire();
+	public int getAutowireMode(String attrValue) {
+		String attr = attrValue;
+		if (isDefaultValue(attr)) {
+			attr = this.defaults.getAutowire();
 		}
 		int autowire = AbstractBeanDefinition.AUTOWIRE_NO;
-		if (AUTOWIRE_BY_NAME_VALUE.equals(att)) {
+		if (AUTOWIRE_BY_NAME_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_BY_NAME;
 		}
-		else if (AUTOWIRE_BY_TYPE_VALUE.equals(att)) {
+		else if (AUTOWIRE_BY_TYPE_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 		}
-		else if (AUTOWIRE_CONSTRUCTOR_VALUE.equals(att)) {
+		else if (AUTOWIRE_CONSTRUCTOR_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 		}
-		else if (AUTOWIRE_AUTODETECT_VALUE.equals(att)) {
+		else if (AUTOWIRE_AUTODETECT_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_AUTODETECT;
 		}
 		// Else leave default value.
@@ -726,7 +733,7 @@ public class BeanDefinitionParserDelegate {
 	 * Parse property sub-elements of the given bean element.
 	 */
 	public void parsePropertyElements(Element beanEle, BeanDefinition bd) {
-		// propertyæ ‡ç­¾
+		// property±êÇ©
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
@@ -856,7 +863,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
-	 * propertyæ ‡ç­¾çš„è§£æ
+	 * property±êÇ©µÄ½âÎö
 	 * Parse a property element.
 	 */
 	public void parsePropertyElement(Element ele, BeanDefinition bd) {
@@ -930,9 +937,9 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public Object parsePropertyValue(Element ele, BeanDefinition bd, @Nullable String propertyName) {
-		String elementName = (propertyName != null) ?
-						"<property> element for property '" + propertyName + "'" :
-						"<constructor-arg> element";
+		String elementName = (propertyName != null ?
+				"<property> element for property '" + propertyName + "'" :
+				"<constructor-arg> element");
 
 		// Should only have one child element: ref, value, list, etc.
 		NodeList nl = ele.getChildNodes();
@@ -964,13 +971,13 @@ public class BeanDefinitionParserDelegate {
 			if (!StringUtils.hasText(refName)) {
 				error(elementName + " contains empty 'ref' attribute", ele);
 			}
-			// å¼•ç”¨ç±»å‹å±æ€§å€¼ä¿¡æ¯
+			// ÒıÓÃÀàĞÍÊôĞÔÖµĞÅÏ¢
 			RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 			ref.setSource(extractSource(ele));
 			return ref;
 		}
 		else if (hasValueAttribute) {
-			// ç®€å•ç±»å‹å±æ€§å€¼ä¿¡æ¯
+			// ¼òµ¥ÀàĞÍÊôĞÔÖµĞÅÏ¢
 			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
@@ -985,6 +992,12 @@ public class BeanDefinitionParserDelegate {
 		}
 	}
 
+	/**
+	 * Parse a value, ref or collection sub-element of a property or
+	 * constructor-arg element.
+	 * @param ele subelement of property element; we don't know which yet
+	 * @param bd the current bean definition (if any)
+	 */
 	@Nullable
 	public Object parsePropertySubElement(Element ele, @Nullable BeanDefinition bd) {
 		return parsePropertySubElement(ele, bd, null);
@@ -994,6 +1007,7 @@ public class BeanDefinitionParserDelegate {
 	 * Parse a value, ref or collection sub-element of a property or
 	 * constructor-arg element.
 	 * @param ele subelement of property element; we don't know which yet
+	 * @param bd the current bean definition (if any)
 	 * @param defaultValueType the default type (class name) for any
 	 * {@code <value>} tag that might be created
 	 */
@@ -1373,46 +1387,70 @@ public class BeanDefinitionParserDelegate {
 	 */
 	public boolean parseMergeAttribute(Element collectionElement) {
 		String value = collectionElement.getAttribute(MERGE_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(value)) {
+		if (isDefaultValue(value)) {
 			value = this.defaults.getMerge();
 		}
 		return TRUE_VALUE.equals(value);
 	}
 
+	/**
+	 * Parse a custom element (outside of the default namespace).
+	 * @param ele the element to parse
+	 * @return the resulting bean definition
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele) {
-		// è§£æè‡ªå®šä¹‰æ ‡ç­¾
+		// ½âÎö×Ô¶¨Òå±êÇ©
 		return parseCustomElement(ele, null);
 	}
 
+	/**
+	 * Parse a custom element (outside of the default namespace).
+	 * @param ele the element to parse
+	 * @param containingBd the containing bean definition (if any)
+	 * @return the resulting bean definition
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
-		// è·å–å‘½åç©ºé—´URIï¼ˆå°±æ˜¯è·å–beansæ ‡ç­¾çš„xmlns:aopæˆ–è€…xmlns:contextå±æ€§çš„å€¼ï¼‰
+		// »ñÈ¡ÃüÃû¿Õ¼äURI£¨¾ÍÊÇ»ñÈ¡beans±êÇ©µÄxmlns:aop»òÕßxmlns:contextÊôĞÔµÄÖµ£©
 		// http://www.springframework.org/schema/aop
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
-		// æ ¹æ®ä¸åŒçš„å‘½åç©ºé—´URI,å»åŒ¹é…ä¸åŒçš„NamespaceHandler(ä¸€ä¸ªå‘½åç©ºé—´å¯¹åº”ä¸€ä¸ªNamespaceHandler)
-		// æ­¤å¤„ä¼šè°ƒç”¨DefaultNamespaceHandlerResolverç±»çš„resolveæ–¹æ³•
-		// ä¸¤æ­¥æ“ä½œï¼šæŸ¥æ‰¾NamespaceHandler ã€è°ƒç”¨NamespaceHandlerçš„initæ–¹æ³•è¿›è¡Œåˆå§‹åŒ–ï¼ˆé’ˆå¯¹ä¸åŒè‡ªå®šä¹‰æ ‡ç­¾æ³¨å†Œç›¸åº”çš„BeanDefinitionParserï¼‰
+		// ¸ù¾İ²»Í¬µÄÃüÃû¿Õ¼äURI,È¥Æ¥Åä²»Í¬µÄNamespaceHandler(Ò»¸öÃüÃû¿Õ¼ä¶ÔÓ¦Ò»¸öNamespaceHandler)
+		// ´Ë´¦»áµ÷ÓÃDefaultNamespaceHandlerResolverÀàµÄresolve·½·¨
+		// Á½²½²Ù×÷£º²éÕÒNamespaceHandler ¡¢µ÷ÓÃNamespaceHandlerµÄinit·½·¨½øĞĞ³õÊ¼»¯£¨Õë¶Ô²»Í¬×Ô¶¨Òå±êÇ©×¢²áÏàÓ¦µÄBeanDefinitionParser£©
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
-		// è°ƒç”¨åŒ¹é…åˆ°çš„NamespaceHandlerçš„è§£ææ–¹æ³•
+		// µ÷ÓÃÆ¥Åäµ½µÄNamespaceHandlerµÄ½âÎö·½·¨
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
-	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(Element ele, BeanDefinitionHolder definitionHolder) {
-		return decorateBeanDefinitionIfRequired(ele, definitionHolder, null);
+	/**
+	 * Decorate the given bean definition through a namespace handler, if applicable.
+	 * @param ele the current element
+	 * @param originalDef the current bean definition
+	 * @return the decorated bean definition
+	 */
+	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(Element ele, BeanDefinitionHolder originalDef) {
+		return decorateBeanDefinitionIfRequired(ele, originalDef, null);
 	}
 
+	/**
+	 * Decorate the given bean definition through a namespace handler, if applicable.
+	 * @param ele the current element
+	 * @param originalDef the current bean definition
+	 * @param containingBd the containing bean definition (if any)
+	 * @return the decorated bean definition
+	 */
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(
-			Element ele, BeanDefinitionHolder definitionHolder, @Nullable BeanDefinition containingBd) {
+			Element ele, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
-		BeanDefinitionHolder finalDefinition = definitionHolder;
+		BeanDefinitionHolder finalDefinition = originalDef;
 
 		// Decorate based on custom attributes first.
 		NamedNodeMap attributes = ele.getAttributes();
@@ -1432,6 +1470,14 @@ public class BeanDefinitionParserDelegate {
 		return finalDefinition;
 	}
 
+	/**
+	 * Decorate the given bean definition through a namespace handler,
+	 * if applicable.
+	 * @param node the current child node
+	 * @param originalDef the current bean definition
+	 * @param containingBd the containing bean definition (if any)
+	 * @return the decorated bean definition
+	 */
 	public BeanDefinitionHolder decorateIfRequired(
 			Node node, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
@@ -1512,12 +1558,22 @@ public class BeanDefinitionParserDelegate {
 		return desiredName.equals(node.getNodeName()) || desiredName.equals(getLocalName(node));
 	}
 
+	/**
+	 * Determine whether the given URI indicates the default namespace.
+	 */
 	public boolean isDefaultNamespace(@Nullable String namespaceUri) {
 		return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
 	}
 
+	/**
+	 * Determine whether the given node indicates the default namespace.
+	 */
 	public boolean isDefaultNamespace(Node node) {
 		return isDefaultNamespace(getNamespaceURI(node));
+	}
+
+	private boolean isDefaultValue(String value) {
+		return (DEFAULT_VALUE.equals(value) || "".equals(value));
 	}
 
 	private boolean isCandidateElement(Node node) {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,9 +60,8 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	@Override
 	@Nullable
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
-		// è°ƒç”¨å­ç±»çš„parseInternalè·å–BeanDefinitionå¯¹è±¡
+		// µ÷ÓÃ×ÓÀàµÄparseInternal»ñÈ¡BeanDefinition¶ÔÏó
 		AbstractBeanDefinition definition = parseInternal(element, parserContext);
-		
 		if (definition != null && !parserContext.isNested()) {
 			try {
 				String id = resolveId(element, definition, parserContext);
@@ -79,7 +78,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 					}
 				}
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
-				// å°†å¤„ç†<tx:advice>æ ‡ç­¾çš„ç±»BeanDefinitionå¯¹è±¡ï¼Œæ³¨å†Œåˆ°IoCå®¹å™¨ä¸­
+				// ½«´¦Àí<tx:advice>±êÇ©µÄÀàBeanDefinition¶ÔÏó£¬×¢²áµ½IoCÈİÆ÷ÖĞ
 				registerBeanDefinition(holder, parserContext.getRegistry());
 				if (shouldFireEvents()) {
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);

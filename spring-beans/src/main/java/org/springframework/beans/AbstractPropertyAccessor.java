@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,8 @@
 
 package org.springframework.beans;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 
 	@Override
 	public void setPropertyValues(PropertyValues pvs) throws BeansException {
-		// ÂÆåÊàê‰æùËµñÊ≥®ÂÖ•
+		// ÕÍ≥…“¿¿µ◊¢»Î
 		setPropertyValues(pvs, false, false);
 	}
 
@@ -96,7 +96,7 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 				// here, if there is a critical failure such as no matching field.
 				// We can attempt to deal only with less serious exceptions.
 				
-				// ‰æùËµñÂ±ûÊÄßÊ≥®ÂÖ•
+				// “¿¿µ Ù–‘◊¢»Î
 				setPropertyValue(pv);
 			}
 			catch (NotWritablePropertyException ex) {
@@ -113,7 +113,7 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 			}
 			catch (PropertyAccessException ex) {
 				if (propertyAccessExceptions == null) {
-					propertyAccessExceptions = new LinkedList<>();
+					propertyAccessExceptions = new ArrayList<>();
 				}
 				propertyAccessExceptions.add(ex);
 			}

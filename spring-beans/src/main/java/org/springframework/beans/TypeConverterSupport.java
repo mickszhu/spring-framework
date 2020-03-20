@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 	public <T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType, @Nullable MethodParameter methodParam)
 			throws TypeMismatchException {
 
-		// 璋冪敤鐪熸鍘绘墽琛岀被鍨嬭浆鎹㈢殑鏂规硶
+		// 调用真正去执行类型转换的方法
 		return doConvert(value, requiredType, methodParam, null);
 	}
 
@@ -71,7 +71,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, field);
 			}
 			else {
-				// 濮旀墭缁橳ypeConverterDelegate瀹屾垚绫诲瀷杞崲 
+				// 委托给TypeConverterDelegate完成类型转换 
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, methodParam);
 			}
 		}

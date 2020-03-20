@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -113,7 +113,7 @@ class TypeConverterDelegate {
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable Object newValue, @Nullable Class<T> requiredType, @Nullable Field field)
 			throws IllegalArgumentException {
-		// è°ƒç”¨é‡è½½æ–¹æ³•
+		// µ÷ÓÃÖØÔØ·½·¨
 		return convertIfNecessary(null, null, newValue, requiredType,
 				(field != null ? new TypeDescriptor(field) : TypeDescriptor.valueOf(requiredType)));
 	}
@@ -153,23 +153,23 @@ class TypeConverterDelegate {
 			@Nullable Class<T> requiredType, @Nullable TypeDescriptor typeDescriptor) throws IllegalArgumentException {
 
 		// Custom editor for this type?
-		// è·å–è‡ªå®šä¹‰å±æ€§ç¼–è¾‘å™¨
-		// PropertyEditor(String-->ä»»æ„ç±»å‹çš„è½¬æ¢)
+		// »ñÈ¡×Ô¶¨ÒåÊôĞÔ±à¼­Æ÷
+		// PropertyEditor(String-->ÈÎÒâÀàĞÍµÄ×ª»»)
 		PropertyEditor editor = this.propertyEditorRegistry.findCustomEditor(requiredType, propertyName);
 
 		ConversionFailedException conversionAttemptEx = null;
 
 		// No custom editor but custom ConversionService specified?
-		// è·å–è‡ªå®šä¹‰ç±»å‹è½¬æ¢æœåŠ¡
-		// Converter(ä»»æ„ç±»å‹-->ä»»æ„ç±»å‹çš„è½¬æ¢)
+		// »ñÈ¡×Ô¶¨ÒåÀàĞÍ×ª»»·şÎñ
+		// Converter(ÈÎÒâÀàĞÍ-->ÈÎÒâÀàĞÍµÄ×ª»»)
 		ConversionService conversionService = this.propertyEditorRegistry.getConversionService();
-		// å…ˆè¿›è¡Œeditorçš„è½¬æ¢
+		// ÏÈ½øĞĞeditorµÄ×ª»»
 		if (editor == null && conversionService != null && newValue != null && typeDescriptor != null) {
 			TypeDescriptor sourceTypeDesc = TypeDescriptor.forObject(newValue);
-			// åˆ¤æ–­æ˜¯å¦å¯ä»¥å¯¹æŒ‡å®šç±»å‹è¿›è¡Œç±»å‹è½¬æ¢
+			// ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ¶ÔÖ¸¶¨ÀàĞÍ½øĞĞÀàĞÍ×ª»»
 			if (conversionService.canConvert(sourceTypeDesc, typeDescriptor)) {
 				try {
-					// ä½¿ç”¨è‡ªå®šä¹‰çš„ConversionServiceï¼Œå®Œæˆç±»å‹è½¬æ¢
+					// Ê¹ÓÃ×Ô¶¨ÒåµÄConversionService£¬Íê³ÉÀàĞÍ×ª»»
 					return (T) conversionService.convert(newValue, sourceTypeDesc, typeDescriptor);
 				}
 				catch (ConversionFailedException ex) {
@@ -254,7 +254,7 @@ class TypeConverterDelegate {
 						}
 					}
 					String trimmedValue = ((String) convertedValue).trim();
-					if (requiredType.isEnum() && "".equals(trimmedValue)) {
+					if (requiredType.isEnum() && trimmedValue.isEmpty()) {
 						// It's an empty enum identifier: reset the enum value to null.
 						return null;
 					}
@@ -566,8 +566,7 @@ class TypeConverterDelegate {
 			return original;
 		}
 
-		int i = 0;
-		for (; it.hasNext(); i++) {
+		for (int i = 0; it.hasNext(); i++) {
 			Object element = it.next();
 			String indexedPropertyName = buildIndexedPropertyName(propertyName, i);
 			Object convertedElement = convertIfNecessary(indexedPropertyName, null, element,

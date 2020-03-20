@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -166,6 +166,7 @@ public abstract class BeanUtils {
 		Assert.notNull(ctor, "Constructor must not be null");
 		try {
 			ReflectionUtils.makeAccessible(ctor);
+			// 在这里使用了反射newInstance创建实例
 			return (KotlinDetector.isKotlinType(ctor.getDeclaringClass()) ?
 					KotlinDelegate.instantiateClass(ctor, args) : ctor.newInstance(args));
 		}
@@ -190,7 +191,7 @@ public abstract class BeanUtils {
 	 * classes, this simply returns {@code null}.
 	 * @param clazz the class to check
 	 * @since 5.0
-	 * @see <a href="http://kotlinlang.org/docs/reference/classes.html#constructors">Kotlin docs</a>
+	 * @see <a href="https://kotlinlang.org/docs/reference/classes.html#constructors">Kotlin docs</a>
 	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
@@ -718,8 +719,8 @@ public abstract class BeanUtils {
 		/**
 		 * Retrieve the Java constructor corresponding to the Kotlin primary constructor, if any.
 		 * @param clazz the {@link Class} of the Kotlin class
-		 * @see <a href="http://kotlinlang.org/docs/reference/classes.html#constructors">
-		 * http://kotlinlang.org/docs/reference/classes.html#constructors</a>
+		 * @see <a href="https://kotlinlang.org/docs/reference/classes.html#constructors">
+		 * https://kotlinlang.org/docs/reference/classes.html#constructors</a>
 		 */
 		@Nullable
 		public static <T> Constructor<T> findPrimaryConstructor(Class<T> clazz) {
