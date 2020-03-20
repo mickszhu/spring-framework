@@ -49,7 +49,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 	public <T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType, @Nullable MethodParameter methodParam)
 			throws TypeMismatchException {
 
-		// 调用真正去执行类型转换的方法
+		// 璋冪敤鐪熸鍘绘墽琛岀被鍨嬭浆鎹㈢殑鏂规硶
 		return doConvert(value, requiredType, methodParam, null);
 	}
 
@@ -63,7 +63,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 
 	@Nullable
 	private <T> T doConvert(@Nullable Object value,@Nullable Class<T> requiredType,
-			@Nullable MethodParameter methodParam, @Nullable Field field) throws TypeMismatchException {
+							@Nullable MethodParameter methodParam, @Nullable Field field) throws TypeMismatchException {
 
 		Assert.state(this.typeConverterDelegate != null, "No TypeConverterDelegate");
 		try {
@@ -71,7 +71,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, field);
 			}
 			else {
-				// 委托给TypeConverterDelegate完成类型转换 
+				// 濮旀墭缁橳ypeConverterDelegate瀹屾垚绫诲瀷杞崲
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, methodParam);
 			}
 		}

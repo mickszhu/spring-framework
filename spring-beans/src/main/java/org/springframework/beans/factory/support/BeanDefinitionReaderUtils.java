@@ -147,7 +147,7 @@ public class BeanDefinitionReaderUtils {
 
 		// Register bean definition under primary name.
 		String beanName = definitionHolder.getBeanName();
-		// 以name为key，以BeanDefinition为Value，注册到Registry
+		// 浠ame涓簁ey锛屼互BeanDefinition涓篤alue锛屾敞鍐屽埌Registry
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
 		// Register aliases for bean name, if any.

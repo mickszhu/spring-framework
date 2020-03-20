@@ -105,7 +105,7 @@ class BeanDefinitionValueResolver {
 	public Object resolveValueIfNecessary(Object argName, @Nullable Object value) {
 		// We must check each value to see whether it requires a runtime reference
 		// to another bean to be resolved.
-		// ÏÈ½â¾öÒıÓÃÀàĞÍµÄÊôĞÔÖµ
+		// å…ˆè§£å†³å¼•ç”¨ç±»å‹çš„å±æ€§å€¼
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
 			return resolveReference(argName, ref);
@@ -186,15 +186,15 @@ class BeanDefinitionValueResolver {
 			});
 			return copy;
 		}
-		else if (value instanceof TypedStringValue) {//ÖµÊÇ¼òµ¥ÀàĞÍ
+		else if (value instanceof TypedStringValue) {//å€¼æ˜¯ç®€å•ç±»å‹
 			// Convert value to target type here.
 			TypedStringValue typedStringValue = (TypedStringValue) value;
 			Object valueObject = evaluate(typedStringValue);
 			try {
-				// »ñÈ¡¼òµ¥ÀàĞÍµÄ°ü×°ÀàÀàĞÍ
+				// è·å–ç®€å•ç±»å‹çš„åŒ…è£…ç±»ç±»å‹
 				Class<?> resolvedTargetType = resolveTargetType(typedStringValue);
 				if (resolvedTargetType != null) {
-					// Ê¹ÓÃÀàĞÍ×ª»»Æ÷½øĞĞÀàĞÍ×ª»»
+					// ä½¿ç”¨ç±»å‹è½¬æ¢å™¨è¿›è¡Œç±»å‹è½¬æ¢
 					return this.typeConverter.convertIfNecessary(valueObject, resolvedTargetType);
 				}
 				else {
@@ -361,8 +361,8 @@ class BeanDefinitionValueResolver {
 			throw new BeanCreationException(
 					this.beanDefinition.getResourceDescription(), this.beanName,
 					"Cannot create inner bean '" + innerBeanName + "' " +
-					(mbd != null && mbd.getBeanClassName() != null ? "of type [" + mbd.getBeanClassName() + "] " : "") +
-					"while setting " + argName, ex);
+							(mbd != null && mbd.getBeanClassName() != null ? "of type [" + mbd.getBeanClassName() + "] " : "") +
+							"while setting " + argName, ex);
 		}
 	}
 

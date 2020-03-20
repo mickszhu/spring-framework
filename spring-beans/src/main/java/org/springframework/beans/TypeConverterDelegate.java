@@ -94,7 +94,7 @@ class TypeConverterDelegate {
 	 */
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable Object newValue, @Nullable Class<T> requiredType,
-			@Nullable MethodParameter methodParam) throws IllegalArgumentException {
+									@Nullable MethodParameter methodParam) throws IllegalArgumentException {
 
 		return convertIfNecessary(null, null, newValue, requiredType,
 				(methodParam != null ? new TypeDescriptor(methodParam) : TypeDescriptor.valueOf(requiredType)));
@@ -113,7 +113,7 @@ class TypeConverterDelegate {
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable Object newValue, @Nullable Class<T> requiredType, @Nullable Field field)
 			throws IllegalArgumentException {
-		// µ÷ÓÃÖØÔØ·½·¨
+		// è°ƒç”¨é‡è½½æ–¹æ³•
 		return convertIfNecessary(null, null, newValue, requiredType,
 				(field != null ? new TypeDescriptor(field) : TypeDescriptor.valueOf(requiredType)));
 	}
@@ -130,7 +130,7 @@ class TypeConverterDelegate {
 	 */
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable String propertyName, @Nullable Object oldValue,
-			Object newValue, @Nullable Class<T> requiredType) throws IllegalArgumentException {
+									Object newValue, @Nullable Class<T> requiredType) throws IllegalArgumentException {
 
 		return convertIfNecessary(propertyName, oldValue, newValue, requiredType, TypeDescriptor.valueOf(requiredType));
 	}
@@ -150,26 +150,26 @@ class TypeConverterDelegate {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable String propertyName, @Nullable Object oldValue, @Nullable Object newValue,
-			@Nullable Class<T> requiredType, @Nullable TypeDescriptor typeDescriptor) throws IllegalArgumentException {
+									@Nullable Class<T> requiredType, @Nullable TypeDescriptor typeDescriptor) throws IllegalArgumentException {
 
 		// Custom editor for this type?
-		// »ñÈ¡×Ô¶¨ÒåÊôĞÔ±à¼­Æ÷
-		// PropertyEditor(String-->ÈÎÒâÀàĞÍµÄ×ª»»)
+		// è·å–è‡ªå®šä¹‰å±æ€§ç¼–è¾‘å™¨
+		// PropertyEditor(String-->ä»»æ„ç±»å‹çš„è½¬æ¢)
 		PropertyEditor editor = this.propertyEditorRegistry.findCustomEditor(requiredType, propertyName);
 
 		ConversionFailedException conversionAttemptEx = null;
 
 		// No custom editor but custom ConversionService specified?
-		// »ñÈ¡×Ô¶¨ÒåÀàĞÍ×ª»»·şÎñ
-		// Converter(ÈÎÒâÀàĞÍ-->ÈÎÒâÀàĞÍµÄ×ª»»)
+		// è·å–è‡ªå®šä¹‰ç±»å‹è½¬æ¢æœåŠ¡
+		// Converter(ä»»æ„ç±»å‹-->ä»»æ„ç±»å‹çš„è½¬æ¢)
 		ConversionService conversionService = this.propertyEditorRegistry.getConversionService();
-		// ÏÈ½øĞĞeditorµÄ×ª»»
+		// å…ˆè¿›è¡Œeditorçš„è½¬æ¢
 		if (editor == null && conversionService != null && newValue != null && typeDescriptor != null) {
 			TypeDescriptor sourceTypeDesc = TypeDescriptor.forObject(newValue);
-			// ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ¶ÔÖ¸¶¨ÀàĞÍ½øĞĞÀàĞÍ×ª»»
+			// åˆ¤æ–­æ˜¯å¦å¯ä»¥å¯¹æŒ‡å®šç±»å‹è¿›è¡Œç±»å‹è½¬æ¢
 			if (conversionService.canConvert(sourceTypeDesc, typeDescriptor)) {
 				try {
-					// Ê¹ÓÃ×Ô¶¨ÒåµÄConversionService£¬Íê³ÉÀàĞÍ×ª»»
+					// ä½¿ç”¨è‡ªå®šä¹‰çš„ConversionServiceï¼Œå®Œæˆç±»å‹è½¬æ¢
 					return (T) conversionService.convert(newValue, sourceTypeDesc, typeDescriptor);
 				}
 				catch (ConversionFailedException ex) {
@@ -397,7 +397,7 @@ class TypeConverterDelegate {
 	 */
 	@Nullable
 	private Object doConvertValue(@Nullable Object oldValue, @Nullable Object newValue,
-			@Nullable Class<?> requiredType, @Nullable PropertyEditor editor) {
+								  @Nullable Class<?> requiredType, @Nullable PropertyEditor editor) {
 
 		Object convertedValue = newValue;
 
@@ -514,7 +514,7 @@ class TypeConverterDelegate {
 
 	@SuppressWarnings("unchecked")
 	private Collection<?> convertToTypedCollection(Collection<?> original, @Nullable String propertyName,
-			Class<?> requiredType, @Nullable TypeDescriptor typeDescriptor) {
+												   Class<?> requiredType, @Nullable TypeDescriptor typeDescriptor) {
 
 		if (!Collection.class.isAssignableFrom(requiredType)) {
 			return original;
@@ -588,7 +588,7 @@ class TypeConverterDelegate {
 
 	@SuppressWarnings("unchecked")
 	private Map<?, ?> convertToTypedMap(Map<?, ?> original, @Nullable String propertyName,
-			Class<?> requiredType, @Nullable TypeDescriptor typeDescriptor) {
+										Class<?> requiredType, @Nullable TypeDescriptor typeDescriptor) {
 
 		if (!Map.class.isAssignableFrom(requiredType)) {
 			return original;

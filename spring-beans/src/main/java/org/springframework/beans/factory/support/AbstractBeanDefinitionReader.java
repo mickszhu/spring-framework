@@ -210,7 +210,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 	 * @see #loadBeanDefinitions(org.springframework.core.io.Resource[])
 	 */
 	public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources) throws BeanDefinitionStoreException {
-		// 获取在IoC容器初始化过程中设置的资源加载器
+		// 鑾峰彇鍦↖oC瀹瑰櫒鍒濆鍖栬繃绋嬩腑璁剧疆鐨勮祫婧愬姞杞藉櫒
 		ResourceLoader resourceLoader = getResourceLoader();
 		if (resourceLoader == null) {
 			throw new BeanDefinitionStoreException(
@@ -221,7 +221,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 			// Resource pattern matching available.
 			try {
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
-				// 委派调用其子类XmlBeanDefinitionReader的方法，实现加载功能
+				// 濮旀淳璋冪敤鍏跺瓙绫籜mlBeanDefinitionReader鐨勬柟娉曪紝瀹炵幇鍔犺浇鍔熻兘
 				int loadCount = loadBeanDefinitions(resources);
 				if (actualResources != null) {
 					for (Resource resource : resources) {

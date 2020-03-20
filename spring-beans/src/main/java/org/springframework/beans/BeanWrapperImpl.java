@@ -311,7 +311,7 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 
 		@Override
 		public void setValue(final @Nullable Object value) throws Exception {
-			// Ê¹ÓÃJDK ÄÚÊ¡¼¼Êõ£¬»ñÈ¡¶ÔÖ¸¶¨ÊôĞÔµÄsetter·½·¨µÄ»ñÈ¡(writeMethod)
+			// ä½¿ç”¨JDK å†…çœæŠ€æœ¯ï¼Œè·å–å¯¹æŒ‡å®šå±æ€§çš„setteræ–¹æ³•çš„è·å–(writeMethod)
 			final Method writeMethod = (this.pd instanceof GenericTypeAwarePropertyDescriptor ?
 					((GenericTypeAwarePropertyDescriptor) this.pd).getWriteMethodForActualAccess() :
 					this.pd.getWriteMethod());
@@ -329,9 +329,9 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 				}
 			}
 			else {
-				// Í¨¹ı·´Éä¹¤¾ßÀà£¬¶Ôsetter·½·¨¿ªÆô±©Á¦ÆÆ½â£¨Ë½ÓĞµÄ·½·¨£¬ÎÒÒ²¿ÉÒÔµ÷ÓÃ£©
+				// é€šè¿‡åå°„å·¥å…·ç±»ï¼Œå¯¹setteræ–¹æ³•å¼€å¯æš´åŠ›ç ´è§£ï¼ˆç§æœ‰çš„æ–¹æ³•ï¼Œæˆ‘ä¹Ÿå¯ä»¥è°ƒç”¨ï¼‰
 				ReflectionUtils.makeAccessible(writeMethod);
-				// ÀûÓÃ·´Éä¼¼Êõ£¬È¥Ö´ĞĞ¶ÔÓ¦µÄsetter·½·¨£¨²»Ò»¶¨ÕæÕıÓµÓĞ¸ÃÊôĞÔ£¬µ«ÊÇÒ»¶¨ÒªÓĞ¶ÔÓ¦µÄsetter·½·¨£©
+				// åˆ©ç”¨åå°„æŠ€æœ¯ï¼Œå»æ‰§è¡Œå¯¹åº”çš„setteræ–¹æ³•ï¼ˆä¸ä¸€å®šçœŸæ­£æ‹¥æœ‰è¯¥å±æ€§ï¼Œä½†æ˜¯ä¸€å®šè¦æœ‰å¯¹åº”çš„setteræ–¹æ³•ï¼‰
 				writeMethod.invoke(getWrappedInstance(), value);
 				// method.invoke(obj,args);
 			}

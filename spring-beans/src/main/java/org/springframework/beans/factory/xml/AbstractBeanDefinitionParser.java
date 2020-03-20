@@ -60,7 +60,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	@Override
 	@Nullable
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
-		// µ÷ÓÃ×ÓÀàµÄparseInternal»ñÈ¡BeanDefinition¶ÔÏó
+		// è°ƒç”¨å­ç±»çš„parseInternalè·å–BeanDefinitionå¯¹è±¡
 		AbstractBeanDefinition definition = parseInternal(element, parserContext);
 		if (definition != null && !parserContext.isNested()) {
 			try {
@@ -78,7 +78,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 					}
 				}
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
-				// ½«´¦Àí<tx:advice>±êÇ©µÄÀàBeanDefinition¶ÔÏó£¬×¢²áµ½IoCÈİÆ÷ÖĞ
+				// å°†å¤„ç†<tx:advice>æ ‡ç­¾çš„ç±»BeanDefinitionå¯¹è±¡ï¼Œæ³¨å†Œåˆ°IoCå®¹å™¨ä¸­
 				registerBeanDefinition(holder, parserContext.getRegistry());
 				if (shouldFireEvents()) {
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);

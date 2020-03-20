@@ -248,43 +248,43 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 	@Override
 	public void setPropertyValue(PropertyValue pv) throws BeansException {
-		// »ñÈ¡ÊôĞÔ·Ö´ÊÆ÷³ÖÓĞÕß
+		// è·å–å±æ€§åˆ†è¯å™¨æŒæœ‰è€…
 		//user.name
 		//map["key"]
 		PropertyTokenHolder tokens = (PropertyTokenHolder) pv.resolvedTokens;
 		if (tokens == null) {
-			// »ñÈ¡ÊôĞÔÃû³Æ
+			// è·å–å±æ€§åç§°
 			String propertyName = pv.getName();
-			// »ñÈ¡ÄÚÇ¶ÊôĞÔ·ÃÎÊÆ÷
+			// è·å–å†…åµŒå±æ€§è®¿é—®å™¨
 			AbstractNestablePropertyAccessor nestedPa;
 			try {
-				//¸ù¾İÊôĞÔÃû³Æ»ñÈ¡Ö¸¶¨µÄÊôĞÔ·ÃÎÊÆ÷
+				//æ ¹æ®å±æ€§åç§°è·å–æŒ‡å®šçš„å±æ€§è®¿é—®å™¨
 				nestedPa = getPropertyAccessorForPropertyPath(propertyName);
 			}
 			catch (NotReadablePropertyException ex) {
 				throw new NotWritablePropertyException(getRootClass(), this.nestedPath + propertyName,
 						"Nested property in path '" + propertyName + "' does not exist", ex);
 			}
-			// Í¨¹ıÊôĞÔ·ÃÎÊÆ÷£¬¶ÔÊôĞÔ½øĞĞ·Ö´Ê´¦Àí
+			// é€šè¿‡å±æ€§è®¿é—®å™¨ï¼Œå¯¹å±æ€§è¿›è¡Œåˆ†è¯å¤„ç†
 			tokens = getPropertyNameTokens(getFinalPath(nestedPa, propertyName));
 			if (nestedPa == this) {
 				pv.getOriginalPropertyValue().resolvedTokens = tokens;
 			}
-			// ÊôĞÔ×¢Èë
+			// å±æ€§æ³¨å…¥
 			nestedPa.setPropertyValue(tokens, pv);
 		}
 		else {
-			// ÊôĞÔ×¢Èë
+			// å±æ€§æ³¨å…¥
 			setPropertyValue(tokens, pv);
 		}
 	}
 
 	protected void setPropertyValue(PropertyTokenHolder tokens, PropertyValue pv) throws BeansException {
-		// tokens.keysÖ»Òª²»Îª¿Õ£¬Ôò±íÊ¾ÒªÒÀÀµµÄÊôĞÔÊÇ¼¯ºÏÀàĞÍµÄÊôĞÔ
+		// tokens.keysåªè¦ä¸ä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºè¦ä¾èµ–çš„å±æ€§æ˜¯é›†åˆç±»å‹çš„å±æ€§
 		if (tokens.keys != null) {
 			processKeyedProperty(tokens, pv);
 		}
-		else { // ÉèÖÃ·Ç¼¯ºÏÀàĞÍµÄÊôĞÔ
+		else { // è®¾ç½®éé›†åˆç±»å‹çš„å±æ€§
 			processLocalProperty(tokens, pv);
 		}
 	}
@@ -300,7 +300,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		Assert.state(tokens.keys != null, "No token keys");
 		String lastKey = tokens.keys[tokens.keys.length - 1];
 
-		// ´¦ÀíÊı×é
+		// å¤„ç†æ•°ç»„
 		if (propValue.getClass().isArray()) {
 			Class<?> requiredType = propValue.getClass().getComponentType();
 			int arrayIndex = Integer.parseInt(lastKey);
@@ -326,7 +326,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 						"Invalid array index in property path '" + tokens.canonicalName + "'", ex);
 			}
 		}
-		//´¦ÀíList¼¯ºÏ
+		//å¤„ç†Listé›†åˆ
 		else if (propValue instanceof List) {
 			Class<?> requiredType = ph.getCollectionType(tokens.keys.length);
 			List<Object> list = (List<Object>) propValue;
@@ -346,8 +346,8 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 					catch (NullPointerException ex) {
 						throw new InvalidPropertyException(getRootClass(), this.nestedPath + tokens.canonicalName,
 								"Cannot set element with index " + index + " in List of size " +
-								size + ", accessed using property path '" + tokens.canonicalName +
-								"': List does not support filling up gaps with null elements");
+										size + ", accessed using property path '" + tokens.canonicalName +
+										"': List does not support filling up gaps with null elements");
 					}
 				}
 				list.add(convertedValue);
@@ -362,7 +362,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 				}
 			}
 		}
-		// ´¦ÀíMap¼¯ºÏ
+		// å¤„ç†Mapé›†åˆ
 		else if (propValue instanceof Map) {
 			Class<?> mapKeyType = ph.getMapKeyType(tokens.keys.length);
 			Class<?> mapValueType = ph.getMapValueType(tokens.keys.length);
@@ -385,7 +385,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		else {
 			throw new InvalidPropertyException(getRootClass(), this.nestedPath + tokens.canonicalName,
 					"Property referenced in indexed property path '" + tokens.canonicalName +
-					"' is neither an array nor a List nor a Map; returned value was [" + propValue + "]");
+							"' is neither an array nor a List nor a Map; returned value was [" + propValue + "]");
 		}
 	}
 
@@ -404,7 +404,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		catch (NotReadablePropertyException ex) {
 			throw new NotWritablePropertyException(getRootClass(), this.nestedPath + tokens.canonicalName,
 					"Cannot access indexed value in property referenced " +
-					"in indexed property path '" + tokens.canonicalName + "'", ex);
+							"in indexed property path '" + tokens.canonicalName + "'", ex);
 		}
 
 		if (propValue == null) {
@@ -417,14 +417,14 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 			else {
 				throw new NullValueInNestedPathException(getRootClass(), this.nestedPath + tokens.canonicalName,
 						"Cannot access indexed value in property referenced " +
-						"in indexed property path '" + tokens.canonicalName + "': returned null");
+								"in indexed property path '" + tokens.canonicalName + "': returned null");
 			}
 		}
 		return propValue;
 	}
 
 	private void processLocalProperty(PropertyTokenHolder tokens, PropertyValue pv) {
-		// »ñÈ¡ÊôĞÔ´¦ÀíÆ÷
+		// è·å–å±æ€§å¤„ç†å™¨
 		PropertyHandler ph = getLocalPropertyHandler(tokens.actualName);
 		if (ph == null || !ph.isWritable()) {
 			if (pv.isOptional()) {
@@ -441,7 +441,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 		Object oldValue = null;
 		try {
-			// »ñÈ¡Ô­Ê¼µÄÖµ
+			// è·å–åŸå§‹çš„å€¼
 			Object originalValue = pv.getValue();
 			Object valueToApply = originalValue;
 			if (!Boolean.FALSE.equals(pv.conversionNecessary)) {
@@ -468,7 +468,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 				}
 				pv.getOriginalPropertyValue().conversionNecessary = (valueToApply != originalValue);
 			}
-			// Í¨¹ıPropertyHandlerÈ¥Íê³ÉÒÀÀµ×¢Èë
+			// é€šè¿‡PropertyHandlerå»å®Œæˆä¾èµ–æ³¨å…¥
 			ph.setValue(valueToApply);
 		}
 		catch (TypeMismatchException ex) {
@@ -591,7 +591,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 	@Nullable
 	private Object convertIfNecessary(@Nullable String propertyName, @Nullable Object oldValue,
-			@Nullable Object newValue, @Nullable Class<?> requiredType, @Nullable TypeDescriptor td)
+									  @Nullable Object newValue, @Nullable Class<?> requiredType, @Nullable TypeDescriptor td)
 			throws TypeMismatchException {
 
 		Assert.state(this.typeConverterDelegate != null, "No TypeConverterDelegate");
@@ -735,7 +735,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	@Nullable
 	protected PropertyHandler getPropertyHandler(String propertyName) throws BeansException {
 		Assert.notNull(propertyName, "Property name must not be null");
-		// »ñÈ¡ÄÚÇ¶ÊôĞÔ·ÃÎÊÆ÷
+		// è·å–å†…åµŒå±æ€§è®¿é—®å™¨
 		AbstractNestablePropertyAccessor nestedPa = getPropertyAccessorForPropertyPath(propertyName);
 		return nestedPa.getLocalPropertyHandler(getFinalPath(nestedPa, propertyName));
 	}
@@ -787,7 +787,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 	private void growCollectionIfNecessary(Collection<Object> collection, int index, String name,
-			PropertyHandler ph, int nestingLevel) {
+										   PropertyHandler ph, int nestingLevel) {
 
 		if (!isAutoGrowNestedPaths()) {
 			return;
@@ -823,17 +823,17 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 */
 	@SuppressWarnings("unchecked")  // avoid nested generic
 	protected AbstractNestablePropertyAccessor getPropertyAccessorForPropertyPath(String propertyPath) {
-		// ÏÈ»ñÈ¡µÚÒ»¸öÊôĞÔÖ®¼äµÄ·Ö¸ô·ûµÄÎ»ÖÃ
+		// å…ˆè·å–ç¬¬ä¸€ä¸ªå±æ€§ä¹‹é—´çš„åˆ†éš”ç¬¦çš„ä½ç½®
 		int pos = PropertyAccessorUtils.getFirstNestedPropertySeparatorIndex(propertyPath);
 		// Handle nested properties recursively.
 		if (pos > -1) {
-			// »ñÈ¡ÄÚÖÃÊôĞÔÃû³Æ£¬ÆäÊµÒ²¾ÍÊÇÊôĞÔ·Ö¸ô·ûÇ°ÃæµÄÊôĞÔÃû³Æ
+			// è·å–å†…ç½®å±æ€§åç§°ï¼Œå…¶å®ä¹Ÿå°±æ˜¯å±æ€§åˆ†éš”ç¬¦å‰é¢çš„å±æ€§åç§°
 			String nestedProperty = propertyPath.substring(0, pos);
-			// »ñÈ¡ÊôĞÔ·Ö¸ô·ûºóÃæµÄÊôĞÔÃû³Æ
+			// è·å–å±æ€§åˆ†éš”ç¬¦åé¢çš„å±æ€§åç§°
 			String nestedPath = propertyPath.substring(pos + 1);
-			// 
+			//
 			AbstractNestablePropertyAccessor nestedPa = getNestedPropertyAccessor(nestedProperty);
-			// µİ¹é»ñÈ¡·Ö¸ô·ûºóÃæÊôĞÔµÄÊôĞÔ·şÎñÆ÷
+			// é€’å½’è·å–åˆ†éš”ç¬¦åé¢å±æ€§çš„å±æ€§æœåŠ¡å™¨
 			return nestedPa.getPropertyAccessorForPropertyPath(nestedPath);
 		}
 		else {
@@ -950,38 +950,38 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		List<String> keys = new ArrayList<>(2);
 		int searchIndex = 0;
 		while (searchIndex != -1) {
-			// »ñÈ¡ÊôĞÔÃû³ÆÖĞ"["¶ÔÓ¦µÄÏÂ±ê
+			// è·å–å±æ€§åç§°ä¸­"["å¯¹åº”çš„ä¸‹æ ‡
 			int keyStart = propertyName.indexOf(PROPERTY_KEY_PREFIX, searchIndex);
 			searchIndex = -1;
-			// ËµÃ÷ÊôĞÔÃû³ÆÖĞ°üº¬"["
+			// è¯´æ˜å±æ€§åç§°ä¸­åŒ…å«"["
 			if (keyStart != -1) {
-				// »ñÈ¡ÊôĞÔÃû³ÆÖĞ"]"¶ÔÓ¦µÄÏÂ±ê
+				// è·å–å±æ€§åç§°ä¸­"]"å¯¹åº”çš„ä¸‹æ ‡
 				int keyEnd = propertyName.indexOf(PROPERTY_KEY_SUFFIX, keyStart + PROPERTY_KEY_PREFIX.length());
 				if (keyEnd != -1) {
-					// »ñÈ¡ÕæÕıµÄÊôĞÔÃû³Æ£¨user[0]ÖĞµÄuser£©
+					// è·å–çœŸæ­£çš„å±æ€§åç§°ï¼ˆuser[0]ä¸­çš„userï¼‰
 					if (actualName == null) {
 						actualName = propertyName.substring(0, keyStart);
 					}
-					//È¡³ö[]ÖĞµÄkey
+					//å–å‡º[]ä¸­çš„key
 					String key = propertyName.substring(keyStart + PROPERTY_KEY_PREFIX.length(), keyEnd);
 					if (key.length() > 1 && (key.startsWith("'") && key.endsWith("'")) ||
 							(key.startsWith("\"") && key.endsWith("\""))) {
-						// È¡³ö[]ÖĞ""»òÕß''ÖĞµÄÄÚÈİ
+						// å–å‡º[]ä¸­""æˆ–è€…''ä¸­çš„å†…å®¹
 						key = key.substring(1, key.length() - 1);
 					}
-					//½«È¡³öµÄÄÚÈİ·ÅÈëkeys¼¯ºÏÖĞ
+					//å°†å–å‡ºçš„å†…å®¹æ”¾å…¥keysé›†åˆä¸­
 					keys.add(key);
 					searchIndex = keyEnd + PROPERTY_KEY_SUFFIX.length();
 				}
 			}
 		}
-		// ½«ÕæÕıµÄÊôĞÔÃû³Æ·â×°µ½PropertyTokenHolder
+		// å°†çœŸæ­£çš„å±æ€§åç§°å°è£…åˆ°PropertyTokenHolder
 		PropertyTokenHolder tokens = new PropertyTokenHolder(actualName != null ? actualName : propertyName);
 		if (!keys.isEmpty()) {
 			tokens.canonicalName += PROPERTY_KEY_PREFIX +
 					StringUtils.collectionToDelimitedString(keys, PROPERTY_KEY_SUFFIX + PROPERTY_KEY_PREFIX) +
 					PROPERTY_KEY_SUFFIX;
-			// tokenµÄkeys¼¯ºÏ£¬Èç¹û²»Îª¿Õ£¬ÆäÊµÒ²¾Í±íÊ¾¸ÃkeyÊÇ
+			// tokençš„keysé›†åˆï¼Œå¦‚æœä¸ä¸ºç©ºï¼Œå…¶å®ä¹Ÿå°±è¡¨ç¤ºè¯¥keyæ˜¯
 			tokens.keys = StringUtils.toStringArray(keys);
 		}
 		return tokens;

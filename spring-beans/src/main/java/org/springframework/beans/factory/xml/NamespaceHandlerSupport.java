@@ -70,10 +70,10 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		// NamespaceHandlerÀïÃæ³õÊ¼»¯ÁË´óÁ¿µÄBeanDefinitionParserÀ´·Ö±ğ´¦Àí²»Í¬µÄ×Ô¶¨Òå±êÇ©
-		// ´ÓÖ¸¶¨µÄNamespaceHandlerÖĞ£¬Æ¥Åäµ½Ö¸¶¨µÄBeanDefinitionParser
+		// NamespaceHandleré‡Œé¢åˆå§‹åŒ–äº†å¤§é‡çš„BeanDefinitionParseræ¥åˆ†åˆ«å¤„ç†ä¸åŒçš„è‡ªå®šä¹‰æ ‡ç­¾
+		// ä»æŒ‡å®šçš„NamespaceHandlerä¸­ï¼ŒåŒ¹é…åˆ°æŒ‡å®šçš„BeanDefinitionParser
 		BeanDefinitionParser parser = findParserForElement(element, parserContext);
-		// µ÷ÓÃÖ¸¶¨×Ô¶¨Òå±êÇ©µÄ½âÎöÆ÷£¬Íê³É¾ßÌå½âÎö¹¤×÷
+		// è°ƒç”¨æŒ‡å®šè‡ªå®šä¹‰æ ‡ç­¾çš„è§£æå™¨ï¼Œå®Œæˆå…·ä½“è§£æå·¥ä½œ
 		return (parser != null ? parser.parse(element, parserContext) : null);
 	}
 
@@ -83,9 +83,9 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 */
 	@Nullable
 	private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) {
-		// »ñÈ¡×Ô¶¨Òå±êÇ©Ãû£¬±ÈÈç<aop:config>±êÇ©£¬´Ë´¦»ñÈ¡µÄ±êÇ©Ãû×ÖÊÇconfig
+		// è·å–è‡ªå®šä¹‰æ ‡ç­¾åï¼Œæ¯”å¦‚<aop:config>æ ‡ç­¾ï¼Œæ­¤å¤„è·å–çš„æ ‡ç­¾åå­—æ˜¯config
 		String localName = parserContext.getDelegate().getLocalName(element);
-		// ¸ù¾İ±êÇ©Ãû³ÆÕÒµ½¶ÔÓ¦µÄBeanDefinitionParser
+		// æ ¹æ®æ ‡ç­¾åç§°æ‰¾åˆ°å¯¹åº”çš„BeanDefinitionParser
 		BeanDefinitionParser parser = this.parsers.get(localName);
 		if (parser == null) {
 			parserContext.getReaderContext().fatal(

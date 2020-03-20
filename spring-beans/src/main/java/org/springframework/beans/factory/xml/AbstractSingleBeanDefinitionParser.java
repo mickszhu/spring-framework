@@ -60,18 +60,18 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 */
 	@Override
 	protected final AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-		// Í¨¹ıBeanDefinition¹¹½¨Æ÷£¬´´½¨GenericBeanDefinition¶ÔÏó
+		// é€šè¿‡BeanDefinitionæ„å»ºå™¨ï¼Œåˆ›å»ºGenericBeanDefinitionå¯¹è±¡
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
-		// »ñÈ¡¸¸ÔªËØµÄÃû³Æ
+		// è·å–çˆ¶å…ƒç´ çš„åç§°
 		String parentName = getParentName(element);
-		// È·¶¨BeanDefinitionµÄclassµÄ¸¸ÀàbeanName
+		// ç¡®å®šBeanDefinitionçš„classçš„çˆ¶ç±»beanName
 		if (parentName != null) {
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
-		// µ÷ÓÃ×ÓÀàµÄgetBeanClass·½·¨£¬»ñÈ¡BeanDefinition¶ÔÓ¦µÄBeanClass
-		// TxAdviceBeanDefinitionParser×ÓÀà¶ÔÓ¦µÄBeanClassÊÇTransactionInterceptor.class
+		// è°ƒç”¨å­ç±»çš„getBeanClassæ–¹æ³•ï¼Œè·å–BeanDefinitionå¯¹åº”çš„BeanClass
+		// TxAdviceBeanDefinitionParserå­ç±»å¯¹åº”çš„BeanClassæ˜¯TransactionInterceptor.class
 		Class<?> beanClass = getBeanClass(element);
-		// Èç¹ûBeanClass²»Îª¿Õ£¬Ôò½«BeanClassÉèÖÃµ½BeanDefinition¶ÔÏóÖĞ
+		// å¦‚æœBeanClassä¸ä¸ºç©ºï¼Œåˆ™å°†BeanClassè®¾ç½®åˆ°BeanDefinitionå¯¹è±¡ä¸­
 		if (beanClass != null) {
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
@@ -91,10 +91,10 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 			// Default-lazy-init applies to custom bean definitions as well.
 			builder.setLazyInit(true);
 		}
-		// µ÷ÓÃ×ÓÀàµÄdoParse·½·¨
-		// Èç¹ûÊÇtx:advice±êÇ©£¬Ôò´Ë´¦µ÷ÓÃµÄÊÇTxAdviceBeanDefinitionParserÀàµÄdoParse·½·¨
+		// è°ƒç”¨å­ç±»çš„doParseæ–¹æ³•
+		// å¦‚æœæ˜¯tx:adviceæ ‡ç­¾ï¼Œåˆ™æ­¤å¤„è°ƒç”¨çš„æ˜¯TxAdviceBeanDefinitionParserç±»çš„doParseæ–¹æ³•
 		doParse(element, parserContext, builder);
-		// ·µ»ØBeanDefinition¶ÔÏó
+		// è¿”å›BeanDefinitionå¯¹è±¡
 		return builder.getBeanDefinition();
 	}
 

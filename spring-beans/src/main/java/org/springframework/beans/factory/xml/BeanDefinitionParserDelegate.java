@@ -402,7 +402,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele) {
-		// ½âÎö<bean>±êÇ©£¬»ñÈ¡BeanDefinition¶ÔÏó
+		// è§£æ<bean>æ ‡ç­¾ï¼Œè·å–BeanDefinitionå¯¹è±¡
 		return parseBeanDefinitionElement(ele, null);
 	}
 
@@ -413,9 +413,9 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		// »ñÈ¡beanµÄid
+		// è·å–beançš„id
 		String id = ele.getAttribute(ID_ATTRIBUTE);
-		// »ñÈ¡beanµÄname
+		// è·å–beançš„name
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
 		List<String> aliases = new ArrayList<>();
@@ -434,10 +434,10 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		if (containingBean == null) {
-			// ¼ì²ébeanµÄid»òÕßnameÊÇ·ñÎ¨Ò»
+			// æ£€æŸ¥beançš„idæˆ–è€…nameæ˜¯å¦å”¯ä¸€
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-		// ½âÎö<bean>±êÇ©£¬»ñÈ¡BeanDefinition¶ÔÏó
+		// è§£æ<bean>æ ‡ç­¾ï¼Œè·å–BeanDefinitionå¯¹è±¡
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -469,7 +469,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
-			// ½«BeanDefinition¶ÔÏóºÍBeanName·â×°µ½BeanDefinitionHolder¶ÔÏóÖĞ
+			// å°†BeanDefinitionå¯¹è±¡å’ŒBeanNameå°è£…åˆ°BeanDefinitionHolderå¯¹è±¡ä¸­
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -508,39 +508,39 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		// »ñÈ¡bean±êÇ©µÄclassÊôĞÔ
+		// è·å–beanæ ‡ç­¾çš„classå±æ€§
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 		String parent = null;
-		// »ñÈ¡bean±êÇ©µÄparentÊôĞÔ
+		// è·å–beanæ ‡ç­¾çš„parentå±æ€§
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
-			// ´´½¨BeanDefinition¶ÔÏóGenericBeanDefinition
+			// åˆ›å»ºBeanDefinitionå¯¹è±¡GenericBeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
-			// ½âÎö<bean>±êÇ©µÄÊôĞÔ
+			// è§£æ<bean>æ ‡ç­¾çš„å±æ€§
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			/** ½âÎö<bean>±êÇ©µÄ×Ó±êÇ©  --- begin**/
-			// ½âÎö<description>±êÇ©
+			/** è§£æ<bean>æ ‡ç­¾çš„å­æ ‡ç­¾  --- begin**/
+			// è§£æ<description>æ ‡ç­¾
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-			// ½âÎö<meta>±êÇ©
+			// è§£æ<meta>æ ‡ç­¾
 			parseMetaElements(ele, bd);
-			// ½âÎö<lookup-method>±êÇ©
+			// è§£æ<lookup-method>æ ‡ç­¾
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
-			// ½âÎö<replaced-method>±êÇ©
+			// è§£æ<replaced-method>æ ‡ç­¾
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-			
-			// ½âÎö<constructor-arg>±êÇ©
+
+			// è§£æ<constructor-arg>æ ‡ç­¾
 			parseConstructorArgElements(ele, bd);
-			// ½âÎö<property>±êÇ©
+			// è§£æ<property>æ ‡ç­¾
 			parsePropertyElements(ele, bd);
-			// ½âÎö<qualifier>±êÇ©
+			// è§£æ<qualifier>æ ‡ç­¾
 			parseQualifierElements(ele, bd);
-			/** ½âÎö<bean>±êÇ©µÄ×Ó±êÇ©  --- end**/
+			/** è§£æ<bean>æ ‡ç­¾çš„å­æ ‡ç­¾  --- end**/
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
@@ -571,13 +571,13 @@ public class BeanDefinitionParserDelegate {
 	 * @return a bean definition initialized according to the bean element attributes
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
-			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
+																@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
-		// ½âÎö<bean>±êÇ©µÄsingletonÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„singletonå±æ€§
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
-		// ½âÎö<bean>±êÇ©µÄscopeÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„scopeå±æ€§
 		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 		}
@@ -586,28 +586,28 @@ public class BeanDefinitionParserDelegate {
 			bd.setScope(containingBean.getScope());
 		}
 
-		// ½âÎö<bean>±êÇ©µÄabstractÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„abstractå±æ€§
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
-		// ½âÎö<bean>±êÇ©µÄlazy-initÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„lazy-initå±æ€§
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
-		// ½âÎö<bean>±êÇ©µÄautowireÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„autowireå±æ€§
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
-		// ½âÎö<bean>±êÇ©µÄdepends-onÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„depends-onå±æ€§
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
 
-		// ½âÎö<bean>±êÇ©µÄautowire-candidateÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„autowire-candidateå±æ€§
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if (isDefaultValue(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
@@ -620,12 +620,12 @@ public class BeanDefinitionParserDelegate {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
-		// ½âÎö<bean>±êÇ©µÄprimaryÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„primaryå±æ€§
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
-		// ½âÎö<bean>±êÇ©µÄinit-methodÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„init-methodå±æ€§
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			bd.setInitMethodName(initMethodName);
@@ -635,7 +635,7 @@ public class BeanDefinitionParserDelegate {
 			bd.setEnforceInitMethod(false);
 		}
 
-		// ½âÎö<bean>±êÇ©µÄdestroy-methodÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„destroy-methodå±æ€§
 		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
 			String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
 			bd.setDestroyMethodName(destroyMethodName);
@@ -645,11 +645,11 @@ public class BeanDefinitionParserDelegate {
 			bd.setEnforceDestroyMethod(false);
 		}
 
-		// ½âÎö<bean>±êÇ©µÄfactory-methodÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„factory-methodå±æ€§
 		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) {
 			bd.setFactoryMethodName(ele.getAttribute(FACTORY_METHOD_ATTRIBUTE));
 		}
-		// ½âÎö<bean>±êÇ©µÄfactory-beanÊôĞÔ
+		// è§£æ<bean>æ ‡ç­¾çš„factory-beanå±æ€§
 		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) {
 			bd.setFactoryBeanName(ele.getAttribute(FACTORY_BEAN_ATTRIBUTE));
 		}
@@ -733,7 +733,7 @@ public class BeanDefinitionParserDelegate {
 	 * Parse property sub-elements of the given bean element.
 	 */
 	public void parsePropertyElements(Element beanEle, BeanDefinition bd) {
-		// property±êÇ©
+		// propertyæ ‡ç­¾
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
@@ -863,7 +863,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
-	 * property±êÇ©µÄ½âÎö
+	 * propertyæ ‡ç­¾çš„è§£æ
 	 * Parse a property element.
 	 */
 	public void parsePropertyElement(Element ele, BeanDefinition bd) {
@@ -971,13 +971,13 @@ public class BeanDefinitionParserDelegate {
 			if (!StringUtils.hasText(refName)) {
 				error(elementName + " contains empty 'ref' attribute", ele);
 			}
-			// ÒıÓÃÀàĞÍÊôĞÔÖµĞÅÏ¢
+			// å¼•ç”¨ç±»å‹å±æ€§å€¼ä¿¡æ¯
 			RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 			ref.setSource(extractSource(ele));
 			return ref;
 		}
 		else if (hasValueAttribute) {
-			// ¼òµ¥ÀàĞÍÊôĞÔÖµĞÅÏ¢
+			// ç®€å•ç±»å‹å±æ€§å€¼ä¿¡æ¯
 			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
@@ -1282,7 +1282,7 @@ public class BeanDefinitionParserDelegate {
 						"'value' attribute OR 'value-ref' attribute OR <value> sub-element", entryEle);
 			}
 			if ((hasValueTypeAttribute && hasValueRefAttribute) ||
-				(hasValueTypeAttribute && !hasValueAttribute) ||
+					(hasValueTypeAttribute && !hasValueAttribute) ||
 					(hasValueTypeAttribute && valueEle != null)) {
 				error("<entry> element is only allowed to contain a 'value-type' " +
 						"attribute when it has a 'value' attribute", entryEle);
@@ -1400,7 +1400,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele) {
-		// ½âÎö×Ô¶¨Òå±êÇ©
+		// è§£æè‡ªå®šä¹‰æ ‡ç­¾
 		return parseCustomElement(ele, null);
 	}
 
@@ -1412,21 +1412,21 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
-		// »ñÈ¡ÃüÃû¿Õ¼äURI£¨¾ÍÊÇ»ñÈ¡beans±êÇ©µÄxmlns:aop»òÕßxmlns:contextÊôĞÔµÄÖµ£©
+		// è·å–å‘½åç©ºé—´URIï¼ˆå°±æ˜¯è·å–beansæ ‡ç­¾çš„xmlns:aopæˆ–è€…xmlns:contextå±æ€§çš„å€¼ï¼‰
 		// http://www.springframework.org/schema/aop
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
-		// ¸ù¾İ²»Í¬µÄÃüÃû¿Õ¼äURI,È¥Æ¥Åä²»Í¬µÄNamespaceHandler(Ò»¸öÃüÃû¿Õ¼ä¶ÔÓ¦Ò»¸öNamespaceHandler)
-		// ´Ë´¦»áµ÷ÓÃDefaultNamespaceHandlerResolverÀàµÄresolve·½·¨
-		// Á½²½²Ù×÷£º²éÕÒNamespaceHandler ¡¢µ÷ÓÃNamespaceHandlerµÄinit·½·¨½øĞĞ³õÊ¼»¯£¨Õë¶Ô²»Í¬×Ô¶¨Òå±êÇ©×¢²áÏàÓ¦µÄBeanDefinitionParser£©
+		// æ ¹æ®ä¸åŒçš„å‘½åç©ºé—´URI,å»åŒ¹é…ä¸åŒçš„NamespaceHandler(ä¸€ä¸ªå‘½åç©ºé—´å¯¹åº”ä¸€ä¸ªNamespaceHandler)
+		// æ­¤å¤„ä¼šè°ƒç”¨DefaultNamespaceHandlerResolverç±»çš„resolveæ–¹æ³•
+		// ä¸¤æ­¥æ“ä½œï¼šæŸ¥æ‰¾NamespaceHandler ã€è°ƒç”¨NamespaceHandlerçš„initæ–¹æ³•è¿›è¡Œåˆå§‹åŒ–ï¼ˆé’ˆå¯¹ä¸åŒè‡ªå®šä¹‰æ ‡ç­¾æ³¨å†Œç›¸åº”çš„BeanDefinitionParserï¼‰
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
-		// µ÷ÓÃÆ¥Åäµ½µÄNamespaceHandlerµÄ½âÎö·½·¨
+		// è°ƒç”¨åŒ¹é…åˆ°çš„NamespaceHandlerçš„è§£ææ–¹æ³•
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 

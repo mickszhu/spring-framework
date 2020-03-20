@@ -301,7 +301,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
-		// ½«¶ÁÈëµÄXML×ÊÔ´½øĞĞÌØÊâ±àÂë´¦Àí
+		// å°†è¯»å…¥çš„XMLèµ„æºè¿›è¡Œç‰¹æ®Šç¼–ç å¤„ç†
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -328,15 +328,15 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
-			// ½«×ÊÔ´ÎÄ¼ş×ªÎªInputStreamµÄIOÁ÷
+			// å°†èµ„æºæ–‡ä»¶è½¬ä¸ºInputStreamçš„IOæµ
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
-				// ´ÓInputStreamÖĞµÃµ½XMLµÄ½âÎöÔ´
+				// ä»InputStreamä¸­å¾—åˆ°XMLçš„è§£ææº
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
-				// ÕâÀïÊÇ¾ßÌåµÄ¶ÁÈ¡¹ı³Ì
+				// è¿™é‡Œæ˜¯å…·ä½“çš„è¯»å–è¿‡ç¨‹
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
@@ -392,10 +392,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
-			// Í¨¹ıjava×Ô´øµÄdom½âÎö¹¤¾ß¼ÓÔØ½âÎöXMLÎÄ¼ş£¬×îÖÕĞÎ³ÉDocument¶ÔÏó
+			// é€šè¿‡javaè‡ªå¸¦çš„domè§£æå·¥å…·åŠ è½½è§£æXMLæ–‡ä»¶ï¼Œæœ€ç»ˆå½¢æˆDocumentå¯¹è±¡
 			Document doc = doLoadDocument(inputSource, resource);
-			// Í¨¹ı¶ÔDocument¶ÔÏóµÄ²Ù×÷£¬Íê³ÉBeanDefinitionµÄ¼ÓÔØºÍ×¢²á¹¤×÷
-            return registerBeanDefinitions(doc, resource);
+			// é€šè¿‡å¯¹Documentå¯¹è±¡çš„æ“ä½œï¼Œå®ŒæˆBeanDefinitionçš„åŠ è½½å’Œæ³¨å†Œå·¥ä½œ
+			return registerBeanDefinitions(doc, resource);
 		}
 		catch (BeanDefinitionStoreException ex) {
 			throw ex;
@@ -470,9 +470,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		if (resource.isOpen()) {
 			throw new BeanDefinitionStoreException(
 					"Passed-in Resource [" + resource + "] contains an open stream: " +
-					"cannot determine validation mode automatically. Either pass in a Resource " +
-					"that is able to create fresh streams, or explicitly specify the validationMode " +
-					"on your XmlBeanDefinitionReader instance.");
+							"cannot determine validation mode automatically. Either pass in a Resource " +
+							"that is able to create fresh streams, or explicitly specify the validationMode " +
+							"on your XmlBeanDefinitionReader instance.");
 		}
 
 		InputStream inputStream;
@@ -482,8 +482,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		catch (IOException ex) {
 			throw new BeanDefinitionStoreException(
 					"Unable to determine validation mode for [" + resource + "]: cannot open InputStream. " +
-					"Did you attempt to load directly from a SAX InputSource without specifying the " +
-					"validationMode on your XmlBeanDefinitionReader instance?", ex);
+							"Did you attempt to load directly from a SAX InputSource without specifying the " +
+							"validationMode on your XmlBeanDefinitionReader instance?", ex);
 		}
 
 		try {
@@ -509,13 +509,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-		// ´´½¨BeanDefinitionDocumentReaderÀ´½âÎöDocument¶ÔÏó£¬Íê³ÉBeanDefinition½âÎö
+		// åˆ›å»ºBeanDefinitionDocumentReaderæ¥è§£æDocumentå¯¹è±¡ï¼Œå®ŒæˆBeanDefinitionè§£æ
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		// »ñµÃÈİÆ÷ÖĞÒÑ¾­×¢²áµÄBeanDefinitionÊıÁ¿
+		// è·å¾—å®¹å™¨ä¸­å·²ç»æ³¨å†Œçš„BeanDefinitionæ•°é‡
 		int countBefore = getRegistry().getBeanDefinitionCount();
-		//½âÎö¹ı³ÌÈë¿Ú£¬BeanDefinitionDocumentReaderÖ»ÊÇ¸ö½Ó¿Ú£¬¾ßÌåµÄÊµÏÖ¹ı³ÌÔÚDefaultBeanDefinitionDocumentReaderÍê³É
+		//è§£æè¿‡ç¨‹å…¥å£ï¼ŒBeanDefinitionDocumentReaderåªæ˜¯ä¸ªæ¥å£ï¼Œå…·ä½“çš„å®ç°è¿‡ç¨‹åœ¨DefaultBeanDefinitionDocumentReaderå®Œæˆ
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-		// Í³¼ÆĞÂµÄµÄBeanDefinitionÊıÁ¿
+		// ç»Ÿè®¡æ–°çš„çš„BeanDefinitionæ•°é‡
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

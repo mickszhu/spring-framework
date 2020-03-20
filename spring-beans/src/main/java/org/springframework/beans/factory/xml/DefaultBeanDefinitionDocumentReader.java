@@ -94,9 +94,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
 		logger.debug("Loading bean definitions");
-		// »ñµÃDocumentµÄ¸ùÔªËØ<beans>±êÇ©
+		// è·å¾—Documentçš„æ ¹å…ƒç´ <beans>æ ‡ç­¾
 		Element root = doc.getDocumentElement();
-		// ÕæÕıÊµÏÖBeanDefinition½âÎöºÍ×¢²á¹¤×÷
+		// çœŸæ­£å®ç°BeanDefinitionè§£æå’Œæ³¨å†Œå·¥ä½œ
 		doRegisterBeanDefinitions(root);
 	}
 
@@ -128,12 +128,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
-		
-		// ÕâÀïÊ¹ÓÃÁËÎ¯ÍĞÄ£Ê½£¬½«¾ßÌåµÄBeanDefinition½âÎö¹¤×÷½»¸øÁËBeanDefinitionParserDelegateÈ¥Íê³É
+
+		// è¿™é‡Œä½¿ç”¨äº†å§”æ‰˜æ¨¡å¼ï¼Œå°†å…·ä½“çš„BeanDefinitionè§£æå·¥ä½œäº¤ç»™äº†BeanDefinitionParserDelegateå»å®Œæˆ
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
-		// ÅĞ¶Ï¸Ã¸ù±êÇ©ÊÇ·ñ°üº¬http://www.springframework.org/schema/beansÄ¬ÈÏÃüÃû¿Õ¼ä
+		// åˆ¤æ–­è¯¥æ ¹æ ‡ç­¾æ˜¯å¦åŒ…å«http://www.springframework.org/schema/beansé»˜è®¤å‘½åç©ºé—´
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
@@ -148,11 +148,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
-		// ÔÚ½âÎöBean¶¨ÒåÖ®Ç°£¬½øĞĞ×Ô¶¨ÒåµÄ½âÎö£¬ÔöÇ¿½âÎö¹ı³ÌµÄ¿ÉÀ©Õ¹ĞÔ
+		// åœ¨è§£æBeanå®šä¹‰ä¹‹å‰ï¼Œè¿›è¡Œè‡ªå®šä¹‰çš„è§£æï¼Œå¢å¼ºè§£æè¿‡ç¨‹çš„å¯æ‰©å±•æ€§
 		preProcessXml(root);
-		// Î¯ÍĞ¸øBeanDefinitionParserDelegate,´ÓDocumentµÄ¸ùÔªËØ¿ªÊ¼½øĞĞBeanDefinitionµÄ½âÎö
+		// å§”æ‰˜ç»™BeanDefinitionParserDelegate,ä»Documentçš„æ ¹å…ƒç´ å¼€å§‹è¿›è¡ŒBeanDefinitionçš„è§£æ
 		parseBeanDefinitions(root, this.delegate);
-		// ÔÚ½âÎöBean¶¨ÒåÖ®ºó£¬½øĞĞ×Ô¶¨ÒåµÄ½âÎö£¬Ôö¼Ó½âÎö¹ı³ÌµÄ¿ÉÀ©Õ¹ĞÔ
+		// åœ¨è§£æBeanå®šä¹‰ä¹‹åï¼Œè¿›è¡Œè‡ªå®šä¹‰çš„è§£æï¼Œå¢åŠ è§£æè¿‡ç¨‹çš„å¯æ‰©å±•æ€§
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -172,47 +172,47 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
-		// ¼ÓÔØµÄDocument¶ÔÏóÊÇ·ñÊ¹ÓÃÁËSpringÄ¬ÈÏµÄXMLÃüÃû¿Õ¼ä£¨beansÃüÃû¿Õ¼ä£©
+		// åŠ è½½çš„Documentå¯¹è±¡æ˜¯å¦ä½¿ç”¨äº†Springé»˜è®¤çš„XMLå‘½åç©ºé—´ï¼ˆbeanså‘½åç©ºé—´ï¼‰
 		if (delegate.isDefaultNamespace(root)) {
-			// »ñÈ¡Document¶ÔÏó¸ùÔªËØµÄËùÓĞ×Ó½Úµã£¨bean±êÇ©¡¢import±êÇ©¡¢alias±êÇ©ºÍÆäËû×Ô¶¨Òå±êÇ©context¡¢aopµÈ£©
+			// è·å–Documentå¯¹è±¡æ ¹å…ƒç´ çš„æ‰€æœ‰å­èŠ‚ç‚¹ï¼ˆbeanæ ‡ç­¾ã€importæ ‡ç­¾ã€aliasæ ‡ç­¾å’Œå…¶ä»–è‡ªå®šä¹‰æ ‡ç­¾contextã€aopç­‰ï¼‰
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
 				if (node instanceof Element) {
 					Element ele = (Element) node;
-					// bean±êÇ©¡¢import±êÇ©¡¢alias±êÇ©£¬ÔòÊ¹ÓÃÄ¬ÈÏ½âÎö¹æÔò
+					// beanæ ‡ç­¾ã€importæ ‡ç­¾ã€aliasæ ‡ç­¾ï¼Œåˆ™ä½¿ç”¨é»˜è®¤è§£æè§„åˆ™
 					if (delegate.isDefaultNamespace(ele)) {
 						parseDefaultElement(ele, delegate);
 					}
-					else {//Ïñcontext±êÇ©¡¢aop±êÇ©¡¢tx±êÇ©£¬ÔòÊ¹ÓÃÓÃ»§×Ô¶¨ÒåµÄ½âÎö¹æÔò½âÎöÔªËØ½Úµã
+					else {//åƒcontextæ ‡ç­¾ã€aopæ ‡ç­¾ã€txæ ‡ç­¾ï¼Œåˆ™ä½¿ç”¨ç”¨æˆ·è‡ªå®šä¹‰çš„è§£æè§„åˆ™è§£æå…ƒç´ èŠ‚ç‚¹
 						delegate.parseCustomElement(ele);
 					}
 				}
 			}
 		}
 		else {
-			// Èç¹û²»ÊÇÄ¬ÈÏµÄÃüÃû¿Õ¼ä£¬ÔòÊ¹ÓÃÓÃ»§×Ô¶¨ÒåµÄ½âÎö¹æÔò½âÎöÔªËØ½Úµã
+			// å¦‚æœä¸æ˜¯é»˜è®¤çš„å‘½åç©ºé—´ï¼Œåˆ™ä½¿ç”¨ç”¨æˆ·è‡ªå®šä¹‰çš„è§£æè§„åˆ™è§£æå…ƒç´ èŠ‚ç‚¹
 			delegate.parseCustomElement(root);
 		}
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-		// ½âÎö<import>±êÇ©
+		// è§£æ<import>æ ‡ç­¾
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
 		}
-		// ½âÎö<alias>±êÇ©
+		// è§£æ<alias>æ ‡ç­¾
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
 			processAliasRegistration(ele);
 		}
-		// ½âÎö<bean>±êÇ©
+		// è§£æ<bean>æ ‡ç­¾
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
 			processBeanDefinition(ele, delegate);
 		}
-		// ½âÎöÄÚÖÃ<beans>±êÇ©
+		// è§£æå†…ç½®<beans>æ ‡ç­¾
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
 			// recurse
-			// µİ¹éµ÷ÓÃ
+			// é€’å½’è°ƒç”¨
 			doRegisterBeanDefinitions(ele);
 		}
 	}
@@ -318,14 +318,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
-		// ½âÎö<bean>±êÇ©£¬»ñÈ¡BeanDefinition
+		// è§£æ<bean>æ ‡ç­¾ï¼Œè·å–BeanDefinition
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
-			// Èç¹ûĞèÒª£¬Ôò×°ÊÎBeanDefinition¶ÔÏó
+			// å¦‚æœéœ€è¦ï¼Œåˆ™è£…é¥°BeanDefinitionå¯¹è±¡
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// Register the final decorated instance.
-				// ×¢²á×îÖÕµÄBeanDefinitionµ½BeanDefinitionRegistry£¨DefaultListableBeanFactory£©
+				// æ³¨å†Œæœ€ç»ˆçš„BeanDefinitionåˆ°BeanDefinitionRegistryï¼ˆDefaultListableBeanFactoryï¼‰
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {
