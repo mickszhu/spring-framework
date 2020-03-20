@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -68,17 +68,13 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {
-		// <tx:advice>标签对应的BeanDefinition对象的BeanClass
-		// TransactionInterceptor实现了MethodInterceptor接口。该接口是Spring AOP实现之环绕通知的接口。
 		return TransactionInterceptor.class;
 	}
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-		// 配置的事务管理器(DataSourceTransactionManager)，最终会注入到TransactionInterceptor类
 		builder.addPropertyReference("transactionManager", TxNamespaceHandler.getTransactionManagerName(element));
-		
-		// 获取<tx:attributes>子标签
+
 		List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT);
 		if (txAttributes.size() > 1) {
 			parserContext.getReaderContext().error(
@@ -87,12 +83,10 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 		else if (txAttributes.size() == 1) {
 			// Using attributes source.
 			Element attributeSourceElement = txAttributes.get(0);
-			// 解析<tx:attributes>标签
 			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext);
 			builder.addPropertyValue("transactionAttributeSource", attributeSourceDefinition);
 		}
 		else {
-			// 使用注解方式的事务属性源
 			// Assume annotations source.
 			builder.addPropertyValue("transactionAttributeSource",
 					new RootBeanDefinition("org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
@@ -100,21 +94,16 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 	}
 
 	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
-		// 获取所有<tx:method>子标签
 		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
-		// RuleBasedTransactionAttribute 实现了 TransactionDefinition接口(事务定义信息)
 		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
 				new ManagedMap<>(methods.size());
 		transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
 
-		// 解析<tx:method>子标签
 		for (Element methodEle : methods) {
-			// 获取<tx:method>的name属性值
 			String name = methodEle.getAttribute(METHOD_NAME_ATTRIBUTE);
 			TypedStringValue nameHolder = new TypedStringValue(name);
 			nameHolder.setSource(parserContext.extractSource(methodEle));
 
-			// 创建事务属性定义对象
 			RuleBasedTransactionAttribute attribute = new RuleBasedTransactionAttribute();
 			String propagation = methodEle.getAttribute(PROPAGATION_ATTRIBUTE);
 			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE);
@@ -152,7 +141,6 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 			transactionAttributeMap.put(nameHolder, attribute);
 		}
 
-		// 创建根据名称匹配事务属性源的BeanDefinition对象，主要是根据transactionAttributeMap中的内容进行匹配
 		RootBeanDefinition attributeSourceDefinition = new RootBeanDefinition(NameMatchTransactionAttributeSource.class);
 		attributeSourceDefinition.setSource(parserContext.extractSource(attrEle));
 		attributeSourceDefinition.getPropertyValues().add("nameMap", transactionAttributeMap);
