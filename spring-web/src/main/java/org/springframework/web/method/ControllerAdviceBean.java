@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -221,7 +221,6 @@ public class ControllerAdviceBean implements Ordered {
 	public static List<ControllerAdviceBean> findAnnotatedBeans(ApplicationContext applicationContext) {
 		List<ControllerAdviceBean> beans = new ArrayList<>();
 		for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, Object.class)) {
-			// 找到所有的ControllerAdvice类
 			if (applicationContext.findAnnotationOnBean(name, ControllerAdvice.class) != null) {
 				beans.add(new ControllerAdviceBean(name, applicationContext));
 			}

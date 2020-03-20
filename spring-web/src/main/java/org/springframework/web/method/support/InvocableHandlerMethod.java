@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,7 +53,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
 	private HandlerMethodArgumentResolverComposite argumentResolvers = new HandlerMethodArgumentResolverComposite();
 
-	// 参数名称发现者
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
 
@@ -129,15 +128,11 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	public Object invokeForRequest(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// 获取方法参数值（这一步也是从request中将参数解析出来的过程）--已经进行类型转换了
-		// 将request中的参数转换为当前handler的参数形式
 		Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Invoking '" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
 					"' with arguments " + Arrays.toString(args));
 		}
-		// 执行HandlerMethod方法，并获取返回值（也就是执行Controller类中的方法）
-		// 这里doInvoke()方法主要是结合处理后的参数，使用反射对目标方法进行调用
 		Object returnValue = doInvoke(args);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Method [" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
@@ -152,32 +147,17 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	private Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// 得到HandlerMethod中的参数集合
 		MethodParameter[] parameters = getMethodParameters();
-		// 该数组存放的数据，是需要经过类型转换之后的参数
 		Object[] args = new Object[parameters.length];
-		// 遍历处理每一个参数
 		for (int i = 0; i < parameters.length; i++) {
 			MethodParameter parameter = parameters[i];
-			// 初始化参数名称发现发现者（通过反射获取参数类型很容易，获取参数名称需要特殊处理）
-			// arg0----id
-			// arg1----username
 			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
-			// 解决默认支持的参数
 			args[i] = resolveProvidedArgument(parameter, providedArgs);
 			if (args[i] != null) {
 				continue;
 			}
-			// 如果在调用方提供的参数中不能找到当前类型的参数值，则遍历Spring容器中所有的
-	        // ArgumentResolver，判断哪种类型的Resolver支持对当前参数的解析，这里的判断
-	        // 方式比较简单，比如RequestParamMethodArgumentResolver就是判断当前参数
-	        // 是否使用@RequestParam注解进行了标注
-			// 根据方法参数匹配参数解析器
 			if (this.argumentResolvers.supportsParameter(parameter)) {
 				try {
-					// 执行参数解析（将request中将请求数据，绑定到方法参数中）
-					// 如果能够找到对当前参数进行处理的ArgumentResolver，则调用其
-	                // resolveArgument()方法从request中获取对应的参数值，并且进行转换
 					args[i] = this.argumentResolvers.resolveArgument(
 							parameter, mavContainer, request, this.dataBinderFactory);
 					continue;
@@ -226,8 +206,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	protected Object doInvoke(Object... args) throws Exception {
 		ReflectionUtils.makeAccessible(getBridgedMethod());
 		try {
-			// 利用反射，执行Controller类中的方法
-			// method.invoke(obj,args);
 			return getBridgedMethod().invoke(getBean(), args);
 		}
 		catch (IllegalArgumentException ex) {

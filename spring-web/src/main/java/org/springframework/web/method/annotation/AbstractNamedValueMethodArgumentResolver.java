@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,47 +94,32 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 	public final Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
-		// NamedValueInfo对象封装了方法参数的[方法名称、是否必须、默认值]三个信息
-		// 相当于封装了RequestParam注解（请求参数名称、是否必须、默认值）的信息
 		NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
-		
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
 
-		// 将方法参数名称再处理一下
 		Object resolvedName = resolveStringValue(namedValueInfo.name);
 		if (resolvedName == null) {
 			throw new IllegalArgumentException(
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
-		
-		// 从request请求中解析出来指定key（参数名称）的值,此时从request中解析出来的参数值都是String类型的。
+
 		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);
-		// 空值处理
 		if (arg == null) {
-			// 使用默认值去设置参数值
 			if (namedValueInfo.defaultValue != null) {
 				arg = resolveStringValue(namedValueInfo.defaultValue);
 			}
 			else if (namedValueInfo.required && !nestedParameter.isOptional()) {
 				handleMissingValue(namedValueInfo.name, nestedParameter, webRequest);
 			}
-			// 处理空值情况
 			arg = handleNullValue(namedValueInfo.name, arg, nestedParameter.getNestedParameterType());
 		}
 		else if ("".equals(arg) && namedValueInfo.defaultValue != null) {
 			arg = resolveStringValue(namedValueInfo.defaultValue);
 		}
 
-		// 使用WebDataBinder进行数据类型转换
-		// WebDataBinder会根据不同的参数，选择不同的PropertyEditor进行参数类型转换
-		// 而大多数PropertyEditor都已经内置了，那么如果需要自定义添加PropertyEditor的话，需要使用@InitBinder注解的方法进行处理
 		if (binderFactory != null) {
-			// 获取web数据绑定器，主要作用是将request请求参数中的值，转换成指定类型的Controller方法参数
 			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name);
 			try {
-				// 使用web数据绑定器，将String类型的请求数据，转换成指定数据类型，并绑定到指定方法参数中
-				// 此处有两个arg变量，作为参数是String类型的，作为返回值，已经变为了其他类型。
-				// parameter参数，表示的是Controller方法的参数
 				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);
 			}
 			catch (ConversionNotSupportedException ex) {
