@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,16 +34,12 @@ import org.springframework.util.ClassUtils;
  * @author Rossen Stoyanchev
  * @since 2.0
  */
-public final class Conventions {
+public abstract class Conventions {
 
 	/**
 	 * Suffix added to names when using arrays.
 	 */
 	private static final String PLURAL_SUFFIX = "List";
-
-
-	private Conventions() {
-	}
 
 
 	/**
@@ -118,10 +114,13 @@ public final class Conventions {
 		}
 		else {
 			valueClass = parameter.getParameterType();
-			ReactiveAdapter adapter = ReactiveAdapterRegistry.getSharedInstance().getAdapter(valueClass);
-			if (adapter != null && !adapter.getDescriptor().isNoValue()) {
-				reactiveSuffix = ClassUtils.getShortName(valueClass);
-				valueClass = parameter.nested().getNestedParameterType();
+			ReactiveAdapterRegistry reactiveAdapterRegistry = ReactiveAdapterRegistry.getSharedInstance();
+			if (reactiveAdapterRegistry.hasAdapters()) {
+				ReactiveAdapter adapter = reactiveAdapterRegistry.getAdapter(valueClass);
+				if (adapter != null && !adapter.getDescriptor().isNoValue()) {
+					reactiveSuffix = ClassUtils.getShortName(valueClass);
+					valueClass = parameter.nested().getNestedParameterType();
+				}
 			}
 		}
 
@@ -204,10 +203,13 @@ public final class Conventions {
 		}
 		else {
 			valueClass = resolvedType;
-			ReactiveAdapter adapter = ReactiveAdapterRegistry.getSharedInstance().getAdapter(valueClass);
-			if (adapter != null && !adapter.getDescriptor().isNoValue()) {
-				reactiveSuffix = ClassUtils.getShortName(valueClass);
-				valueClass = ResolvableType.forMethodReturnType(method).getGeneric().getClass();
+			ReactiveAdapterRegistry reactiveAdapterRegistry = ReactiveAdapterRegistry.getSharedInstance();
+			if (reactiveAdapterRegistry.hasAdapters()) {
+				ReactiveAdapter adapter = reactiveAdapterRegistry.getAdapter(valueClass);
+				if (adapter != null && !adapter.getDescriptor().isNoValue()) {
+					reactiveSuffix = ClassUtils.getShortName(valueClass);
+					valueClass = ResolvableType.forMethodReturnType(method).getGeneric().resolve(Object.class);
+				}
 			}
 		}
 

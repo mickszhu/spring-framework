@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -69,7 +69,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
 					}
-					if (this.logger.isInfoEnabled()) {
+					if (logger.isInfoEnabled()) {
 						logger.info("Overriding alias '" + alias + "' definition for registered name '" +
 								registeredName + "' with new target name '" + name + "'");
 					}
@@ -102,7 +102,9 @@ public class SimpleAliasRegistry implements AliasRegistry {
 			String registeredName = entry.getValue();
 			if (registeredName.equals(name)) {
 				String registeredAlias = entry.getKey();
-				return (registeredAlias.equals(alias) || hasAlias(registeredAlias, alias));
+				if (registeredAlias.equals(alias) || hasAlias(registeredAlias, alias)) {
+					return true;
+				}
 			}
 		}
 		return false;

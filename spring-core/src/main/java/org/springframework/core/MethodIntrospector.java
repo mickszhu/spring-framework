@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,15 +66,11 @@ public abstract class MethodIntrospector {
 			final Class<?> targetClass = (specificHandlerType != null ? specificHandlerType : currentHandlerType);
 
 			ReflectionUtils.doWithMethods(currentHandlerType, method -> {
-				// 找到具体的方法对象
 				Method specificMethod = ClassUtils.getMostSpecificMethod(method, targetClass);
-				// 此处会调用RequestMappingHandlerMapping类的getMappingForMethod方法
-				// 此处的T就是RequestMappingInfo对象
 				T result = metadataLookup.inspect(specificMethod);
 				if (result != null) {
 					Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 					if (bridgedMethod == specificMethod || metadataLookup.inspect(bridgedMethod) == null) {
-						// 将Method方法和RequestMappingInfo对象建立映射，存储Map集合中
 						methodMap.put(specificMethod, result);
 					}
 				}

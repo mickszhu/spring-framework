@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
-
-import org.reactivestreams.Publisher;
-import org.springframework.lang.Nullable;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rx.RxReactiveStreams;
+
+import org.springframework.lang.Nullable;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * A registry of adapters to adapt Reactive Streams {@link Publisher} to/from
@@ -41,8 +40,8 @@ import rx.RxReactiveStreams;
  * {@code Observable}, and others.
  *
  * <p>By default, depending on classpath availability, adapters are registered
- * for Reactor, RxJava 1, RxJava 2 types, {@link CompletableFuture}, Java 9+
- * {@code Flow.Publisher} and Kotlin Coroutines {@code Deferred} and {@code Flow}.
+ * for Reactor, RxJava 1, RxJava 2 types, {@link CompletableFuture}, and Java 9+
+ * {@code Flow.Publisher}.
  *
  * @author Rossen Stoyanchev
  * @author Sebastien Deleuze
@@ -63,37 +62,41 @@ public class ReactiveAdapterRegistry {
 	 * @see #getSharedInstance()
 	 */
 	public ReactiveAdapterRegistry() {
-		ClassLoader classLoader = ReactiveAdapterRegistry.class.getClassLoader();
 
 		// Reactor
 		boolean reactorRegistered = false;
-		if (ClassUtils.isPresent("reactor.core.publisher.Flux", classLoader)) {
+		try {
 			new ReactorRegistrar().registerAdapters(this);
 			reactorRegistered = true;
+		}
+		catch (Throwable ex) {
+			// Ignore
 		}
 		this.reactorPresent = reactorRegistered;
 
 		// RxJava1
-		if (ClassUtils.isPresent("rx.Observable", classLoader) &&
-				ClassUtils.isPresent("rx.RxReactiveStreams", classLoader)) {
+		try {
 			new RxJava1Registrar().registerAdapters(this);
+		}
+		catch (Throwable ex) {
+			// Ignore
 		}
 
 		// RxJava2
-		if (ClassUtils.isPresent("io.reactivex.Flowable", classLoader)) {
+		try {
 			new RxJava2Registrar().registerAdapters(this);
+		}
+		catch (Throwable ex) {
+			// Ignore
 		}
 
 		// Java 9+ Flow.Publisher
-		if (ClassUtils.isPresent("java.util.concurrent.Flow.Publisher", classLoader)) {
+		try {
 			new ReactorJdkFlowAdapterRegistrar().registerAdapter(this);
 		}
-		// If not present, do nothing for the time being...
-		// We can fall back on "reactive-streams-flow-bridge" (once released)
-
-		// Coroutines
-		if (this.reactorPresent && ClassUtils.isPresent("kotlinx.coroutines.reactor.MonoKt", classLoader)) {
-			new CoroutinesRegistrar().registerAdapters(this);
+		catch (Throwable ex) {
+			// Ignore for the time being...
+			// We can fall back on "reactive-streams-flow-bridge" (once released)
 		}
 	}
 
@@ -143,26 +146,20 @@ public class ReactiveAdapterRegistry {
 	 */
 	@Nullable
 	public ReactiveAdapter getAdapter(@Nullable Class<?> reactiveType, @Nullable Object source) {
-		if (this.adapters.isEmpty()) {
-			return null;
-		}
-
 		Object sourceToUse = (source instanceof Optional ? ((Optional<?>) source).orElse(null) : source);
 		Class<?> clazz = (sourceToUse != null ? sourceToUse.getClass() : reactiveType);
 		if (clazz == null) {
 			return null;
 		}
-		for (ReactiveAdapter adapter : this.adapters) {
-			if (adapter.getReactiveType() == clazz) {
-				return adapter;
-			}
-		}
-		for (ReactiveAdapter adapter : this.adapters) {
-			if (adapter.getReactiveType().isAssignableFrom(clazz)) {
-				return adapter;
-			}
-		}
-		return null;
+
+		return this.adapters.stream()
+				.filter(adapter -> adapter.getReactiveType() == clazz)
+				.findFirst()
+				.orElseGet(() ->
+						this.adapters.stream()
+								.filter(adapter -> adapter.getReactiveType().isAssignableFrom(clazz))
+								.findFirst()
+								.orElse(null));
 	}
 
 
@@ -213,8 +210,12 @@ public class ReactiveAdapterRegistry {
 					source -> source);
 
 			registry.registerReactiveType(
-					ReactiveTypeDescriptor.singleOptionalValue(CompletionStage.class, EmptyCompletableFuture::new),
-					source -> Mono.fromCompletionStage((CompletionStage<?>) source),
+					ReactiveTypeDescriptor.singleOptionalValue(CompletableFuture.class, () -> {
+						CompletableFuture<?> empty = new CompletableFuture<>();
+						empty.complete(null);
+						return empty;
+					}),
+					source -> Mono.fromFuture((CompletableFuture<?>) source),
 					source -> Mono.from(source).toFuture()
 			);
 		}
@@ -277,29 +278,24 @@ public class ReactiveAdapterRegistry {
 
 	private static class ReactorJdkFlowAdapterRegistrar {
 
-		void registerAdapter(ReactiveAdapterRegistry registry) {
+		void registerAdapter(ReactiveAdapterRegistry registry) throws Exception {
 			// TODO: remove reflection when build requires JDK 9+
 
-			try {
-				String publisherName = "java.util.concurrent.Flow.Publisher";
-				Class<?> publisherClass = ClassUtils.forName(publisherName, getClass().getClassLoader());
+			String publisherName = "java.util.concurrent.Flow.Publisher";
+			Class<?> publisherClass = ClassUtils.forName(publisherName, getClass().getClassLoader());
 
-				String adapterName = "reactor.adapter.JdkFlowAdapter";
-				Class<?> flowAdapterClass = ClassUtils.forName(adapterName,  getClass().getClassLoader());
+			String adapterName = "reactor.adapter.JdkFlowAdapter";
+			Class<?> flowAdapterClass = ClassUtils.forName(adapterName,  getClass().getClassLoader());
 
-				Method toFluxMethod = flowAdapterClass.getMethod("flowPublisherToFlux", publisherClass);
-				Method toFlowMethod = flowAdapterClass.getMethod("publisherToFlowPublisher", Publisher.class);
-				Object emptyFlow = ReflectionUtils.invokeMethod(toFlowMethod, null, Flux.empty());
+			Method toFluxMethod = flowAdapterClass.getMethod("flowPublisherToFlux", publisherClass);
+			Method toFlowMethod = flowAdapterClass.getMethod("publisherToFlowPublisher", Publisher.class);
+			Object emptyFlow = ReflectionUtils.invokeMethod(toFlowMethod, null, Flux.empty());
 
-				registry.registerReactiveType(
-						ReactiveTypeDescriptor.multiValue(publisherClass, () -> emptyFlow),
-						source -> (Publisher<?>) ReflectionUtils.invokeMethod(toFluxMethod, null, source),
-						publisher -> ReflectionUtils.invokeMethod(toFlowMethod, null, publisher)
-				);
-			}
-			catch (Throwable ex) {
-				// Ignore
-			}
+			registry.registerReactiveType(
+					ReactiveTypeDescriptor.multiValue(publisherClass, () -> emptyFlow),
+					source -> (Publisher<?>) ReflectionUtils.invokeMethod(toFluxMethod, null, source),
+					publisher -> ReflectionUtils.invokeMethod(toFlowMethod, null, publisher)
+			);
 		}
 	}
 
@@ -326,30 +322,4 @@ public class ReactiveAdapterRegistry {
 		}
 	}
 
-
-	private static class EmptyCompletableFuture<T> extends CompletableFuture<T> {
-
-		EmptyCompletableFuture() {
-			complete(null);
-		}
-	}
-
-
-	private static class CoroutinesRegistrar {
-
-		@SuppressWarnings("KotlinInternalInJava")
-		void registerAdapters(ReactiveAdapterRegistry registry) {
-//			registry.registerReactiveType(
-//					ReactiveTypeDescriptor.singleOptionalValue(Deferred.class,
-//							() -> CompletableDeferredKt.CompletableDeferred(null)),
-//					source -> CoroutinesUtils.deferredToMono((Deferred<?>) source),
-//					source -> CoroutinesUtils.monoToDeferred(Mono.from(source)));
-//
-//			registry.registerReactiveType(
-//					ReactiveTypeDescriptor.multiValue(kotlinx.coroutines.flow.Flow.class, kotlinx.coroutines.flow.FlowKt::emptyFlow),
-//					source -> kotlinx.coroutines.reactor.ReactorFlowKt.asFlux((kotlinx.coroutines.flow.Flow<?>) source),
-//					kotlinx.coroutines.reactive.ReactiveFlowKt::asFlow
-//			);
-		}
-	}
 }
