@@ -84,7 +84,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-		// 注册AspectJAwareAdvisorAutoProxyCreator的BeanDefinition到BeanFactory中
+		/**注册AspectJAwareAdvisorAutoProxyCreator的BeanDefinition到BeanFactory中*/
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -122,15 +122,15 @@ public abstract class AopConfigUtils {
 
 		// 判断是否BeanDefinitionRegistry中是否有internalAutoProxyCreator对应的BeanDefinition 
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
-			// 获取internalAutoProxyCreator对应的BeanDefinition 
+			//获取internalAutoProxyCreator对应的BeanDefinition
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			// 如果internalAutoProxyCreator对应的Bean的类名和第一个入参不一样，且考虑是否需要完成覆盖
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
-				// 当前internalAutoProxyCreator对应Bean的优先级
+				/**当前internalAutoProxyCreator对应Bean的优先级*/
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				// 需要的优先级也就是第一个入参对应的Bean的优先级
 				int requiredPriority = findPriorityForClass(cls);
-				// 如果需要的优先级，比internalAutoProxyCreator现在对应的Bean的优先级高，则进行替换操作
+				/**如果需要的优先级，比internalAutoProxyCreator现在对应的Bean的优先级高，则进行替换操作*/
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}
@@ -142,7 +142,7 @@ public abstract class AopConfigUtils {
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		// 往BeanFactory注册指定类的BeanDefinition信息,beanName就是org.springframework.aop.config.internalAutoProxyCreator
+		/**往BeanFactory注册指定类的BeanDefinition信息,beanName就是org.springframework.aop.config.internalAutoProxyCreator*/
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}

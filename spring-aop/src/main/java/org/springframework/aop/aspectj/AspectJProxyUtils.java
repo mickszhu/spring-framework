@@ -44,10 +44,8 @@ public abstract class AspectJProxyUtils {
 		if (!advisors.isEmpty()) {
 			boolean foundAspectJAdvice = false;
 			for (Advisor advisor : advisors) {
-				// Be careful not to get the Advice without a guard, as
-				// this might eagerly instantiate a non-singleton AspectJ aspect
-				// 小心不要在没有保护的情况下获得通知，因为这可能急切地实例化一个非单例AspectJ切面类
-				// 确定给出的bean是否是一个AspectJ的通知
+				/**小心不要在没有保护的情况下获得通知，因为这可能急切地实例化一个非单例AspectJ切面类,*/
+				/** 确定给出的bean是否是一个AspectJ的通知*/
 				if (isAspectJAdvice(advisor)) {
 					foundAspectJAdvice = true;
 				}

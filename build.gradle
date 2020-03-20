@@ -221,6 +221,7 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 
 		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
 		options.author = true
+		options.encoding = "UTF-8"
 		options.header = project.name
 		options.use = true
 		options.links(project.ext.javadocLinks)
@@ -293,7 +294,7 @@ configure(rootProject) {
 
 	task wrapper(type: Wrapper) {
 		description = "Generates gradlew[.bat] scripts"
-		gradleVersion = "4.4.1"
+		gradleVersion = "4.9"
 
 		doLast() {
 			def gradleOpts = "-XX:MaxMetaspaceSize=1024m -Xmx1024m"
