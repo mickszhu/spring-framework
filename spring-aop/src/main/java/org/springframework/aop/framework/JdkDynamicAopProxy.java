@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,26 +36,22 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * JDK-based {@link AopProxy} implementation for the Spring AOP framework, based
- * on JDK {@link java.lang.reflect.Proxy dynamic proxies}.
+ * JDK-based {@link AopProxy} implementation for the Spring AOP framework,
+ * based on JDK {@link java.lang.reflect.Proxy dynamic proxies}.
  *
- * <p>
- * Creates a dynamic proxy, implementing the interfaces exposed by the AopProxy.
- * Dynamic proxies <i>cannot</i> be used to proxy methods defined in classes,
- * rather than interfaces.
+ * <p>Creates a dynamic proxy, implementing the interfaces exposed by
+ * the AopProxy. Dynamic proxies <i>cannot</i> be used to proxy methods
+ * defined in classes, rather than interfaces.
  *
- * <p>
- * Objects of this type should be obtained through proxy factories, configured
- * by an {@link AdvisedSupport} class. This class is internal to Spring's AOP
- * framework and need not be used directly by client code.
+ * <p>Objects of this type should be obtained through proxy factories,
+ * configured by an {@link AdvisedSupport} class. This class is internal
+ * to Spring's AOP framework and need not be used directly by client code.
  *
- * <p>
- * Proxies created using this class will be thread-safe if the underlying
- * (target) class is thread-safe.
+ * <p>Proxies created using this class will be thread-safe if the
+ * underlying (target) class is thread-safe.
  *
- * <p>
- * Proxies are serializable so long as all Advisors (including Advices and
- * Pointcuts) and the TargetSource are serializable.
+ * <p>Proxies are serializable so long as all Advisors (including Advices
+ * and Pointcuts) and the TargetSource are serializable.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -70,13 +66,14 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	/** use serialVersionUID from Spring 1.2 for interoperability */
 	private static final long serialVersionUID = 5531744639992436476L;
 
+
 	/*
 	 * NOTE: We could avoid the code duplication between this class and the CGLIB
-	 * proxies by refactoring "invoke" into a template method. However, this
-	 * approach adds at least 10% performance overhead versus a copy-paste solution,
-	 * so we sacrifice elegance for performance. (We have a good test suite to
-	 * ensure that the different proxies behave the same :-) This way, we can also
-	 * more easily take advantage of minor optimizations in each class.
+	 * proxies by refactoring "invoke" into a template method. However, this approach
+	 * adds at least 10% performance overhead versus a copy-paste solution, so we sacrifice
+	 * elegance for performance. (We have a good test suite to ensure that the different
+	 * proxies behave the same :-)
+	 * This way, we can also more easily take advantage of minor optimizations in each class.
 	 */
 
 	/** We use a static Log to avoid serialization issues */
@@ -95,15 +92,12 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	 */
 	private boolean hashCodeDefined;
 
+
 	/**
 	 * Construct a new JdkDynamicAopProxy for the given AOP configuration.
-	 * 
-	 * @param config
-	 *            the AOP configuration as AdvisedSupport object
-	 * @throws AopConfigException
-	 *             if the config is invalid. We try to throw an informative
-	 *             exception in this case, rather than let a mysterious failure
-	 *             happen later.
+	 * @param config the AOP configuration as AdvisedSupport object
+	 * @throws AopConfigException if the config is invalid. We try to throw an informative
+	 * exception in this case, rather than let a mysterious failure happen later.
 	 */
 	public JdkDynamicAopProxy(AdvisedSupport config) throws AopConfigException {
 		Assert.notNull(config, "AdvisedSupport must not be null");
@@ -112,6 +106,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		}
 		this.advised = config;
 	}
+
 
 	@Override
 	public Object getProxy() {
@@ -123,19 +118,17 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating JDK dynamic proxy: target source is " + this.advised.getTargetSource());
 		}
-		// è·å–å®Œæ•´çš„ä»£ç†æ¥å£
+		// »ñÈ¡ÍêÕûµÄ´úÀí½Ó¿Ú
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
-		// è°ƒç”¨JDKåŠ¨æ€ä»£ç†æ–¹æ³•
+		// µ÷ÓÃJDK¶¯Ì¬´úÀí·½·¨
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
 	}
 
 	/**
-	 * Finds any {@link #equals} or {@link #hashCode} method that may be defined on
-	 * the supplied set of interfaces.
-	 * 
-	 * @param proxiedInterfaces
-	 *            the interfaces to introspect
+	 * Finds any {@link #equals} or {@link #hashCode} method that may be defined
+	 * on the supplied set of interfaces.
+	 * @param proxiedInterfaces the interfaces to introspect
 	 */
 	private void findDefinedEqualsAndHashCodeMethods(Class<?>[] proxiedInterfaces) {
 		for (Class<?> proxiedInterface : proxiedInterfaces) {
@@ -154,20 +147,19 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		}
 	}
 
+
 	/**
 	 * Implementation of {@code InvocationHandler.invoke}.
-	 * <p>
-	 * Callers will see exactly the exception thrown by the target, unless a hook
-	 * method throws an exception.
+	 * <p>Callers will see exactly the exception thrown by the target,
+	 * unless a hook method throws an exception.
 	 */
 	@Override
 	@Nullable
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		MethodInvocation invocation;
 		Object oldProxy = null;
 		boolean setProxyContext = false;
 
-		// TargetSourceä¸»è¦æ˜¯å¯¹ç›®æ ‡å¯¹è±¡è¿›è¡Œå°è£…
+		// TargetSourceÖ÷ÒªÊÇ¶ÔÄ¿±ê¶ÔÏó½øĞĞ·â×°
 		TargetSource targetSource = this.advised.targetSource;
 		Object target = null;
 
@@ -175,16 +167,19 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
 				// The target does not implement the equals(Object) method itself.
 				return equals(args[0]);
-			} else if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
+			}
+			else if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
 				// The target does not implement the hashCode() method itself.
 				return hashCode();
-			} else if (method.getDeclaringClass() == DecoratingProxy.class) {
+			}
+			else if (method.getDeclaringClass() == DecoratingProxy.class) {
 				// There is only getDecoratedClass() declared -> dispatch to proxy config.
 				return AopProxyUtils.ultimateTargetClass(this.advised);
-			} else if (!this.advised.opaque && method.getDeclaringClass().isInterface()
-					&& method.getDeclaringClass().isAssignableFrom(Advised.class)) {
+			}
+			else if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&
+					method.getDeclaringClass().isAssignableFrom(Advised.class)) {
 				// Service invocations on ProxyConfig with the proxy config...
-				// è¿æ¥ç‚¹å°±æ˜¯ç›®æ ‡å¯¹è±¡çš„æ–¹æ³•
+				// Á¬½Óµã¾ÍÊÇÄ¿±ê¶ÔÏóµÄ·½·¨
 				return AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
 			}
 
@@ -198,62 +193,65 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 			// Get as late as possible to minimize the time we "own" the target,
 			// in case it comes from a pool.
-			// è·å–ç›®æ ‡å¯¹è±¡
+			// »ñÈ¡Ä¿±ê¶ÔÏó
 			target = targetSource.getTarget();
-			// è·å–ç›®æ ‡å¯¹è±¡çš„ç±»å‹
+			// »ñÈ¡Ä¿±ê¶ÔÏóµÄÀàĞÍ
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
 			// Get the interception chain for this method.
-			// è·å–é’ˆå¯¹è¯¥ç›®æ ‡å¯¹è±¡çš„æ‰€æœ‰å¢å¼ºå™¨ï¼ˆadvisorï¼‰ï¼Œè¿™äº›advisoréƒ½æ˜¯æœ‰é¡ºåºçš„ï¼Œä»–ä»¬ä¼šæŒ‰ç…§é¡ºåºè¿›è¡Œé“¾å¼è°ƒç”¨
+			// »ñÈ¡Õë¶Ô¸ÃÄ¿±ê¶ÔÏóµÄËùÓĞÔöÇ¿Æ÷£¨advisor£©£¬ÕâĞ©advisor¶¼ÊÇÓĞË³ĞòµÄ£¬ËûÃÇ»á°´ÕÕË³Ğò½øĞĞÁ´Ê½µ÷ÓÃ
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
 			// reflective invocation of the target, and avoid creating a MethodInvocation.
 
-			// æ£€æŸ¥æ˜¯å¦æˆ‘ä»¬æœ‰ä¸€äº›é€šçŸ¥ã€‚å¦‚æœæˆ‘ä»¬æ²¡æœ‰ï¼Œæˆ‘ä»¬å¯ä»¥ç›´æ¥å¯¹ç›®æ ‡ç±»è¿›è¡Œåå°„è°ƒç”¨ï¼Œé¿å…åˆ›å»ºMethodInvocationç±»
+			// ¼ì²éÊÇ·ñÎÒÃÇÓĞÒ»Ğ©Í¨Öª¡£Èç¹ûÎÒÃÇÃ»ÓĞ£¬ÎÒÃÇ¿ÉÒÔÖ±½Ó¶ÔÄ¿±êÀà½øĞĞ·´Éäµ÷ÓÃ£¬±ÜÃâ´´½¨MethodInvocationÀà
 
-			// è°ƒç”¨ç›®æ ‡ç±»çš„æ–¹æ³•
+			// µ÷ÓÃÄ¿±êÀàµÄ·½·¨
 			if (chain.isEmpty()) {
 				// We can skip creating a MethodInvocation: just invoke the target directly
 				// Note that the final invoker must be an InvokerInterceptor so we know it does
-				// nothing but a reflective operation on the target, and no hot swapping or
+				// nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
 				// fancy proxying.
-				
-				// å¤„ç†å¯å˜é•¿å‚æ•°
+				// ´¦Àí¿É±ä³¤²ÎÊı
 				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
-				// é€šè¿‡åå°„è°ƒç”¨ç›®æ ‡å¯¹è±¡çš„æ–¹æ³•ï¼Œæ­¤æ—¶æ²¡æœ‰è¿›è¡ŒåŠŸèƒ½å¢å¼º
+				// Í¨¹ı·´Éäµ÷ÓÃÄ¿±ê¶ÔÏóµÄ·½·¨£¬´ËÊ±Ã»ÓĞ½øĞĞ¹¦ÄÜÔöÇ¿
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
-			} else {
+			}
+			else {
 				// We need to create a method invocation...
-				// æˆ‘ä»¬éœ€è¦åˆ›å»ºä¸€ä¸ªæ–¹æ³•è°ƒç”¨
-				// proxy:ç”Ÿæˆçš„åŠ¨æ€ä»£ç†å¯¹è±¡
-				// target:ç›®æ ‡å¯¹è±¡
-				// method:ç›®æ ‡æ–¹æ³•
-				// args:ç›®æ ‡æ–¹æ³•å‚æ•°
-				// targetClass:ç›®æ ‡ç±»å¯¹è±¡
-				// chain: AOPæ‹¦æˆªå™¨æ‰§è¡Œé“¾ æ˜¯ä¸€ä¸ªMethodInterceptorçš„é›†åˆ è¿™ä¸ªé“¾æ¡çš„è·å–è¿‡ç¨‹å‚è€ƒæˆ‘ä»¬ä¸Šä¸€ç¯‡æ–‡ç« çš„å†…å®¹
-				invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
-
+				// ÎÒÃÇĞèÒª´´½¨Ò»¸ö·½·¨µ÷ÓÃ
+				// proxy:Éú³ÉµÄ¶¯Ì¬´úÀí¶ÔÏó
+				// target:Ä¿±ê¶ÔÏó
+				// method:Ä¿±ê·½·¨
+				// args:Ä¿±ê·½·¨²ÎÊı
+				// targetClass:Ä¿±êÀà¶ÔÏó
+				// chain: AOPÀ¹½ØÆ÷Ö´ĞĞÁ´ ÊÇÒ»¸öMethodInterceptorµÄ¼¯ºÏ Õâ¸öÁ´ÌõµÄ»ñÈ¡¹ı³Ì²Î¿¼ÎÒÃÇÉÏÒ»ÆªÎÄÕÂµÄÄÚÈİ
+				MethodInvocation invocation =
+						new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
 				// Proceed to the joinpoint through the interceptor chain.
-				// é€šè¿‡æ‹¦æˆªå™¨é“¾è¿›å…¥è¿æ¥ç‚¹
-				// å¼€å§‹æ‰§è¡ŒAOPçš„æ‹¦æˆªè¿‡ç¨‹
+				// Í¨¹ıÀ¹½ØÆ÷Á´½øÈëÁ¬½Óµã
+				// ¿ªÊ¼Ö´ĞĞAOPµÄÀ¹½Ø¹ı³Ì
 				retVal = invocation.proceed();
 			}
 
 			// Massage return value if necessary.
 			Class<?> returnType = method.getReturnType();
-			if (retVal != null && retVal == target && returnType != Object.class && returnType.isInstance(proxy)
-					&& !RawTargetAccess.class.isAssignableFrom(method.getDeclaringClass())) {
+			if (retVal != null && retVal == target &&
+					returnType != Object.class && returnType.isInstance(proxy) &&
+					!RawTargetAccess.class.isAssignableFrom(method.getDeclaringClass())) {
 				// Special case: it returned "this" and the return type of the method
 				// is type-compatible. Note that we can't help if the target sets
 				// a reference to itself in another returned object.
 				retVal = proxy;
-			} else if (retVal == null && returnType != Void.TYPE && returnType.isPrimitive()) {
+			}
+			else if (retVal == null && returnType != Void.TYPE && returnType.isPrimitive()) {
 				throw new AopInvocationException(
 						"Null return value from advice does not match primitive return type for: " + method);
 			}
 			return retVal;
-		} finally {
+		}
+		finally {
 			if (target != null && !targetSource.isStatic()) {
 				// Must have come from TargetSource.
 				targetSource.releaseTarget(target);
@@ -265,11 +263,11 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		}
 	}
 
+
 	/**
 	 * Equality means interfaces, advisors and TargetSource are equal.
-	 * <p>
-	 * The compared object may be a JdkDynamicAopProxy instance itself or a dynamic
-	 * proxy wrapping a JdkDynamicAopProxy instance.
+	 * <p>The compared object may be a JdkDynamicAopProxy instance itself
+	 * or a dynamic proxy wrapping a JdkDynamicAopProxy instance.
 	 */
 	@Override
 	public boolean equals(@Nullable Object other) {
@@ -283,13 +281,15 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		JdkDynamicAopProxy otherProxy;
 		if (other instanceof JdkDynamicAopProxy) {
 			otherProxy = (JdkDynamicAopProxy) other;
-		} else if (Proxy.isProxyClass(other.getClass())) {
+		}
+		else if (Proxy.isProxyClass(other.getClass())) {
 			InvocationHandler ih = Proxy.getInvocationHandler(other);
 			if (!(ih instanceof JdkDynamicAopProxy)) {
 				return false;
 			}
 			otherProxy = (JdkDynamicAopProxy) ih;
-		} else {
+		}
+		else {
 			// Not a valid comparison...
 			return false;
 		}

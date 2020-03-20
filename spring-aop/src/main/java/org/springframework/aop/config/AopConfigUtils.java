@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,11 +32,10 @@ import org.springframework.util.Assert;
 /**
  * Utility class for handling registration of AOP auto-proxy creators.
  *
- * <p>Only a single auto-proxy creator can be registered yet multiple concrete
- * implementations are available. Therefore this class wraps a simple escalation
- * protocol, allowing classes to request a particular auto-proxy creator and know
- * that class, {@code or a subclass thereof}, will eventually be resident
- * in the application context.
+ * <p>Only a single auto-proxy creator should be registered yet multiple concrete
+ * implementations are available. This class provides a simple escalation protocol,
+ * allowing a caller to request a particular auto-proxy creator and know that creator,
+ * <i>or a more capable variant thereof</i>, will be registered as a post-processor.
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -55,12 +54,10 @@ public abstract class AopConfigUtils {
 	/**
 	 * Stores the auto proxy creator classes in escalation order.
 	 */
-	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>();
+	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>(3);
 
-	/**
-	 * Setup the escalation list.
-	 */
 	static {
+		// Set up the escalation list...
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
@@ -73,8 +70,8 @@ public abstract class AopConfigUtils {
 	}
 
 	@Nullable
-	public static BeanDefinition registerAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
-			@Nullable Object source) {
+	public static BeanDefinition registerAutoProxyCreatorIfNecessary(
+			BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		return registerOrEscalateApcAsRequired(InfrastructureAdvisorAutoProxyCreator.class, registry, source);
 	}
@@ -85,9 +82,9 @@ public abstract class AopConfigUtils {
 	}
 
 	@Nullable
-	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
-			@Nullable Object source) {
-		// æ³¨å†ŒAspectJAwareAdvisorAutoProxyCreatorçš„BeanDefinitionåˆ°BeanFactoryä¸­
+	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(
+			BeanDefinitionRegistry registry, @Nullable Object source) {
+		// ×¢²áAspectJAwareAdvisorAutoProxyCreatorµÄBeanDefinitionµ½BeanFactoryÖĞ
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -97,8 +94,8 @@ public abstract class AopConfigUtils {
 	}
 
 	@Nullable
-	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
-			@Nullable Object source) {
+	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(
+			BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
@@ -118,22 +115,22 @@ public abstract class AopConfigUtils {
 	}
 
 	@Nullable
-	private static BeanDefinition registerOrEscalateApcAsRequired(Class<?> cls, BeanDefinitionRegistry registry,
-			@Nullable Object source) {
+	private static BeanDefinition registerOrEscalateApcAsRequired(
+			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
-		// åˆ¤æ–­æ˜¯å¦BeanDefinitionRegistryä¸­æ˜¯å¦æœ‰internalAutoProxyCreatorå¯¹åº”çš„BeanDefinition 
+		// ÅĞ¶ÏÊÇ·ñBeanDefinitionRegistryÖĞÊÇ·ñÓĞinternalAutoProxyCreator¶ÔÓ¦µÄBeanDefinition 
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
-			// è·å–internalAutoProxyCreatorå¯¹åº”çš„BeanDefinition 
+			// »ñÈ¡internalAutoProxyCreator¶ÔÓ¦µÄBeanDefinition 
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
-			// å¦‚æœinternalAutoProxyCreatorå¯¹åº”çš„Beançš„ç±»åå’Œç¬¬ä¸€ä¸ªå…¥å‚ä¸ä¸€æ ·ï¼Œä¸”è€ƒè™‘æ˜¯å¦éœ€è¦å®Œæˆè¦†ç›–
+			// Èç¹ûinternalAutoProxyCreator¶ÔÓ¦µÄBeanµÄÀàÃûºÍµÚÒ»¸öÈë²Î²»Ò»Ñù£¬ÇÒ¿¼ÂÇÊÇ·ñĞèÒªÍê³É¸²¸Ç
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
-				// å½“å‰internalAutoProxyCreatorå¯¹åº”Beançš„ä¼˜å…ˆçº§
+				// µ±Ç°internalAutoProxyCreator¶ÔÓ¦BeanµÄÓÅÏÈ¼¶
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
-				// éœ€è¦çš„ä¼˜å…ˆçº§ä¹Ÿå°±æ˜¯ç¬¬ä¸€ä¸ªå…¥å‚å¯¹åº”çš„Beançš„ä¼˜å…ˆçº§
+				// ĞèÒªµÄÓÅÏÈ¼¶Ò²¾ÍÊÇµÚÒ»¸öÈë²Î¶ÔÓ¦µÄBeanµÄÓÅÏÈ¼¶
 				int requiredPriority = findPriorityForClass(cls);
-				// å¦‚æœéœ€è¦çš„ä¼˜å…ˆçº§ï¼Œæ¯”internalAutoProxyCreatorç°åœ¨å¯¹åº”çš„Beançš„ä¼˜å…ˆçº§é«˜ï¼Œåˆ™è¿›è¡Œæ›¿æ¢æ“ä½œ
+				// Èç¹ûĞèÒªµÄÓÅÏÈ¼¶£¬±ÈinternalAutoProxyCreatorÏÖÔÚ¶ÔÓ¦µÄBeanµÄÓÅÏÈ¼¶¸ß£¬Ôò½øĞĞÌæ»»²Ù×÷
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}
@@ -145,7 +142,7 @@ public abstract class AopConfigUtils {
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		// å¾€BeanFactoryæ³¨å†ŒæŒ‡å®šç±»çš„BeanDefinitionä¿¡æ¯,beanNameå°±æ˜¯org.springframework.aop.config.internalAutoProxyCreator
+		// ÍùBeanFactory×¢²áÖ¸¶¨ÀàµÄBeanDefinitionĞÅÏ¢,beanName¾ÍÊÇorg.springframework.aop.config.internalAutoProxyCreator
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}

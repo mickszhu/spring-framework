@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,18 +33,15 @@ import org.springframework.lang.Nullable;
 public class AspectJMethodBeforeAdvice extends AbstractAspectJAdvice implements MethodBeforeAdvice, Serializable {
 
 	public AspectJMethodBeforeAdvice(
-			Method aspectJBeforeAdviceMethod, 
-			AspectJExpressionPointcut pointcut, 
-			AspectInstanceFactory aif) {
+			Method aspectJBeforeAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aif) {
 
 		super(aspectJBeforeAdviceMethod, pointcut, aif);
 	}
 
 
 	@Override
-	public void before(Method method, Object[] args, @Nullable Object target) 
-			throws Throwable {
-		// 璋冪敤澧炲己绫荤殑鏂规硶
+	public void before(Method method, Object[] args, @Nullable Object target) throws Throwable {
+		// 调用增强类的方法
 		invokeAdviceMethod(getJoinPointMatch(), null, null);
 	}
 

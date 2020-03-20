@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,15 +54,15 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
-			// å¦‚æœç›®æ ‡ç±»æ˜¯æ¥å£æˆ–è€…ç›®æ ‡ç±»æ˜¯Proxyçš„å­ç±»ï¼Œåˆ™ä½¿ç”¨JDKåŠ¨æ€ä»£ç†æ–¹å¼
+			// Èç¹ûÄ¿±êÀàÊÇ½Ó¿Ú»òÕßÄ¿±êÀàÊÇProxyµÄ×ÓÀà£¬ÔòÊ¹ÓÃJDK¶¯Ì¬´úÀí·½Ê½
 			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
 				return new JdkDynamicAopProxy(config);
 			}
-			// ä½¿ç”¨CglibåŠ¨æ€ä»£ç†
+			// Ê¹ÓÃCglib¶¯Ì¬´úÀí
 			return new ObjenesisCglibAopProxy(config);
 		}
 		else {
-			// é»˜è®¤ä½¿ç”¨JDKåŠ¨æ€ä»£ç†
+			// Ä¬ÈÏÊ¹ÓÃJDK¶¯Ì¬´úÀí
 			return new JdkDynamicAopProxy(config);
 		}
 	}

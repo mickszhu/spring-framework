@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,16 +55,16 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 
 	@Override
 	public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException {
-		// å¦‚æœæ˜¯Advisorï¼Œä¸è¿›è¡Œå¤„ç†
+		// Èç¹ûÊÇAdvisor£¬²»½øĞĞ´¦Àí
 		if (adviceObject instanceof Advisor) {
 			return (Advisor) adviceObject;
 		}
-		// å¦‚æœä¸æ˜¯Advisorç±»å‹ä¹Ÿä¸æ˜¯Adviceç±»å‹ï¼Œåˆ™æŠ¥å¼‚å¸¸
+		// Èç¹û²»ÊÇAdvisorÀàĞÍÒ²²»ÊÇAdviceÀàĞÍ£¬Ôò±¨Òì³£
 		if (!(adviceObject instanceof Advice)) {
 			throw new UnknownAdviceTypeException(adviceObject);
 		}
 		Advice advice = (Advice) adviceObject;
-		// å¦‚æœæ˜¯MethodInterceptorç±»å‹ï¼Œåˆ™å°è£…åˆ°DefaultPointcutAdvisorä¸­
+		// Èç¹ûÊÇMethodInterceptorÀàĞÍ£¬Ôò·â×°µ½DefaultPointcutAdvisorÖĞ
 		// AspectJAroundAdvice\AspectJAfterAdvice\AspectJAfterThrowingAdvice
 		if (advice instanceof MethodInterceptor) {
 			// So well-known it doesn't even need an adapter.
@@ -84,11 +84,11 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
 		Advice advice = advisor.getAdvice();
-		// å¦‚æœæ˜¯adviceæ˜¯MethodInterceptorç±»å‹ï¼Œåˆ™ç›´æ¥åŠ åˆ°æ•°ç»„ä¸­
+		// Èç¹ûÊÇadviceÊÇMethodInterceptorÀàĞÍ£¬ÔòÖ±½Ó¼Óµ½Êı×éÖĞ
 		if (advice instanceof MethodInterceptor) {
 			interceptors.add((MethodInterceptor) advice);
 		}
-		// ä½¿ç”¨AdvisorAdapteré€‚é…å™¨å¯¹adviceè¿›è¡Œé€‚é…ï¼Œå¦‚æœé€‚é…æˆåŠŸï¼Œåˆ™å°†advisoré€‚é…æˆMethodInterceptor,æ”¾å…¥é›†åˆä¸­
+		// Ê¹ÓÃAdvisorAdapterÊÊÅäÆ÷¶Ôadvice½øĞĞÊÊÅä£¬Èç¹ûÊÊÅä³É¹¦£¬Ôò½«advisorÊÊÅä³ÉMethodInterceptor,·ÅÈë¼¯ºÏÖĞ
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));

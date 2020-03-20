@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,9 +38,8 @@ import org.springframework.aop.ProxyMethodInvocation;
 public class AspectJAroundAdvice extends AbstractAspectJAdvice implements MethodInterceptor, Serializable {
 
 	public AspectJAroundAdvice(
-			Method aspectJAroundAdviceMethod, 
-			AspectJExpressionPointcut pointcut, 
-			AspectInstanceFactory aif) {
+			Method aspectJAroundAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aif) {
+
 		super(aspectJAroundAdviceMethod, pointcut, aif);
 	}
 
@@ -66,7 +65,6 @@ public class AspectJAroundAdvice extends AbstractAspectJAdvice implements Method
 			throw new IllegalStateException("MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
 		}
 		ProxyMethodInvocation pmi = (ProxyMethodInvocation) mi;
-		// MethodInvocationProceedingJoinPoint
 		ProceedingJoinPoint pjp = lazyGetProceedingJoinPoint(pmi);
 		JoinPointMatch jpm = getJoinPointMatch(pmi);
 		return invokeAdviceMethod(pjp, jpm, null, null);

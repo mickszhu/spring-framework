@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,12 +59,12 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		try {
-			// æ‰§è¡Œåˆ‡å…¥ç‚¹æ–¹æ³•
+			// Ö´ĞĞÇĞÈëµã·½·¨
 			return mi.proceed();
 		}
 		catch (Throwable ex) {
 			if (shouldInvokeOnThrowing(ex)) {
-				// åªæœ‰å‡ºç°å¼‚å¸¸æ‰è°ƒç”¨å¢å¼ºç±»çš„æ–¹æ³•
+				// Ö»ÓĞ³öÏÖÒì³£²Åµ÷ÓÃÔöÇ¿ÀàµÄ·½·¨
 				invokeAdviceMethod(getJoinPointMatch(), null, ex);
 			}
 			throw ex;

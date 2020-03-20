@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -121,11 +121,11 @@ public abstract class AopProxyUtils {
 			// No user-specified interfaces: check whether target class is an interface.
 			Class<?> targetClass = advised.getTargetClass();
 			if (targetClass != null) {
-				// ç›®æ ‡ç±»æ˜¯å¦æ˜¯æ¥å£
+				// Ä¿±êÀàÊÇ·ñÊÇ½Ó¿Ú
 				if (targetClass.isInterface()) {
 					advised.setInterfaces(targetClass);
 				}
-				// ç›®æ ‡ç±»æ˜¯å¦æ˜¯Proxyç±»
+				// Ä¿±êÀàÊÇ·ñÊÇProxyÀà
 				else if (Proxy.isProxyClass(targetClass)) {
 					advised.setInterfaces(targetClass.getInterfaces());
 				}
@@ -226,7 +226,7 @@ public abstract class AopProxyUtils {
 		if (ObjectUtils.isEmpty(arguments)) {
 			return new Object[0];
 		}
-		// å¦‚æœè¯¥æ–¹æ³•å£°æ˜ä¸ºé‡‡ç”¨å¯å˜æ•°é‡çš„å‚æ•°ï¼Œåˆ™è¿”å›true; å¦åˆ™è¿”å›falseã€‚
+		// Èç¹û¸Ã·½·¨ÉùÃ÷Îª²ÉÓÃ¿É±äÊıÁ¿µÄ²ÎÊı£¬Ôò·µ»Øtrue; ·ñÔò·µ»Øfalse¡£
 		if (method.isVarArgs()) {
 			Class<?>[] paramTypes = method.getParameterTypes();
 			if (paramTypes.length == arguments.length) {

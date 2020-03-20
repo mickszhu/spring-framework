@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -620,26 +620,20 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * @throws Throwable in case of invocation failure
 	 */
 	protected Object invokeAdviceMethod(
-			@Nullable JoinPointMatch jpMatch, 
-			@Nullable Object returnValue, 
-			@Nullable Throwable ex)
+			@Nullable JoinPointMatch jpMatch, @Nullable Object returnValue, @Nullable Throwable ex)
 			throws Throwable {
 
-		return invokeAdviceMethodWithGivenArgs(
-				argBinding(getJoinPoint(), jpMatch, returnValue, ex));
+		return invokeAdviceMethodWithGivenArgs(argBinding(getJoinPoint(), jpMatch, returnValue, ex));
 	}
 
 	// As above, but in this case we are given the join point.
-	protected Object invokeAdviceMethod(JoinPoint jp, 
-			@Nullable JoinPointMatch jpMatch,
-			@Nullable Object returnValue, 
-			@Nullable Throwable t) throws Throwable {
+	protected Object invokeAdviceMethod(JoinPoint jp, @Nullable JoinPointMatch jpMatch,
+			@Nullable Object returnValue, @Nullable Throwable t) throws Throwable {
 
 		return invokeAdviceMethodWithGivenArgs(argBinding(jp, jpMatch, returnValue, t));
 	}
 
-	protected Object invokeAdviceMethodWithGivenArgs(Object[] args) 
-			throws Throwable {
+	protected Object invokeAdviceMethodWithGivenArgs(Object[] args) throws Throwable {
 		Object[] actualArgs = args;
 		if (this.aspectJAdviceMethod.getParameterCount() == 0) {
 			actualArgs = null;
@@ -647,7 +641,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		try {
 			ReflectionUtils.makeAccessible(this.aspectJAdviceMethod);
 			// TODO AopUtils.invokeJoinpointUsingReflection
-			// Âà©Áî®ÂèçÂ∞ÑÔºåÊâßË°åÂ¢ûÂº∫ÊñπÊ≥ï
+			// ¿˚”√∑¥…‰£¨÷¥––‘ˆ«ø∑Ω∑®
 			// method.invoke(obj,arg)
 			return this.aspectJAdviceMethod.invoke(this.aspectInstanceFactory.getAspectInstance(), actualArgs);
 		}

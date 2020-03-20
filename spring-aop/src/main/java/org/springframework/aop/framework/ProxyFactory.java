@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -107,8 +107,8 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * @return the proxy object
 	 */
 	public Object getProxy(@Nullable ClassLoader classLoader) {
-		// 1銆佸垱寤篔DK鏂瑰紡鐨凙OP浠ｇ悊鎴栬�匔GLib鏂瑰紡鐨凙OP浠ｇ悊
-		// 2銆佽皟鐢ㄥ叿浣撶殑AopProxy鏉ュ垱寤篜roxy浠ｇ悊瀵硅薄
+		// 1、创建JDK方式的AOP代理或者CGLib方式的AOP代理
+		// 2、调用具体的AopProxy来创建Proxy代理对象
 		return createAopProxy().getProxy(classLoader);
 	}
 

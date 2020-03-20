@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,10 +40,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
-
-import com.hazelcast.core.ExecutionCallback;
-
-import net.bytebuddy.asm.Advice.This;
 
 /**
  * Utility methods for AOP support code.
@@ -226,11 +222,11 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
-		// å…ˆä½¿ç”¨ClassFilterå¯¹ç±»çº§åˆ«è¿›è¡ŒåŒ¹é…
+		// ÏÈÊ¹ÓÃClassFilter¶ÔÀà¼¶±ğ½øĞĞÆ¥Åä
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
-		// å†ä½¿ç”¨MethodMatcheré’ˆå¯¹ç±»ä¸­çš„æ–¹æ³•è¿›è¡ŒåŒ¹é…
+		// ÔÙÊ¹ÓÃMethodMatcherÕë¶ÔÀàÖĞµÄ·½·¨½øĞĞÆ¥Åä
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
@@ -242,15 +238,15 @@ public abstract class AopUtils {
 			introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;
 		}
 
-		//å°†å½“å‰ç±»å’Œå®ƒçš„æ¥å£éƒ½åŠ å…¥classesé›†åˆ
+		//½«µ±Ç°ÀàºÍËüµÄ½Ó¿Ú¶¼¼ÓÈëclasses¼¯ºÏ
 		Set<Class<?>> classes = new LinkedHashSet<>();
 		if (!Proxy.isProxyClass(targetClass)) {
 			classes.add(ClassUtils.getUserClass(targetClass));
 		}
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
-		// ä½¿ç”¨MethodMatcheråŒ¹é…ç›®æ ‡ç±»çš„æ–¹æ³•
-		// ä¸åªæ˜¯åŒ¹é…ç›®æ ‡ç±»ã€è¿˜ä¼šåŒ¹é…çˆ¶ç±»å’Œæ¥å£ç±»
+		// Ê¹ÓÃMethodMatcherÆ¥ÅäÄ¿±êÀàµÄ·½·¨
+		// ²»Ö»ÊÇÆ¥ÅäÄ¿±êÀà¡¢»¹»áÆ¥Åä¸¸ÀàºÍ½Ó¿ÚÀà
 		for (Class<?> clazz : classes) {
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
@@ -291,8 +287,8 @@ public abstract class AopUtils {
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
-		// PointcutAdvisoråŒ…å«äº†Pointcutå’ŒAdviceè¿™ä¸¤ä¸ªå¯¹è±¡çš„
-		// PointcutAdvisoræ˜¯é’ˆå¯¹æ–¹æ³•çº§åˆ«è¿›è¡ŒåŠŸèƒ½å¢å¼ºçš„
+		// PointcutAdvisor°üº¬ÁËPointcutºÍAdviceÕâÁ½¸ö¶ÔÏóµÄ
+		// PointcutAdvisorÊÇÕë¶Ô·½·¨¼¶±ğ½øĞĞ¹¦ÄÜÔöÇ¿µÄ
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
@@ -315,16 +311,16 @@ public abstract class AopUtils {
 		if (candidateAdvisors.isEmpty()) {
 			return candidateAdvisors;
 		}
-		List<Advisor> eligibleAdvisors = new LinkedList<>();
-		// å¼•ä»‹å¢å¼ºå™¨
-		// IntroductionAdvisorï¼šåªè¦æ˜¯é’ˆå¯¹ç±»ï¼Œå¢å¼ºåŠŸèƒ½æ˜¯é’ˆå¯¹ç±»çº§åˆ«çš„ï¼Œè¯´ç™½äº†å°±æ˜¯ç»™ç±»å»åŠ æ¥å£æ¥å®ç°å¢å¼ºåŠŸèƒ½
+		List<Advisor> eligibleAdvisors = new ArrayList<>();
+		// Òı½éÔöÇ¿Æ÷
+		// IntroductionAdvisor£ºÖ»ÒªÊÇÕë¶ÔÀà£¬ÔöÇ¿¹¦ÄÜÊÇÕë¶ÔÀà¼¶±ğµÄ£¬Ëµ°×ÁË¾ÍÊÇ¸øÀàÈ¥¼Ó½Ó¿ÚÀ´ÊµÏÖÔöÇ¿¹¦ÄÜ
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
 		}
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
-		// æ™®é€šå¢å¼ºå™¨
+		// ÆÕÍ¨ÔöÇ¿Æ÷
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed

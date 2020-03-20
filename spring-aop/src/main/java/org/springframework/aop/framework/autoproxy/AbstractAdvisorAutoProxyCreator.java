@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,8 +31,8 @@ import org.springframework.util.Assert;
  * Generic auto proxy creator that builds AOP proxies for specific beans
  * based on detected Advisors for each bean.
  *
- * <p>Subclasses must implement the abstract {@link #findCandidateAdvisors()}
- * method to return a list of Advisors applying to any object. Subclasses can
+ * <p>Subclasses may override the {@link #findCandidateAdvisors()} method to
+ * return a custom list of Advisors applying to any object. Subclasses can
  * also override the inherited {@link #shouldSkip} method to exclude certain
  * objects from auto-proxying.
  *
@@ -73,7 +73,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 
-		// å‘ç°åˆé€‚çš„Advisor
+		// ·¢ÏÖºÏÊÊµÄAdvisor
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
@@ -92,10 +92,10 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
-		// å…ˆæ‰¾åˆ°å€™é€‰çš„Advisors(è·å–æ³¨è§£å’Œxmlä¸­çš„æ‰€æœ‰advisor)
-		// å¦‚æœæ˜¯ä½¿ç”¨æ³¨è§£æ–¹å¼å»æ ‡è®°advisor
+		// ÏÈÕÒµ½ºòÑ¡µÄAdvisors(»ñÈ¡×¢½âºÍxmlÖĞµÄËùÓĞadvisor)
+		// Èç¹ûÊÇÊ¹ÓÃ×¢½â·½Ê½È¥±ê¼Çadvisor
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		// å†æ‰¾åˆ°åˆæ ¼çš„Advisors
+		// ÔÙÕÒµ½ºÏ¸ñµÄAdvisors
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		
 		extendAdvisors(eligibleAdvisors);
@@ -128,10 +128,10 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
-			// è·å–å¯ç”¨çš„aop advisor
-			// å°†æ¯ä¸ªadvisorå»åŒ¹é…beanClassï¼Œçœ‹çœ‹æ˜¯å¦å¯ä»¥å»å¢å¼ºè¯¥ç±»çš„ç›®æ ‡æ–¹æ³•
-			// ClassFilteré¦–å…ˆè¿‡æ»¤ç±»
-			// MethodMatcherå»è¿‡æ»¤æ–¹æ³•
+			// »ñÈ¡¿ÉÓÃµÄaop advisor
+			// ½«Ã¿¸öadvisorÈ¥Æ¥ÅäbeanClass£¬¿´¿´ÊÇ·ñ¿ÉÒÔÈ¥ÔöÇ¿¸ÃÀàµÄÄ¿±ê·½·¨
+			// ClassFilterÊ×ÏÈ¹ıÂËÀà
+			// MethodMatcherÈ¥¹ıÂË·½·¨
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);
 		}
 		finally {
@@ -169,7 +169,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * <p>The default implementation is empty.
 	 * <p>Typically used to add Advisors that expose contextual information
 	 * required by some of the later advisors.
-	 * @param candidateAdvisors Advisors that have already been identified as
+	 * @param candidateAdvisors the Advisors that have already been identified as
 	 * applying to a given bean
 	 */
 	protected void extendAdvisors(List<Advisor> candidateAdvisors) {

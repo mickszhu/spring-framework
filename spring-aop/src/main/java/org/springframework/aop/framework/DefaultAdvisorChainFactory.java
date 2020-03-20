@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,9 +35,9 @@ import org.springframework.aop.support.MethodMatchers;
 import org.springframework.lang.Nullable;
 
 /**
- * A simple but definitive way of working out an advice chain for a Method, given an
- * {@link Advised} object. Always rebuilds each advice chain; caching can be provided by
- * subclasses.
+ * A simple but definitive way of working out an advice chain for a Method,
+ * given an {@link Advised} object. Always rebuilds each advice chain;
+ * caching can be provided by subclasses.
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
@@ -48,56 +48,53 @@ import org.springframework.lang.Nullable;
 public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializable {
 
 	@Override
-	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Advised config,
-			Method method, @Nullable Class<?> targetClass) {
+	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
+			Advised config, Method method, @Nullable Class<?> targetClass) {
 
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
-		// è¿”å›å€¼é›†åˆï¼Œé‡Œé¢è£…çš„éƒ½æ˜¯Interceptoræˆ–è€…å®ƒçš„å­æ¥å£MethodInterceptor
+		// ·µ»ØÖµ¼¯ºÏ£¬ÀïÃæ×°µÄ¶¼ÊÇInterceptor»òÕßËüµÄ×Ó½Ó¿ÚMethodInterceptor
 		List<Object> interceptorList = new ArrayList<>(config.getAdvisors().length);
-		// è·å–ç›®æ ‡ç±»çš„ç±»å‹
+		// »ñÈ¡Ä¿±êÀàµÄÀàĞÍ
 		Class<?> actualClass = (targetClass != null ? targetClass
 				: method.getDeclaringClass());
-		// æ˜¯å¦æœ‰å¼•ä»‹
+		// ÊÇ·ñÓĞÒı½é
 		boolean hasIntroductions = hasMatchingIntroductions(config, actualClass);
-		// advisoré€‚é…å™¨æ³¨å†Œä¸­å¿ƒ
-		// MethodBeforeAdviceAdapterï¼šå°†Advisoré€‚é…æˆMethodBeforeAdvice
-		// AfterReturningAdviceAdapterï¼šå°†Advisoré€‚é…æˆAfterReturningAdvice
-		// ThrowsAdviceAdapterï¼šå°†Advisoré€‚é…æˆThrowsAdvice
+		// advisorÊÊÅäÆ÷×¢²áÖĞĞÄ
+		// MethodBeforeAdviceAdapter£º½«AdvisorÊÊÅä³ÉMethodBeforeAdvice
+		// AfterReturningAdviceAdapter£º½«AdvisorÊÊÅä³ÉAfterReturningAdvice
+		// ThrowsAdviceAdapter£º½«AdvisorÊÊÅä³ÉThrowsAdvice
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 
-		// å»äº§ç”Ÿä»£ç†å¯¹è±¡çš„è¿‡ç¨‹ä¸­ï¼Œé’ˆå¯¹è¯¥ç›®æ ‡æ–¹æ³•è·å–åˆ°çš„æ‰€æœ‰åˆé€‚çš„Advisoré›†åˆ
+		// È¥²úÉú´úÀí¶ÔÏóµÄ¹ı³ÌÖĞ£¬Õë¶Ô¸ÃÄ¿±ê·½·¨»ñÈ¡µ½µÄËùÓĞºÏÊÊµÄAdvisor¼¯ºÏ
 		for (Advisor advisor : config.getAdvisors()) {
 			if (advisor instanceof PointcutAdvisor) {
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
-				// å¦‚æœè¯¥Advisorå¯ä»¥å¯¹ç›®æ ‡ç±»è¿›è¡Œå¢å¼ºï¼Œåˆ™è¿›è¡Œåç»­æ“ä½œ
+				// Èç¹û¸ÃAdvisor¿ÉÒÔ¶ÔÄ¿±êÀà½øĞĞÔöÇ¿£¬Ôò½øĞĞºóĞø²Ù×÷
 				if (config.isPreFiltered()
 						|| pointcutAdvisor.getPointcut().getClassFilter().matches(
 								actualClass)) {
-					// å°†advisorè½¬æˆMethodInterceptor
+					// ½«advisor×ª³ÉMethodInterceptor
 					MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
-					// è·å–æ–¹æ³•åŒ¹é…å™¨ï¼Œè¯¥æ–¹æ³•åŒ¹é…å™¨å¯ä»¥æ ¹æ®æŒ‡å®šçš„åˆ‡å…¥ç‚¹è¡¨è¾¾å¼è¿›è¡Œæ–¹æ³•åŒ¹é…
+					// »ñÈ¡·½·¨Æ¥ÅäÆ÷£¬¸Ã·½·¨Æ¥ÅäÆ÷¿ÉÒÔ¸ù¾İÖ¸¶¨µÄÇĞÈëµã±í´ïÊ½½øĞĞ·½·¨Æ¥Åä
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
-					// ä½¿ç”¨æ–¹æ³•åŒ¹é…å™¨å·¥å…·ç±»è¿›è¡Œæ–¹æ³•åŒ¹é…
+					// Ê¹ÓÃ·½·¨Æ¥ÅäÆ÷¹¤¾ßÀà½øĞĞ·½·¨Æ¥Åä
 					if (MethodMatchers.matches(mm, method, actualClass,
 							hasIntroductions)) {
-						// MethodMatcheræ¥å£é€šè¿‡é‡è½½å®šä¹‰äº†ä¸¤ä¸ªmatches()æ–¹æ³•
-						// ä¸¤ä¸ªå‚æ•°çš„matches()è¢«ç§°ä¸ºé™æ€åŒ¹é…ï¼Œåœ¨åŒ¹é…æ¡ä»¶ä¸æ˜¯å¤ªä¸¥æ ¼æ—¶ä½¿ç”¨ï¼Œå¯ä»¥æ»¡è¶³å¤§éƒ¨åˆ†åœºæ™¯çš„ä½¿ç”¨
-						// ç§°ä¹‹ä¸ºé™æ€çš„ä¸»è¦æ˜¯åŒºåˆ†ä¸ºä¸‰ä¸ªå‚æ•°çš„matches()æ–¹æ³•éœ€è¦åœ¨è¿è¡Œæ—¶åŠ¨æ€çš„å¯¹å‚æ•°çš„ç±»å‹è¿›è¡ŒåŒ¹é…ï¼›
-						// ä¸¤ä¸ªæ–¹æ³•çš„åˆ†ç•Œçº¿å°±æ˜¯boolean isRuntime()æ–¹æ³•
-						// è¿›è¡ŒåŒ¹é…æ—¶å…ˆç”¨ä¸¤ä¸ªå‚æ•°çš„matches()æ–¹æ³•è¿›è¡ŒåŒ¹é…ï¼Œè‹¥åŒ¹é…æˆåŠŸï¼Œåˆ™æ£€æŸ¥boolean isRuntime()çš„è¿”å›å€¼
-						// è‹¥ä¸ºtrueï¼Œåˆ™è°ƒç”¨ä¸‰ä¸ªå‚æ•°çš„matches()æ–¹æ³•è¿›è¡ŒåŒ¹é…ï¼ˆè‹¥ä¸¤ä¸ªå‚æ•°çš„éƒ½åŒ¹é…ä¸ä¸­ï¼Œä¸‰ä¸ªå‚æ•°çš„å¿…å®šåŒ¹é…ä¸ä¸­ï¼‰
+						// MethodMatcher½Ó¿ÚÍ¨¹ıÖØÔØ¶¨ÒåÁËÁ½¸ömatches()·½·¨
+						// Á½¸ö²ÎÊıµÄmatches()±»³ÆÎª¾²Ì¬Æ¥Åä£¬ÔÚÆ¥ÅäÌõ¼ş²»ÊÇÌ«ÑÏ¸ñÊ±Ê¹ÓÃ£¬¿ÉÒÔÂú×ã´ó²¿·Ö³¡¾°µÄÊ¹ÓÃ
+						// ³ÆÖ®Îª¾²Ì¬µÄÖ÷ÒªÊÇÇø·ÖÎªÈı¸ö²ÎÊıµÄmatches()·½·¨ĞèÒªÔÚÔËĞĞÊ±¶¯Ì¬µÄ¶Ô²ÎÊıµÄÀàĞÍ½øĞĞÆ¥Åä£»
+						// Á½¸ö·½·¨µÄ·Ö½çÏß¾ÍÊÇboolean isRuntime()·½·¨
+						// ½øĞĞÆ¥ÅäÊ±ÏÈÓÃÁ½¸ö²ÎÊıµÄmatches()·½·¨½øĞĞÆ¥Åä£¬ÈôÆ¥Åä³É¹¦£¬Ôò¼ì²éboolean isRuntime()µÄ·µ»ØÖµ
+						// ÈôÎªtrue£¬Ôòµ÷ÓÃÈı¸ö²ÎÊıµÄmatches()·½·¨½øĞĞÆ¥Åä£¨ÈôÁ½¸ö²ÎÊıµÄ¶¼Æ¥Åä²»ÖĞ£¬Èı¸ö²ÎÊıµÄ±Ø¶¨Æ¥Åä²»ÖĞ£©
 
-						// éœ€è¦æ ¹æ®å‚æ•°åŠ¨æ€åŒ¹é…
+						// ĞèÒª¸ù¾İ²ÎÊı¶¯Ì¬Æ¥Åä
 						if (mm.isRuntime()) {
-							// Creating a new object instance in the getInterceptors()
-							// method
+							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.
 							for (MethodInterceptor interceptor : interceptors) {
-								interceptorList.add(
-										new InterceptorAndDynamicMethodMatcher(
-												interceptor, mm));
+								interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
 							}
 						}
 						else {
@@ -114,7 +111,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 				}
 			}
 			else {
-				// é€šè¿‡AdvisorAdapterRegistryå°†Advisoréƒ½é€‚é…æˆMethodInterceptorç±»å‹
+				// Í¨¹ıAdvisorAdapterRegistry½«Advisor¶¼ÊÊÅä³ÉMethodInterceptorÀàĞÍ
 				Interceptor[] interceptors = registry.getInterceptors(advisor);
 				interceptorList.addAll(Arrays.asList(interceptors));
 			}
@@ -126,10 +123,8 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 	/**
 	 * Determine whether the Advisors contain matching introductions.
 	 */
-	private static boolean hasMatchingIntroductions(Advised config,
-			Class<?> actualClass) {
-		for (int i = 0; i < config.getAdvisors().length; i++) {
-			Advisor advisor = config.getAdvisors()[i];
+	private static boolean hasMatchingIntroductions(Advised config, Class<?> actualClass) {
+		for (Advisor advisor : config.getAdvisors()) {
 			if (advisor instanceof IntroductionAdvisor) {
 				IntroductionAdvisor ia = (IntroductionAdvisor) advisor;
 				if (ia.getClassFilter().matches(actualClass)) {

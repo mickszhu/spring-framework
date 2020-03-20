@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,9 +46,8 @@ public abstract class AspectJProxyUtils {
 			for (Advisor advisor : advisors) {
 				// Be careful not to get the Advice without a guard, as
 				// this might eagerly instantiate a non-singleton AspectJ aspect
-				
-				// å°å¿ƒä¸è¦åœ¨æ²¡æœ‰ä¿æŠ¤çš„æƒ…å†µä¸‹è·å¾—é€šçŸ¥ï¼Œå› ä¸ºè¿™å¯èƒ½æ€¥åˆ‡åœ°å®ä¾‹åŒ–ä¸€ä¸ªéå•ä¾‹AspectJåˆ‡é¢ç±»
-				// ç¡®å®šç»™å‡ºçš„beanæ˜¯å¦æ˜¯ä¸€ä¸ªAspectJçš„é€šçŸ¥
+				// Ğ¡ĞÄ²»ÒªÔÚÃ»ÓĞ±£»¤µÄÇé¿öÏÂ»ñµÃÍ¨Öª£¬ÒòÎªÕâ¿ÉÄÜ¼±ÇĞµØÊµÀı»¯Ò»¸ö·Çµ¥ÀıAspectJÇĞÃæÀà
+				// È·¶¨¸ø³öµÄbeanÊÇ·ñÊÇÒ»¸öAspectJµÄÍ¨Öª
 				if (isAspectJAdvice(advisor)) {
 					foundAspectJAdvice = true;
 				}
