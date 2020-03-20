@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -122,19 +122,19 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
-		// 如果之前有IoC容器，则销毁
-    	if (hasBeanFactory()) {
+		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
-       		// 创建IoC容器，也就是DefaultListableBeanFactory
+			//在这里创建BeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			//为了序列化指定id，如果需要的话，让这个BeanFactory从id反序列到BeanFactory对象
 			beanFactory.setSerializationId(getId());
-			// 设置工厂的属性：是否允许BeanDefinition覆盖和是否允许循环依赖
+			//定制BeanFactory，设置相关属性，包括是否允许覆盖同名称的不同定义的对象和循环依赖
 			customizeBeanFactory(beanFactory);
-            // 调用载入BeanDefinition的方法，在当前类中只定义了抽象的loadBeanDefinitions方法，具体的实现调用子类容器
-			loadBeanDefinitions(beanFactory);//钩子方法
+			// 初始化BeanFactory，解析配置文件（XML和注解）
+			loadBeanDefinitions(beanFactory);
 			synchronized (this.beanFactoryMonitor) {
 				this.beanFactory = beanFactory;
 			}
@@ -147,8 +147,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Override
 	protected void cancelRefresh(BeansException ex) {
 		synchronized (this.beanFactoryMonitor) {
-			if (this.beanFactory != null)
+			if (this.beanFactory != null) {
 				this.beanFactory.setSerializationId(null);
+			}
 		}
 		super.cancelRefresh(ex);
 	}
@@ -225,9 +226,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 是否允许覆盖同名称的不同定义的对象
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
+		// 是否允许bean之间存在循环依赖
 		if (this.allowCircularReferences != null) {
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}

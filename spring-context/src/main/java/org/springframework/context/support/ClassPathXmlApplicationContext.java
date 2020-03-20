@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -139,10 +139,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 			throws BeansException {
 
 		super(parent);
-		// 目的是为了创建Resource（资源对象）
+		//设置配置文件的路径
 		setConfigLocations(configLocations);
-		
-		// 重点：刷新容器（IoC容器的销毁与新建）
 		if (refresh) {
 			refresh();
 		}

@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -77,14 +77,21 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	}
 
 	/**
+	 * 注解配置Sprin时候启动的入口
+	 * 
 	 * Create a new AnnotationConfigApplicationContext, deriving bean definitions
 	 * from the given annotated classes and automatically refreshing the context.
 	 * @param annotatedClasses one or more annotated classes,
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
+		//由于其有父类，实例化这个类的时候会先调用它父类的构造方法，创建了spring工厂
+		//在this()调用自己无参构造函数值初始化了一个读取器和扫描器
 		this();
+
+		// 在这个里面执行了this.beanDefinitionMap.put(beanName, beanDefinition);
 		register(annotatedClasses);
+		//最重要的方法，基本都在这个方法里面处理
 		refresh();
 	}
 
@@ -101,9 +108,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
-	 * {@inheritDoc}
-	 * <p>Delegates given environment to underlying {@link AnnotatedBeanDefinitionReader}
-	 * and {@link ClassPathBeanDefinitionScanner} members.
+	 * Propagates the given custom {@code Environment} to the underlying
+	 * {@link AnnotatedBeanDefinitionReader} and {@link ClassPathBeanDefinitionScanner}.
 	 */
 	@Override
 	public void setEnvironment(ConfigurableEnvironment environment) {

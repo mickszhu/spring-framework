@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -689,7 +689,6 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	public <T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType,
 			@Nullable MethodParameter methodParam) throws TypeMismatchException {
 
-		// 获取不同的类型转换器，对参数进行数据类型转换
 		return getTypeConverter().convertIfNecessary(value, requiredType, methodParam);
 	}
 
@@ -716,8 +715,8 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see #doBind(org.springframework.beans.MutablePropertyValues)
 	 */
 	public void bind(PropertyValues pvs) {
-		MutablePropertyValues mpvs = (pvs instanceof MutablePropertyValues) ?
-				(MutablePropertyValues) pvs : new MutablePropertyValues(pvs);
+		MutablePropertyValues mpvs = (pvs instanceof MutablePropertyValues ?
+				(MutablePropertyValues) pvs : new MutablePropertyValues(pvs));
 		doBind(mpvs);
 	}
 
@@ -854,7 +853,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see #getBindingResult()
 	 */
 	public void validate() {
-		for (Validator validator : this.validators) {
+		for (Validator validator : getValidators()) {
 			validator.validate(getTarget(), getBindingResult());
 		}
 	}
