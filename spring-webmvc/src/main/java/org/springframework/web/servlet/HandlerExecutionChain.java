@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -133,13 +133,13 @@ public class HandlerExecutionChain {
 		if (!ObjectUtils.isEmpty(interceptors)) {
 			for (int i = 0; i < interceptors.length; i++) {
 				HandlerInterceptor interceptor = interceptors[i];
-				// æ‰§è¡Œinterceptorçš„preHandleæ–¹æ³•ï¼Œå¦‚æœæ‰§è¡Œä¸æˆåŠŸï¼Œåˆ™ç›´æ¥è§¦å‘afterCompletionæ–¹æ³•çš„æ‰§è¡Œ
+				// Ö´ĞĞinterceptorµÄpreHandle·½·¨£¬Èç¹ûÖ´ĞĞ²»³É¹¦£¬ÔòÖ±½Ó´¥·¢afterCompletion·½·¨µÄÖ´ĞĞ
 				if (!interceptor.preHandle(request, response, this.handler)) {
-					// è§¦å‘interceptorçš„afterCompletionæ–¹æ³•
+					// ´¥·¢interceptorµÄafterCompletion·½·¨
 					triggerAfterCompletion(request, response, null);
 					return false;
 				}
-				// é€šè¿‡interceptorIndexè®°å½•å¤„ç†çš„æ‹¦æˆªå™¨é¡ºåºï¼Œå› ä¸ºafterCompletionå’ŒpostHandleæ–¹æ³•éƒ½æ˜¯æŒ‰ç…§è¿™ä¸ªé¡ºåºå€’åºæ‰§è¡Œçš„
+				// Í¨¹ıinterceptorIndex¼ÇÂ¼´¦ÀíµÄÀ¹½ØÆ÷Ë³Ğò£¬ÒòÎªafterCompletionºÍpostHandle·½·¨¶¼ÊÇ°´ÕÕÕâ¸öË³Ğòµ¹ĞòÖ´ĞĞµÄ
 				this.interceptorIndex = i;
 			}
 		}
@@ -174,7 +174,7 @@ public class HandlerExecutionChain {
 			for (int i = this.interceptorIndex; i >= 0; i--) {
 				HandlerInterceptor interceptor = interceptors[i];
 				try {
-					// æ‰§è¡Œå¤„ç†å™¨æ‹¦æˆªå™¨çš„afterCompletionæ–¹æ³•
+					// Ö´ĞĞ´¦ÀíÆ÷À¹½ØÆ÷µÄafterCompletion·½·¨
 					interceptor.afterCompletion(request, response, this.handler, ex);
 				}
 				catch (Throwable ex2) {

@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -99,7 +99,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// æ‰§è¡Œå‚æ•°è§£ææµç¨‹ã€HandlerMethodå¤„ç†æµç¨‹ï¼Œå¹¶è¿”å›ç»“æœ
+		// Ö´ĞĞ²ÎÊı½âÎöÁ÷³Ì¡¢HandlerMethod´¦ÀíÁ÷³Ì£¬²¢·µ»Ø½á¹û
 		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
 		setResponseStatus(webRequest);
 
@@ -117,9 +117,9 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 		mavContainer.setRequestHandled(false);
 		Assert.state(this.returnValueHandlers != null, "No return value handlers");
 		try {
-			// æ‰§è¡Œè¿”å›å€¼è§£ææµç¨‹ï¼ˆä¸»è¦äº†è§£ResponseBodyæ³¨è§£ä¿®é¥°çš„è¿”å›å€¼è§£æï¼‰
-			// éå†å½“å‰å®¹å™¨ä¸­æ‰€æœ‰ReturnValueHandlerï¼Œåˆ¤æ–­å“ªç§handleræ”¯æŒå½“å‰è¿”å›å€¼çš„å¤„ç†ï¼Œ
-	        // å¦‚æœæ”¯æŒï¼Œåˆ™ä½¿ç”¨è¯¥handlerå¤„ç†è¯¥è¿”å›å€¼
+			// Ö´ĞĞ·µ»ØÖµ½âÎöÁ÷³Ì£¨Ö÷ÒªÁË½âResponseBody×¢½âĞŞÊÎµÄ·µ»ØÖµ½âÎö£©
+			// ±éÀúµ±Ç°ÈİÆ÷ÖĞËùÓĞReturnValueHandler£¬ÅĞ¶ÏÄÄÖÖhandlerÖ§³Öµ±Ç°·µ»ØÖµµÄ´¦Àí£¬
+	        // Èç¹ûÖ§³Ö£¬ÔòÊ¹ÓÃ¸Ãhandler´¦Àí¸Ã·µ»ØÖµ
 			this.returnValueHandlers.handleReturnValue(
 					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
 		}
@@ -263,7 +263,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 			this.returnValue = returnValue;
 			this.returnType = (returnValue instanceof ReactiveTypeHandler.CollectedValuesList ?
 					((ReactiveTypeHandler.CollectedValuesList) returnValue).getReturnType() :
-					ResolvableType.forType(super.getGenericParameterType()).getGeneric(0));
+					ResolvableType.forType(super.getGenericParameterType()).getGeneric());
 		}
 
 		public ConcurrentResultMethodParameter(ConcurrentResultMethodParameter original) {

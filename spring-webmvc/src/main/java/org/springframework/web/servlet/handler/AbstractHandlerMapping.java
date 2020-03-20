@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -347,7 +347,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-		// è°ƒç”¨å…·ä½“çš„å­ç±»å»è·å–ä¸åŒç±»å‹çš„å¤„ç†å™¨å¯¹è±¡ï¼ˆæ¯”å¦‚è·å–åˆ°çš„@Controllerå’Œ@RequestMappingæ³¨è§£çš„å¤„ç†å™¨æ˜¯HandlerMethodå¯¹è±¡ï¼‰
+		// µ÷ÓÃ¾ßÌåµÄ×ÓÀàÈ¥»ñÈ¡²»Í¬ÀàĞÍµÄ´¦ÀíÆ÷¶ÔÏó£¨±ÈÈç»ñÈ¡µ½µÄ@ControllerºÍ@RequestMapping×¢½âµÄ´¦ÀíÆ÷ÊÇHandlerMethod¶ÔÏó£©
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
 			handler = getDefaultHandler();
@@ -360,7 +360,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			String handlerName = (String) handler;
 			handler = obtainApplicationContext().getBean(handlerName);
 		}
-		// åˆ›å»ºå¤„ç†å™¨æ‰§è¡Œé“¾
+		// ´´½¨´¦ÀíÆ÷Ö´ĞĞÁ´
 		HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request);
 		if (CorsUtils.isCorsRequest(request)) {
 			CorsConfiguration globalConfig = this.globalCorsConfigSource.getCorsConfiguration(request);
@@ -411,7 +411,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @see #getAdaptedInterceptors()
 	 */
 	protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
-		// åˆ›å»ºå¤„ç†å™¨æ‰§è¡Œé“¾å¯¹è±¡
+		// ´´½¨´¦ÀíÆ÷Ö´ĞĞÁ´¶ÔÏó
 		HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
 				(HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
 

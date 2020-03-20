@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -191,7 +191,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			valueType = getReturnValueType(outputValue, returnType);
 			declaredType = getGenericType(returnType);
 		}
-		
+
 		if (isResourceType(value, returnType)) {
 			outputMessage.getHeaders().set(HttpHeaders.ACCEPT_RANGES, "bytes");
 			if (value != null && inputMessage.getHeaders().getFirst(HttpHeaders.RANGE) != null) {
@@ -219,20 +219,20 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 		else {
 			HttpServletRequest request = inputMessage.getServletRequest();
-			// è·å–å®¢æˆ·ç«¯Acceptè¯·æ±‚å¤´ä¸­çš„åª’ä½“ç±»å‹
+			// »ñÈ¡¿Í»§¶ËAcceptÇëÇóÍ·ÖĞµÄÃ½ÌåÀàĞÍ
 			List<MediaType> requestedMediaTypes = getAcceptableMediaTypes(request);
-			// è·å–æœåŠ¡å™¨ç«¯ContentTypeå“åº”å¤´ä¸­çš„åª’ä½“ç±»å‹
+			// »ñÈ¡·şÎñÆ÷¶ËContentTypeÏìÓ¦Í·ÖĞµÄÃ½ÌåÀàĞÍ
 			List<MediaType> producibleMediaTypes = getProducibleMediaTypes(request, valueType, declaredType);
 
 			if (outputValue != null && producibleMediaTypes.isEmpty()) {
 				throw new HttpMessageNotWritableException(
 						"No converter found for return value of type: " + valueType);
 			}
-			// å¯ä»¥å¤„ç†çš„åª’ä½“ç±»å‹
+			// ¿ÉÒÔ´¦ÀíµÄÃ½ÌåÀàĞÍ
 			mediaTypesToUse = new ArrayList<>();
 			for (MediaType requestedType : requestedMediaTypes) {
 				for (MediaType producibleType : producibleMediaTypes) {
-					//å®¢æˆ·ç«¯è¦çš„åª’ä½“ç±»å‹å’ŒæœåŠ¡å™¨ç«¯æä¾›çš„åª’ä½“ç±»å‹æ˜¯å¦èƒ½å¯¹åº”èµ·æ¥
+					//¿Í»§¶ËÒªµÄÃ½ÌåÀàĞÍºÍ·şÎñÆ÷¶ËÌá¹©µÄÃ½ÌåÀàĞÍÊÇ·ñÄÜ¶ÔÓ¦ÆğÀ´
 					if (requestedType.isCompatibleWith(producibleType)) {
 						mediaTypesToUse.add(getMostSpecificMediaType(requestedType, producibleType));
 					}
@@ -246,8 +246,8 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 			MediaType.sortBySpecificityAndQuality(mediaTypesToUse);
 		}
-		
-		// é€‰æ‹©ä¸€ä¸ªåª’ä½“ç±»å‹
+
+		// Ñ¡ÔñÒ»¸öÃ½ÌåÀàĞÍ
 		MediaType selectedMediaType = null;
 		for (MediaType mediaType : mediaTypesToUse) {
 			if (mediaType.isConcrete()) {
@@ -260,19 +260,17 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 		}
 
-		// å¤„ç†æŒ‡å®šåª’ä½“ç±»å‹çš„è¿”å›å€¼
+		// ´¦ÀíÖ¸¶¨Ã½ÌåÀàĞÍµÄ·µ»ØÖµ
 		if (selectedMediaType != null) {
 			selectedMediaType = selectedMediaType.removeQualityValue();
-			// éå†æ‰€æœ‰çš„æ¶ˆæ¯è½¬æ¢å™¨
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
-				GenericHttpMessageConverter genericConverter =
-						(converter instanceof GenericHttpMessageConverter ? (GenericHttpMessageConverter<?>) converter : null);
-				// åˆ¤æ–­æŒ‡å®šçš„æ¶ˆæ¯è½¬æ¢å™¨èƒ½å¦å¤„ç†è¯¥è¿”å›å€¼
+				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter ?
+						(GenericHttpMessageConverter<?>) converter : null);
+				// ÅĞ¶ÏÖ¸¶¨µÄÏûÏ¢×ª»»Æ÷ÄÜ·ñ´¦Àí¸Ã·µ»ØÖµ
 				if (genericConverter != null ?
 						((GenericHttpMessageConverter) converter).canWrite(declaredType, valueType, selectedMediaType) :
 						converter.canWrite(valueType, selectedMediaType)) {
-					
-					outputValue = (T) getAdvice().beforeBodyWrite(outputValue, returnType, selectedMediaType,
+					outputValue = getAdvice().beforeBodyWrite(outputValue, returnType, selectedMediaType,
 							(Class<? extends HttpMessageConverter<?>>) converter.getClass(),
 							inputMessage, outputMessage);
 					if (outputValue != null) {
@@ -281,7 +279,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 							genericConverter.write(outputValue, declaredType, selectedMediaType, outputMessage);
 						}
 						else {
-							// é€šè¿‡æ¶ˆæ¯è½¬æ¢å™¨ï¼Œå°†è¿”å›å€¼è¿›è¡Œå¤„ç†ä¹‹åï¼Œä»¥æŒ‡å®šçš„åª’ä½“ç±»å‹ï¼Œå†™åˆ°å®¢æˆ·ç«¯
+							// Í¨¹ıÏûÏ¢×ª»»Æ÷£¬½«·µ»ØÖµ½øĞĞ´¦ÀíÖ®ºó£¬ÒÔÖ¸¶¨µÄÃ½ÌåÀàĞÍ£¬Ğ´µ½¿Í»§¶Ë
 							((HttpMessageConverter) converter).write(outputValue, selectedMediaType, outputMessage);
 						}
 						if (logger.isDebugEnabled()) {
@@ -310,7 +308,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	}
 
 	/**
-	 * Return whether the returned value or the declared return type extend {@link Resource}
+	 * Return whether the returned value or the declared return type extends {@link Resource}.
 	 */
 	protected boolean isResourceType(@Nullable Object value, MethodParameter returnType) {
 		Class<?> clazz = getReturnValueType(value, returnType);
@@ -331,15 +329,16 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	}
 
 	/**
+	 * Returns the media types that can be produced.
 	 * @see #getProducibleMediaTypes(HttpServletRequest, Class, Type)
 	 */
-	@SuppressWarnings({"unchecked", "unused"})
+	@SuppressWarnings("unused")
 	protected List<MediaType> getProducibleMediaTypes(HttpServletRequest request, Class<?> valueClass) {
 		return getProducibleMediaTypes(request, valueClass, null);
 	}
 
 	/**
-	 * Returns the media types that can be produced:
+	 * Returns the media types that can be produced. The resulting media types are:
 	 * <ul>
 	 * <li>The producible media types specified in the request mappings, or
 	 * <li>Media types of configured converters that can write the specific return value, or
@@ -348,10 +347,11 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * @since 4.2
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<MediaType> getProducibleMediaTypes(HttpServletRequest request, Class<?> valueClass,
-			@Nullable Type declaredType) {
+	protected List<MediaType> getProducibleMediaTypes(
+			HttpServletRequest request, Class<?> valueClass, @Nullable Type declaredType) {
 
-		Set<MediaType> mediaTypes = (Set<MediaType>) request.getAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
+		Set<MediaType> mediaTypes =
+				(Set<MediaType>) request.getAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
 		if (!CollectionUtils.isEmpty(mediaTypes)) {
 			return new ArrayList<>(mediaTypes);
 		}

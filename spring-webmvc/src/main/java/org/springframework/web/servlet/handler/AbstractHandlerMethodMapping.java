@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +40,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -57,11 +56,10 @@ import org.springframework.web.servlet.HandlerMapping;
  * @author Rossen Stoyanchev
  * @author Juergen Hoeller
  * @since 3.1
- * @param <T> The mapping for a {@link HandlerMethod} containing the conditions
+ * @param <T> the mapping for a {@link HandlerMethod} containing the conditions
  * needed to match the handler method to incoming request.
  */
-public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping 
-implements InitializingBean {
+public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements InitializingBean {
 
 	/**
 	 * Bean name prefix for target beans behind scoped proxies. Used to exclude those
@@ -80,7 +78,7 @@ implements InitializingBean {
 
 	private static final CorsConfiguration ALLOW_CORS_CONFIG = new CorsConfiguration();
 
-	// è®¾ç½®CORSè·¨åŸŸå¤„ç†ç›¸å…³é…ç½®
+	// ÉèÖÃCORS¿çÓò´¦ÀíÏà¹ØÅäÖÃ
 	static {
 		ALLOW_CORS_CONFIG.addAllowedOrigin("*");
 		ALLOW_CORS_CONFIG.addAllowedMethod("*");
@@ -185,34 +183,34 @@ implements InitializingBean {
 
 	/**
 	 * Detects handler methods at initialization.
+	 * @see #initHandlerMethods
 	 */
 	@Override
 	public void afterPropertiesSet() {
-		// åˆå§‹åŒ–å¤„ç†å™¨æ–¹æ³•å¯¹è±¡
+		// ³õÊ¼»¯´¦ÀíÆ÷·½·¨¶ÔÏó
 		initHandlerMethods();
 	}
 
 	/**
 	 * Scan beans in the ApplicationContext, detect and register handler methods.
-	 * @see #isHandler(Class)
-	 * @see #getMappingForMethod(Method, Class)
-	 * @see #handlerMethodsInitialized(Map)
+	 * @see #isHandler
+	 * @see #detectHandlerMethods
+	 * @see #handlerMethodsInitialized
 	 */
 	protected void initHandlerMethods() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking for request mappings in application context: " + getApplicationContext());
 		}
-		// è·å–å½“å‰springå®¹å™¨çš„æ‰€æœ‰beançš„name
+		// »ñÈ¡µ±Ç°springÈİÆ÷µÄËùÓĞbeanµÄname
 		String[] beanNames = (this.detectHandlerMethodsInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(obtainApplicationContext(), Object.class) :
 				obtainApplicationContext().getBeanNamesForType(Object.class));
 
-		
 		for (String beanName : beanNames) {
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
 				Class<?> beanType = null;
 				try {
-					// æ ¹æ®beançš„åç§°ï¼Œä»å½“å‰springå®¹å™¨ä¸­è·å–å¯¹åº”çš„Beançš„Type
+					// ¸ù¾İbeanµÄÃû³Æ£¬´Óµ±Ç°springÈİÆ÷ÖĞ»ñÈ¡¶ÔÓ¦µÄBeanµÄType
 					beanType = obtainApplicationContext().getType(beanName);
 				}
 				catch (Throwable ex) {
@@ -221,40 +219,41 @@ implements InitializingBean {
 						logger.debug("Could not resolve target class for bean with name '" + beanName + "'", ex);
 					}
 				}
-				// å¦‚æœæ˜¯Handlerï¼Œåˆ™éœ€è¦æŸ¥æ‰¾HandlerMethodï¼ˆå¦‚æœå¸¦æœ‰@Controlleræˆ–è€…@RequestMappingåˆ™æ˜¯Handlerå¯¹è±¡ï¼‰
+				// Èç¹ûÊÇHandler£¬ÔòĞèÒª²éÕÒHandlerMethod£¨Èç¹û´øÓĞ@Controller»òÕß@RequestMappingÔòÊÇHandler¶ÔÏó£©
 				if (beanType != null && isHandler(beanType)) {
-					// é‡è¦å…¥å£
-					// ä»Controlleræˆ–è€…RequestMappingæ³¨è§£çš„Beanä¸­ï¼Œæ‰¾åˆ°æ‰€æœ‰çš„HandlerMethodå¯¹è±¡ï¼Œå¹¶è¿›è¡Œå­˜å‚¨
+					// ÖØÒªÈë¿Ú
+					// ´ÓController»òÕßRequestMapping×¢½âµÄBeanÖĞ£¬ÕÒµ½ËùÓĞµÄHandlerMethod¶ÔÏó£¬²¢½øĞĞ´æ´¢
 					detectHandlerMethods(beanName);
 				}
 			}
 		}
-		// è¯¥æ–¹æ³•æ˜¯ç©ºå®ç°ï¼Œå¯ä»¥ç”±å­ç±»è¦†ç›–
+		// ¸Ã·½·¨ÊÇ¿ÕÊµÏÖ£¬¿ÉÒÔÓÉ×ÓÀà¸²¸Ç
 		handlerMethodsInitialized(getHandlerMethods());
 	}
 
 	/**
-	 * Look for handler methods in a handler.
-	 * @param handler the bean name of a handler or a handler instance
+	 * Look for handler methods in the specified handler bean.
+	 * @param handler either a bean name or an actual handler instance
+	 * @see #getMappingForMethod
 	 */
-	protected void detectHandlerMethods(final Object handler) {
-		// è·å–å¤„ç†å™¨ç±»å‹
+	protected void detectHandlerMethods(Object handler) {
+		// »ñÈ¡´¦ÀíÆ÷ÀàĞÍ
 		Class<?> handlerType = (handler instanceof String ?
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 
 		if (handlerType != null) {
-			// å¦‚æœè¯¥ç±»æ˜¯é€šè¿‡cglibä»£ç†çš„ä»£ç†ç±»ï¼Œåˆ™è·å–å…¶çˆ¶ç±»ç±»å‹ï¼Œå¦åˆ™çš„è¯ï¼Œç›´æ¥è¿”å›è¯¥ç±»
+			// Èç¹û¸ÃÀàÊÇÍ¨¹ıcglib´úÀíµÄ´úÀíÀà£¬Ôò»ñÈ¡Æä¸¸ÀàÀàĞÍ£¬·ñÔòµÄ»°£¬Ö±½Ó·µ»Ø¸ÃÀà
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
-			// å­˜å‚¨Methodæ–¹æ³•å’ŒRequestMappingæ³¨è§£ä¿¡æ¯çš„æ˜ å°„å…³ç³»ï¼ˆé‡ç‚¹ï¼‰
-			// è¯¥æ˜ å°„å…³ç³»ä¼šè§£ææˆæˆ‘ä»¬éœ€è¦çš„å…¶ä»–ä¸¤ä¸ªæ˜ å°„å…³ç³»
-			// keyæ˜¯Controllerç±»ä¸­çš„Methodå¯¹è±¡ï¼Œvalueæ˜¯RequestMappingInfoå¯¹è±¡(@RequestMappingæ³¨è§£ä¸­çš„ä¿¡æ¯)
+			// ´æ´¢Method·½·¨ºÍRequestMapping×¢½âĞÅÏ¢µÄÓ³Éä¹ØÏµ£¨ÖØµã£©
+			// ¸ÃÓ³Éä¹ØÏµ»á½âÎö³ÉÎÒÃÇĞèÒªµÄÆäËûÁ½¸öÓ³Éä¹ØÏµ
+			// keyÊÇControllerÀàÖĞµÄMethod¶ÔÏó£¬valueÊÇRequestMappingInfo¶ÔÏó(@RequestMapping×¢½âÖĞµÄĞÅÏ¢)
 			
-			//å°†Controllerç±»ä¸­çš„æ–¹æ³•å’Œå®ƒå¤´ä¸Šçš„@RequestMappingæ³¨è§£ä¿¡æ¯å»ºç«‹æ˜ å°„å…³ç³»
-			//æ³¨æ„ï¼šæ­¤æ—¶è¿˜æ²¡æœ‰å»ºç«‹è¯·æ±‚URLå’Œå¤„ç†å™¨æ–¹æ³•ä¹‹é—´çš„æ˜ å°„å…³ç³»ã€‚
+			//½«ControllerÀàÖĞµÄ·½·¨ºÍËüÍ·ÉÏµÄ@RequestMapping×¢½âĞÅÏ¢½¨Á¢Ó³Éä¹ØÏµ
+			//×¢Òâ£º´ËÊ±»¹Ã»ÓĞ½¨Á¢ÇëÇóURLºÍ´¦ÀíÆ÷·½·¨Ö®¼äµÄÓ³Éä¹ØÏµ¡£
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
-					(MethodIntrospector.MetadataLookup<T>) method -> {// æ­¤å¤„æ˜¯è®¾ç½®å›è°ƒå‡½æ•°
+					(MethodIntrospector.MetadataLookup<T>) method -> {// ´Ë´¦ÊÇÉèÖÃ»Øµ÷º¯Êı
 						try {
-							// è·å–beanä¸Šé¢å’Œmethodä¸Šé¢çš„RequestMappingæ³¨è§£ä¿¡æ¯ï¼Œå°è£…åˆ°RequestMappingInfoå¯¹è±¡ä¸­
+							// »ñÈ¡beanÉÏÃæºÍmethodÉÏÃæµÄRequestMapping×¢½âĞÅÏ¢£¬·â×°µ½RequestMappingInfo¶ÔÏóÖĞ
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -267,8 +266,8 @@ implements InitializingBean {
 			}
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
-				// æ³¨å†ŒHandlerMethodå’ŒRequestMappingInfoå¯¹è±¡çš„å…³ç³»
-				// æ³¨å†Œè¯·æ±‚URLå’ŒRequestMappingInfoå¯¹è±¡çš„å…³ç³»
+				// ×¢²áHandlerMethodºÍRequestMappingInfo¶ÔÏóµÄ¹ØÏµ
+				// ×¢²áÇëÇóURLºÍRequestMappingInfo¶ÔÏóµÄ¹ØÏµ
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -294,7 +293,7 @@ implements InitializingBean {
 	 * @return the created HandlerMethod
 	 */
 	protected HandlerMethod createHandlerMethod(Object handler, Method method) {
-		// åˆ›å»ºHandlerMethodå¯¹è±¡ï¼Œç”¨äºå°è£…å¤„ç†å™¨ç±»å’Œå…¶ä¸­çš„ä¸€ä¸ªæ–¹æ³•
+		// ´´½¨HandlerMethod¶ÔÏó£¬ÓÃÓÚ·â×°´¦ÀíÆ÷ÀàºÍÆäÖĞµÄÒ»¸ö·½·¨
 		HandlerMethod handlerMethod;
 		if (handler instanceof String) {
 			String beanName = (String) handler;
@@ -330,14 +329,14 @@ implements InitializingBean {
 	 */
 	@Override
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
-		// è·å–æŸ¥æ‰¾è·¯å¾„ï¼ˆéƒ¨åˆ†URLï¼‰
+		// »ñÈ¡²éÕÒÂ·¾¶£¨²¿·ÖURL£©
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking up handler method for path " + lookupPath);
 		}
 		this.mappingRegistry.acquireReadLock();
 		try {
-			// æ ¹æ®è¯·æ±‚æŸ¥æ‰¾è·¯å¾„ï¼ˆéƒ¨åˆ†URLï¼‰ï¼Œè·å–æœ€åˆé€‚çš„HandlerMethodå¯¹è±¡
+			// ¸ù¾İÇëÇó²éÕÒÂ·¾¶£¨²¿·ÖURL£©£¬»ñÈ¡×îºÏÊÊµÄHandlerMethod¶ÔÏó
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			if (logger.isDebugEnabled()) {
 				if (handlerMethod != null) {
@@ -347,7 +346,7 @@ implements InitializingBean {
 					logger.debug("Did not find handler method for [" + lookupPath + "]");
 				}
 			}
-			// å¯¹HandlerMethodå¯¹è±¡åŒ…å«çš„çš„beanå±æ€§è¿›è¡Œå®ä¾‹åŒ–ï¼Œå†è¿”å›HandlerMethodå¯¹è±¡
+			// ¶ÔHandlerMethod¶ÔÏó°üº¬µÄµÄbeanÊôĞÔ½øĞĞÊµÀı»¯£¬ÔÙ·µ»ØHandlerMethod¶ÔÏó
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
 		}
 		finally {
@@ -367,10 +366,10 @@ implements InitializingBean {
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<>();
-		// æ ¹æ®æŸ¥æ‰¾è·¯å¾„ï¼ˆURLï¼‰å»urlLookupé›†åˆä¸­è·å–åŒ¹é…åˆ°çš„RequestMappingInfoé›†åˆ
+		// ¸ù¾İ²éÕÒÂ·¾¶£¨URL£©È¥urlLookup¼¯ºÏÖĞ»ñÈ¡Æ¥Åäµ½µÄRequestMappingInfo¼¯ºÏ
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
 		if (directPathMatches != null) {
-			// å°†RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡è¿›è¡ŒåŒ¹é…ï¼Œå°†åŒ¹é…åˆ°çš„ä¿¡æ¯å°è£…åˆ°Matchå¯¹è±¡ï¼Œå†å°†Matchå¯¹è±¡æ”¾å…¥matchesé›†åˆ
+			// ½«RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏó½øĞĞÆ¥Åä£¬½«Æ¥Åäµ½µÄĞÅÏ¢·â×°µ½Match¶ÔÏó£¬ÔÙ½«Match¶ÔÏó·ÅÈëmatches¼¯ºÏ
 			addMatchingMappings(directPathMatches, matches, request);
 		}
 		if (matches.isEmpty()) {
@@ -380,20 +379,20 @@ implements InitializingBean {
 
 		if (!matches.isEmpty()) {
 			Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
-			// ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨ï¼Œå°†åŒ¹é…åˆ°çš„Matchå¯¹è±¡(RequestMappingInfo,HandlerMethod)è¿›è¡Œæ’åº
+			// Ê¹ÓÃÖ¸¶¨µÄ±È½ÏÆ÷£¬½«Æ¥Åäµ½µÄMatch¶ÔÏó(RequestMappingInfo,HandlerMethod)½øĞĞÅÅĞò
 			matches.sort(comparator);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Found " + matches.size() + " matching mapping(s) for [" + lookupPath + "] : " + matches);
 			}
-			// æ‰¾åˆ°æœ€ä¼˜åŒ¹é…é¡¹
+			// ÕÒµ½×îÓÅÆ¥ÅäÏî
 			Match bestMatch = matches.get(0);
 			if (matches.size() > 1) {
 				if (CorsUtils.isPreFlightRequest(request)) {
 					return PREFLIGHT_AMBIGUOUS_MATCH;
 				}
-				// è·å–æ¬¡ä¼˜åŒ¹é…é¡¹
+				// »ñÈ¡´ÎÓÅÆ¥ÅäÏî
 				Match secondBestMatch = matches.get(1);
-				// å¦‚æœæœ€ä¼˜åŒ¹é…é¡¹å’Œæ¬¡ä¼˜åŒ¹é…é¡¹æ˜¯ç›¸åŒçš„ï¼Œåˆ™æŠ¥é”™
+				// Èç¹û×îÓÅÆ¥ÅäÏîºÍ´ÎÓÅÆ¥ÅäÏîÊÇÏàÍ¬µÄ£¬Ôò±¨´í
 				if (comparator.compare(bestMatch, secondBestMatch) == 0) {
 					Method m1 = bestMatch.handlerMethod.getMethod();
 					Method m2 = secondBestMatch.handlerMethod.getMethod();
@@ -401,8 +400,9 @@ implements InitializingBean {
 							request.getRequestURL() + "': {" + m1 + ", " + m2 + "}");
 				}
 			}
+			request.setAttribute(BEST_MATCHING_HANDLER_ATTRIBUTE, bestMatch.handlerMethod);
 			handleMatch(bestMatch.mapping, lookupPath, request);
-			// è¿”å›æœ€åŒ¹é…çš„HandlerMethodå¯¹è±¡
+			// ·µ»Ø×îÆ¥ÅäµÄHandlerMethod¶ÔÏó
 			return bestMatch.handlerMethod;
 		}
 		else {
@@ -412,10 +412,10 @@ implements InitializingBean {
 
 	private void addMatchingMappings(Collection<T> mappings, List<Match> matches, HttpServletRequest request) {
 		for (T mapping : mappings) {
-			// è·å–å¾…åŒ¹é…çš„RequestMappingInfoå¯¹è±¡ï¼Œå°è£…RequestMappingæ³¨è§£ä¿¡æ¯
+			// »ñÈ¡´ıÆ¥ÅäµÄRequestMappingInfo¶ÔÏó£¬·â×°RequestMapping×¢½âĞÅÏ¢
 			T match = getMatchingMapping(mapping, request);
 			if (match != null) {
-				// å°†å¾…åŒ¹é…çš„RequestMappingInfoå’ŒHandlerMethodå¯¹è±¡å°è£…åˆ°Matchå¯¹è±¡ä¸­ï¼Œå¹¶æ·»åŠ åˆ°é›†åˆ
+				// ½«´ıÆ¥ÅäµÄRequestMappingInfoºÍHandlerMethod¶ÔÏó·â×°µ½Match¶ÔÏóÖĞ£¬²¢Ìí¼Óµ½¼¯ºÏ
 				matches.add(new Match(match, this.mappingRegistry.getMappings().get(mapping)));
 			}
 		}
@@ -509,17 +509,16 @@ implements InitializingBean {
 	/**
 	 * A registry that maintains all mappings to handler methods, exposing methods
 	 * to perform lookups and providing concurrent access.
-	 *
 	 * <p>Package-private for testing purposes.
 	 */
 	class MappingRegistry {
 
 		private final Map<T, MappingRegistration<T>> registry = new HashMap<>();
 
-		// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡çš„æ˜ å°„å…³ç³»
+		// ´æ´¢RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏóµÄÓ³Éä¹ØÏµ
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
-		// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒURLçš„æ˜ å°„å…³ç³»
+		// ´æ´¢RequestMappingInfo¶ÔÏóºÍURLµÄÓ³Éä¹ØÏµ
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
 
 		private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
@@ -577,19 +576,19 @@ implements InitializingBean {
 		public void register(T mapping, Object handler, Method method) {
 			this.readWriteLock.writeLock().lock();
 			try {
-				// åˆ›å»ºHandlerMethodå¯¹è±¡ï¼Œç”¨äºå°è£…å¤„ç†å™¨ç±»å’Œå…¶ä¸­çš„ä¸€ä¸ªæ–¹æ³•
+				// ´´½¨HandlerMethod¶ÔÏó£¬ÓÃÓÚ·â×°´¦ÀíÆ÷ÀàºÍÆäÖĞµÄÒ»¸ö·½·¨
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				assertUniqueMethodMapping(handlerMethod, mapping);
 
 				if (logger.isInfoEnabled()) {
 					logger.info("Mapped \"" + mapping + "\" onto " + handlerMethod);
 				}
-				// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡çš„æ˜ å°„å…³ç³»
+				// ´æ´¢RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏóµÄÓ³Éä¹ØÏµ
 				this.mappingLookup.put(mapping, handlerMethod);
 
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {
-					// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’Œè¯·æ±‚urlçš„æ˜ å°„å…³ç³»
+					// ´æ´¢RequestMappingInfo¶ÔÏóºÍÇëÇóurlµÄÓ³Éä¹ØÏµ
 					this.urlLookup.add(url, mapping);
 				}
 
@@ -794,6 +793,7 @@ implements InitializingBean {
 
 	private static class EmptyHandler {
 
+		@SuppressWarnings("unused")
 		public void handle() {
 			throw new UnsupportedOperationException("Not implemented");
 		}

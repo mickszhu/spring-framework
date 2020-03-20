@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,12 +111,19 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		this.contentNegotiationManager = contentNegotiationManager;
 	}
 
+	/**
+	 * Return the configured {@link ContentNegotiationManager}.
+	 */
+	public ContentNegotiationManager getContentNegotiationManager() {
+		return this.contentNegotiationManager;
+	}
+
 	@Override
 	public void setEmbeddedValueResolver(StringValueResolver resolver) {
 		this.embeddedValueResolver = resolver;
 	}
 
-	// RequestMappingHandlerMappingå®ç°äº†InitializingBeanæ¥å£ï¼Œæ‰€æœ‰åœ¨Beanåˆå§‹åŒ–çš„æ—¶å€™ï¼Œä¼šè°ƒç”¨afterPropertiesSetæ–¹æ³•
+	// RequestMappingHandlerMappingÊµÏÖÁËInitializingBean½Ó¿Ú£¬ËùÓĞÔÚBean³õÊ¼»¯µÄÊ±ºò£¬»áµ÷ÓÃafterPropertiesSet·½·¨
 	@Override
 	public void afterPropertiesSet() {
 		this.config = new RequestMappingInfo.BuilderConfiguration();
@@ -127,7 +134,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		this.config.setRegisteredSuffixPatternMatch(this.useRegisteredSuffixPatternMatch);
 		this.config.setContentNegotiationManager(getContentNegotiationManager());
 
-		// è°ƒç”¨çˆ¶ç±»AbstractHandlerMethodMappingçš„afterPropertiesSetæ–¹æ³•
+		// µ÷ÓÃ¸¸ÀàAbstractHandlerMethodMappingµÄafterPropertiesSet·½·¨
 		super.afterPropertiesSet();
 	}
 
@@ -151,13 +158,6 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	public boolean useTrailingSlashMatch() {
 		return this.useTrailingSlashMatch;
-	}
-
-	/**
-	 * Return the configured {@link ContentNegotiationManager}.
-	 */
-	public ContentNegotiationManager getContentNegotiationManager() {
-		return this.contentNegotiationManager;
 	}
 
 	/**
@@ -191,13 +191,13 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Override
 	@Nullable
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		// è·å–æŒ‡å®šmethodå¯¹åº”çš„RequestMappingæ³¨è§£ä¿¡æ¯
+		// »ñÈ¡Ö¸¶¨method¶ÔÓ¦µÄRequestMapping×¢½âĞÅÏ¢
 		RequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
-			// è·å–æŒ‡å®šbeanå¯¹åº”çš„RequestMappingæ³¨è§£ä¿¡æ¯
+			// »ñÈ¡Ö¸¶¨bean¶ÔÓ¦µÄRequestMapping×¢½âĞÅÏ¢
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
-				// å°†beanä¸Šé¢çš„RequestMappingä¿¡æ¯å’Œmethodä¸Šé¢çš„RequestMappingä¿¡æ¯è¿›è¡Œåˆå¹¶
+				// ½«beanÉÏÃæµÄRequestMappingĞÅÏ¢ºÍmethodÉÏÃæµÄRequestMappingĞÅÏ¢½øĞĞºÏ²¢
 				info = typeInfo.combine(info);
 			}
 		}
@@ -213,11 +213,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	@Nullable
 	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
-		// æŸ¥æ‰¾RequestMappingæ³¨è§£ä¸­çš„ä¿¡æ¯ï¼Œå°è£…åˆ°RequestMappingå¯¹è±¡ä¸­
+		// ²éÕÒRequestMapping×¢½âÖĞµÄĞÅÏ¢£¬·â×°µ½RequestMapping¶ÔÏóÖĞ
 		RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
 		RequestCondition<?> condition = (element instanceof Class ?
 				getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
-		// é€šè¿‡æ„å»ºå™¨æ¨¡å¼ï¼Œåˆ›å»ºRequestMappingInfoå¯¹è±¡
+		// Í¨¹ı¹¹½¨Æ÷Ä£Ê½£¬´´½¨RequestMappingInfo¶ÔÏó
 		return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
 	}
 
@@ -262,7 +262,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
 
-		// é€šè¿‡æ„å»ºå™¨æ¨¡å¼ï¼Œåˆ›å»ºRequestMappingInfoå¯¹è±¡
+		// Í¨¹ı¹¹½¨Æ÷Ä£Ê½£¬´´½¨RequestMappingInfo¶ÔÏó
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition;
@@ -70,6 +69,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	private final ProducesRequestCondition producesCondition;
 
 	private final RequestConditionHolder customConditionHolder;
+
 
 	public RequestMappingInfo(@Nullable String name, @Nullable PatternsRequestCondition patterns,
 			@Nullable RequestMethodsRequestCondition methods, @Nullable ParamsRequestCondition params,
@@ -214,7 +214,6 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 */
 	@Override
 	@Nullable
-	@RequestMapping()
 	public RequestMappingInfo getMatchingCondition(HttpServletRequest request) {
 		RequestMethodsRequestCondition methods = this.methodsCondition.getMatchingCondition(request);
 		ParamsRequestCondition params = this.paramsCondition.getMatchingCondition(request);
@@ -226,7 +225,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			return null;
 		}
 
-		// èŽ·å–åˆ°RequestMappingæ³¨è§£ä¸­valueå±žæ€§çš„å€¼
+		// »ñÈ¡µ½RequestMapping×¢½âÖÐvalueÊôÐÔµÄÖµ
 		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request);
 		if (patterns == null) {
 			return null;
