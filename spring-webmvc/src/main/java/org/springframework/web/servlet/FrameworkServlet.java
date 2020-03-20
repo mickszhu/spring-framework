@@ -499,10 +499,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
-			// ³õÊ¼»¯web»·¾³ÖĞµÄspringÈİÆ÷WebApplicationContext
-			// springÖĞÒÑ¾­½«µ¥ÀıµÄbean¶¼È«²¿³õÊ¼»¯¡£
+			// åˆå§‹åŒ–webç¯å¢ƒä¸­çš„springå®¹å™¨WebApplicationContext
+			// springä¸­å·²ç»å°†å•ä¾‹çš„beanéƒ½å…¨éƒ¨åˆå§‹åŒ–ã€‚
 			this.webApplicationContext = initWebApplicationContext();
-			// ³õÊ¼»¯DispatcherServlet
+			// åˆå§‹åŒ–DispatcherServlet
 			initFrameworkServlet();
 		}
 		catch (ServletException | RuntimeException ex) {
@@ -544,7 +544,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 						// the root application context (if any; may be null) as the parent
 						cwac.setParent(rootContext);
 					}
-					// ³õÊ¼»¯springÈİÆ÷
+					// åˆå§‹åŒ–springå®¹å™¨
 					configureAndRefreshWebApplicationContext(cwac);
 				}
 			}
@@ -565,7 +565,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// Either the context is not a ConfigurableApplicationContext with refresh
 			// support or the context injected at construction time had already been
 			// refreshed -> trigger initial onRefresh manually here.
-			// Ë¢ĞÂÈİÆ÷ÖĞµÄ²ßÂÔ
+			// åˆ·æ–°å®¹å™¨ä¸­çš„ç­–ç•¥
 			synchronized (this.onRefreshMonitor) {
 				onRefresh(wac);
 			}
@@ -574,7 +574,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (this.publishContext) {
 			// Publish the context as a servlet context attribute.
 			String attrName = getServletContextAttributeName();
-			// ½«springÈİÆ÷´æÈëµ½ServletContextÉÏÏÂÎÄ
+			// å°†springå®¹å™¨å­˜å…¥åˆ°ServletContextä¸Šä¸‹æ–‡
 			getServletContext().setAttribute(attrName, wac);
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("Published WebApplicationContext of servlet '" + getServletName() +
@@ -637,18 +637,18 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 					"': custom WebApplicationContext class [" + contextClass.getName() +
 					"] is not of type ConfigurableWebApplicationContext");
 		}
-		// ´´½¨webÓ¦ÓÃÉÏÏÂÎÄ
+		// åˆ›å»ºwebåº”ç”¨ä¸Šä¸‹æ–‡
 		ConfigurableWebApplicationContext wac =
 				(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
 
 		wac.setEnvironment(getEnvironment());
 		wac.setParent(parent);
-		// »ñÈ¡ÉÏÏÂÎÄÅäÖÃÎÄ¼şÂ·¾¶
+		// è·å–ä¸Šä¸‹æ–‡é…ç½®æ–‡ä»¶è·¯å¾„
 		String configLocation = getContextConfigLocation();
 		if (configLocation != null) {
 			wac.setConfigLocation(configLocation);
 		}
-		// µ÷ÓÃÈİÆ÷³õÊ¼»¯·½·¨£¬Íê³Éweb»·¾³ÖĞµÄspringÈİÆ÷³õÊ¼»¯
+		// è°ƒç”¨å®¹å™¨åˆå§‹åŒ–æ–¹æ³•ï¼Œå®Œæˆwebç¯å¢ƒä¸­çš„springå®¹å™¨åˆå§‹åŒ–
 		configureAndRefreshWebApplicationContext(wac);
 
 		return wac;
@@ -683,7 +683,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		postProcessWebApplicationContext(wac);
 		applyInitializers(wac);
-		// µ÷ÓÃÈİÆ÷³õÊ¼»¯·½·¨
+		// è°ƒç”¨å®¹å™¨åˆå§‹åŒ–æ–¹æ³•
 		wac.refresh();
 	}
 
@@ -988,7 +988,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
-			// ´¦ÀíÒµÎñÇëÇó
+			// å¤„ç†ä¸šåŠ¡è¯·æ±‚
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {

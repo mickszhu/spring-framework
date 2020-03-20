@@ -78,7 +78,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 	private static final CorsConfiguration ALLOW_CORS_CONFIG = new CorsConfiguration();
 
-	// ÉèÖÃCORS¿çÓò´¦ÀíÏà¹ØÅäÖÃ
+	// è®¾ç½®CORSè·¨åŸŸå¤„ç†ç›¸å…³é…ç½®
 	static {
 		ALLOW_CORS_CONFIG.addAllowedOrigin("*");
 		ALLOW_CORS_CONFIG.addAllowedMethod("*");
@@ -187,7 +187,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	public void afterPropertiesSet() {
-		// ³õÊ¼»¯´¦ÀíÆ÷·½·¨¶ÔÏó
+		// åˆå§‹åŒ–å¤„ç†å™¨æ–¹æ³•å¯¹è±¡
 		initHandlerMethods();
 	}
 
@@ -201,7 +201,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking for request mappings in application context: " + getApplicationContext());
 		}
-		// »ñÈ¡µ±Ç°springÈİÆ÷µÄËùÓĞbeanµÄname
+		// è·å–å½“å‰springå®¹å™¨çš„æ‰€æœ‰beançš„name
 		String[] beanNames = (this.detectHandlerMethodsInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(obtainApplicationContext(), Object.class) :
 				obtainApplicationContext().getBeanNamesForType(Object.class));
@@ -210,7 +210,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
 				Class<?> beanType = null;
 				try {
-					// ¸ù¾İbeanµÄÃû³Æ£¬´Óµ±Ç°springÈİÆ÷ÖĞ»ñÈ¡¶ÔÓ¦µÄBeanµÄType
+					// æ ¹æ®beançš„åç§°ï¼Œä»å½“å‰springå®¹å™¨ä¸­è·å–å¯¹åº”çš„Beançš„Type
 					beanType = obtainApplicationContext().getType(beanName);
 				}
 				catch (Throwable ex) {
@@ -219,15 +219,15 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 						logger.debug("Could not resolve target class for bean with name '" + beanName + "'", ex);
 					}
 				}
-				// Èç¹ûÊÇHandler£¬ÔòĞèÒª²éÕÒHandlerMethod£¨Èç¹û´øÓĞ@Controller»òÕß@RequestMappingÔòÊÇHandler¶ÔÏó£©
+				// å¦‚æœæ˜¯Handlerï¼Œåˆ™éœ€è¦æŸ¥æ‰¾HandlerMethodï¼ˆå¦‚æœå¸¦æœ‰@Controlleræˆ–è€…@RequestMappingåˆ™æ˜¯Handlerå¯¹è±¡ï¼‰
 				if (beanType != null && isHandler(beanType)) {
-					// ÖØÒªÈë¿Ú
-					// ´ÓController»òÕßRequestMapping×¢½âµÄBeanÖĞ£¬ÕÒµ½ËùÓĞµÄHandlerMethod¶ÔÏó£¬²¢½øĞĞ´æ´¢
+					// é‡è¦å…¥å£
+					// ä»Controlleræˆ–è€…RequestMappingæ³¨è§£çš„Beanä¸­ï¼Œæ‰¾åˆ°æ‰€æœ‰çš„HandlerMethodå¯¹è±¡ï¼Œå¹¶è¿›è¡Œå­˜å‚¨
 					detectHandlerMethods(beanName);
 				}
 			}
 		}
-		// ¸Ã·½·¨ÊÇ¿ÕÊµÏÖ£¬¿ÉÒÔÓÉ×ÓÀà¸²¸Ç
+		// è¯¥æ–¹æ³•æ˜¯ç©ºå®ç°ï¼Œå¯ä»¥ç”±å­ç±»è¦†ç›–
 		handlerMethodsInitialized(getHandlerMethods());
 	}
 
@@ -237,23 +237,23 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #getMappingForMethod
 	 */
 	protected void detectHandlerMethods(Object handler) {
-		// »ñÈ¡´¦ÀíÆ÷ÀàĞÍ
+		// è·å–å¤„ç†å™¨ç±»å‹
 		Class<?> handlerType = (handler instanceof String ?
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 
 		if (handlerType != null) {
-			// Èç¹û¸ÃÀàÊÇÍ¨¹ıcglib´úÀíµÄ´úÀíÀà£¬Ôò»ñÈ¡Æä¸¸ÀàÀàĞÍ£¬·ñÔòµÄ»°£¬Ö±½Ó·µ»Ø¸ÃÀà
+			// å¦‚æœè¯¥ç±»æ˜¯é€šè¿‡cglibä»£ç†çš„ä»£ç†ç±»ï¼Œåˆ™è·å–å…¶çˆ¶ç±»ç±»å‹ï¼Œå¦åˆ™çš„è¯ï¼Œç›´æ¥è¿”å›è¯¥ç±»
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
-			// ´æ´¢Method·½·¨ºÍRequestMapping×¢½âĞÅÏ¢µÄÓ³Éä¹ØÏµ£¨ÖØµã£©
-			// ¸ÃÓ³Éä¹ØÏµ»á½âÎö³ÉÎÒÃÇĞèÒªµÄÆäËûÁ½¸öÓ³Éä¹ØÏµ
-			// keyÊÇControllerÀàÖĞµÄMethod¶ÔÏó£¬valueÊÇRequestMappingInfo¶ÔÏó(@RequestMapping×¢½âÖĞµÄĞÅÏ¢)
+			// å­˜å‚¨Methodæ–¹æ³•å’ŒRequestMappingæ³¨è§£ä¿¡æ¯çš„æ˜ å°„å…³ç³»ï¼ˆé‡ç‚¹ï¼‰
+			// è¯¥æ˜ å°„å…³ç³»ä¼šè§£ææˆæˆ‘ä»¬éœ€è¦çš„å…¶ä»–ä¸¤ä¸ªæ˜ å°„å…³ç³»
+			// keyæ˜¯Controllerç±»ä¸­çš„Methodå¯¹è±¡ï¼Œvalueæ˜¯RequestMappingInfoå¯¹è±¡(@RequestMappingæ³¨è§£ä¸­çš„ä¿¡æ¯)
 			
-			//½«ControllerÀàÖĞµÄ·½·¨ºÍËüÍ·ÉÏµÄ@RequestMapping×¢½âĞÅÏ¢½¨Á¢Ó³Éä¹ØÏµ
-			//×¢Òâ£º´ËÊ±»¹Ã»ÓĞ½¨Á¢ÇëÇóURLºÍ´¦ÀíÆ÷·½·¨Ö®¼äµÄÓ³Éä¹ØÏµ¡£
+			//å°†Controllerç±»ä¸­çš„æ–¹æ³•å’Œå®ƒå¤´ä¸Šçš„@RequestMappingæ³¨è§£ä¿¡æ¯å»ºç«‹æ˜ å°„å…³ç³»
+			//æ³¨æ„ï¼šæ­¤æ—¶è¿˜æ²¡æœ‰å»ºç«‹è¯·æ±‚URLå’Œå¤„ç†å™¨æ–¹æ³•ä¹‹é—´çš„æ˜ å°„å…³ç³»ã€‚
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
-					(MethodIntrospector.MetadataLookup<T>) method -> {// ´Ë´¦ÊÇÉèÖÃ»Øµ÷º¯Êı
+					(MethodIntrospector.MetadataLookup<T>) method -> {// æ­¤å¤„æ˜¯è®¾ç½®å›è°ƒå‡½æ•°
 						try {
-							// »ñÈ¡beanÉÏÃæºÍmethodÉÏÃæµÄRequestMapping×¢½âĞÅÏ¢£¬·â×°µ½RequestMappingInfo¶ÔÏóÖĞ
+							// è·å–beanä¸Šé¢å’Œmethodä¸Šé¢çš„RequestMappingæ³¨è§£ä¿¡æ¯ï¼Œå°è£…åˆ°RequestMappingInfoå¯¹è±¡ä¸­
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -266,8 +266,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
-				// ×¢²áHandlerMethodºÍRequestMappingInfo¶ÔÏóµÄ¹ØÏµ
-				// ×¢²áÇëÇóURLºÍRequestMappingInfo¶ÔÏóµÄ¹ØÏµ
+				// æ³¨å†ŒHandlerMethodå’ŒRequestMappingInfoå¯¹è±¡çš„å…³ç³»
+				// æ³¨å†Œè¯·æ±‚URLå’ŒRequestMappingInfoå¯¹è±¡çš„å…³ç³»
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -293,7 +293,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @return the created HandlerMethod
 	 */
 	protected HandlerMethod createHandlerMethod(Object handler, Method method) {
-		// ´´½¨HandlerMethod¶ÔÏó£¬ÓÃÓÚ·â×°´¦ÀíÆ÷ÀàºÍÆäÖĞµÄÒ»¸ö·½·¨
+		// åˆ›å»ºHandlerMethodå¯¹è±¡ï¼Œç”¨äºå°è£…å¤„ç†å™¨ç±»å’Œå…¶ä¸­çš„ä¸€ä¸ªæ–¹æ³•
 		HandlerMethod handlerMethod;
 		if (handler instanceof String) {
 			String beanName = (String) handler;
@@ -329,14 +329,14 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
-		// »ñÈ¡²éÕÒÂ·¾¶£¨²¿·ÖURL£©
+		// è·å–æŸ¥æ‰¾è·¯å¾„ï¼ˆéƒ¨åˆ†URLï¼‰
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking up handler method for path " + lookupPath);
 		}
 		this.mappingRegistry.acquireReadLock();
 		try {
-			// ¸ù¾İÇëÇó²éÕÒÂ·¾¶£¨²¿·ÖURL£©£¬»ñÈ¡×îºÏÊÊµÄHandlerMethod¶ÔÏó
+			// æ ¹æ®è¯·æ±‚æŸ¥æ‰¾è·¯å¾„ï¼ˆéƒ¨åˆ†URLï¼‰ï¼Œè·å–æœ€åˆé€‚çš„HandlerMethodå¯¹è±¡
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			if (logger.isDebugEnabled()) {
 				if (handlerMethod != null) {
@@ -346,7 +346,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 					logger.debug("Did not find handler method for [" + lookupPath + "]");
 				}
 			}
-			// ¶ÔHandlerMethod¶ÔÏó°üº¬µÄµÄbeanÊôĞÔ½øĞĞÊµÀı»¯£¬ÔÙ·µ»ØHandlerMethod¶ÔÏó
+			// å¯¹HandlerMethodå¯¹è±¡åŒ…å«çš„çš„beanå±æ€§è¿›è¡Œå®ä¾‹åŒ–ï¼Œå†è¿”å›HandlerMethodå¯¹è±¡
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
 		}
 		finally {
@@ -366,10 +366,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<>();
-		// ¸ù¾İ²éÕÒÂ·¾¶£¨URL£©È¥urlLookup¼¯ºÏÖĞ»ñÈ¡Æ¥Åäµ½µÄRequestMappingInfo¼¯ºÏ
+		// æ ¹æ®æŸ¥æ‰¾è·¯å¾„ï¼ˆURLï¼‰å»urlLookupé›†åˆä¸­è·å–åŒ¹é…åˆ°çš„RequestMappingInfoé›†åˆ
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
 		if (directPathMatches != null) {
-			// ½«RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏó½øĞĞÆ¥Åä£¬½«Æ¥Åäµ½µÄĞÅÏ¢·â×°µ½Match¶ÔÏó£¬ÔÙ½«Match¶ÔÏó·ÅÈëmatches¼¯ºÏ
+			// å°†RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡è¿›è¡ŒåŒ¹é…ï¼Œå°†åŒ¹é…åˆ°çš„ä¿¡æ¯å°è£…åˆ°Matchå¯¹è±¡ï¼Œå†å°†Matchå¯¹è±¡æ”¾å…¥matchesé›†åˆ
 			addMatchingMappings(directPathMatches, matches, request);
 		}
 		if (matches.isEmpty()) {
@@ -379,20 +379,20 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		if (!matches.isEmpty()) {
 			Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
-			// Ê¹ÓÃÖ¸¶¨µÄ±È½ÏÆ÷£¬½«Æ¥Åäµ½µÄMatch¶ÔÏó(RequestMappingInfo,HandlerMethod)½øĞĞÅÅĞò
+			// ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨ï¼Œå°†åŒ¹é…åˆ°çš„Matchå¯¹è±¡(RequestMappingInfo,HandlerMethod)è¿›è¡Œæ’åº
 			matches.sort(comparator);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Found " + matches.size() + " matching mapping(s) for [" + lookupPath + "] : " + matches);
 			}
-			// ÕÒµ½×îÓÅÆ¥ÅäÏî
+			// æ‰¾åˆ°æœ€ä¼˜åŒ¹é…é¡¹
 			Match bestMatch = matches.get(0);
 			if (matches.size() > 1) {
 				if (CorsUtils.isPreFlightRequest(request)) {
 					return PREFLIGHT_AMBIGUOUS_MATCH;
 				}
-				// »ñÈ¡´ÎÓÅÆ¥ÅäÏî
+				// è·å–æ¬¡ä¼˜åŒ¹é…é¡¹
 				Match secondBestMatch = matches.get(1);
-				// Èç¹û×îÓÅÆ¥ÅäÏîºÍ´ÎÓÅÆ¥ÅäÏîÊÇÏàÍ¬µÄ£¬Ôò±¨´í
+				// å¦‚æœæœ€ä¼˜åŒ¹é…é¡¹å’Œæ¬¡ä¼˜åŒ¹é…é¡¹æ˜¯ç›¸åŒçš„ï¼Œåˆ™æŠ¥é”™
 				if (comparator.compare(bestMatch, secondBestMatch) == 0) {
 					Method m1 = bestMatch.handlerMethod.getMethod();
 					Method m2 = secondBestMatch.handlerMethod.getMethod();
@@ -402,7 +402,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			request.setAttribute(BEST_MATCHING_HANDLER_ATTRIBUTE, bestMatch.handlerMethod);
 			handleMatch(bestMatch.mapping, lookupPath, request);
-			// ·µ»Ø×îÆ¥ÅäµÄHandlerMethod¶ÔÏó
+			// è¿”å›æœ€åŒ¹é…çš„HandlerMethodå¯¹è±¡
 			return bestMatch.handlerMethod;
 		}
 		else {
@@ -412,10 +412,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 	private void addMatchingMappings(Collection<T> mappings, List<Match> matches, HttpServletRequest request) {
 		for (T mapping : mappings) {
-			// »ñÈ¡´ıÆ¥ÅäµÄRequestMappingInfo¶ÔÏó£¬·â×°RequestMapping×¢½âĞÅÏ¢
+			// è·å–å¾…åŒ¹é…çš„RequestMappingInfoå¯¹è±¡ï¼Œå°è£…RequestMappingæ³¨è§£ä¿¡æ¯
 			T match = getMatchingMapping(mapping, request);
 			if (match != null) {
-				// ½«´ıÆ¥ÅäµÄRequestMappingInfoºÍHandlerMethod¶ÔÏó·â×°µ½Match¶ÔÏóÖĞ£¬²¢Ìí¼Óµ½¼¯ºÏ
+				// å°†å¾…åŒ¹é…çš„RequestMappingInfoå’ŒHandlerMethodå¯¹è±¡å°è£…åˆ°Matchå¯¹è±¡ä¸­ï¼Œå¹¶æ·»åŠ åˆ°é›†åˆ
 				matches.add(new Match(match, this.mappingRegistry.getMappings().get(mapping)));
 			}
 		}
@@ -515,10 +515,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		private final Map<T, MappingRegistration<T>> registry = new HashMap<>();
 
-		// ´æ´¢RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏóµÄÓ³Éä¹ØÏµ
+		// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡çš„æ˜ å°„å…³ç³»
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
-		// ´æ´¢RequestMappingInfo¶ÔÏóºÍURLµÄÓ³Éä¹ØÏµ
+		// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒURLçš„æ˜ å°„å…³ç³»
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
 
 		private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
@@ -576,19 +576,19 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		public void register(T mapping, Object handler, Method method) {
 			this.readWriteLock.writeLock().lock();
 			try {
-				// ´´½¨HandlerMethod¶ÔÏó£¬ÓÃÓÚ·â×°´¦ÀíÆ÷ÀàºÍÆäÖĞµÄÒ»¸ö·½·¨
+				// åˆ›å»ºHandlerMethodå¯¹è±¡ï¼Œç”¨äºå°è£…å¤„ç†å™¨ç±»å’Œå…¶ä¸­çš„ä¸€ä¸ªæ–¹æ³•
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				assertUniqueMethodMapping(handlerMethod, mapping);
 
 				if (logger.isInfoEnabled()) {
 					logger.info("Mapped \"" + mapping + "\" onto " + handlerMethod);
 				}
-				// ´æ´¢RequestMappingInfo¶ÔÏóºÍHandlerMethod¶ÔÏóµÄÓ³Éä¹ØÏµ
+				// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’ŒHandlerMethodå¯¹è±¡çš„æ˜ å°„å…³ç³»
 				this.mappingLookup.put(mapping, handlerMethod);
 
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {
-					// ´æ´¢RequestMappingInfo¶ÔÏóºÍÇëÇóurlµÄÓ³Éä¹ØÏµ
+					// å­˜å‚¨RequestMappingInfoå¯¹è±¡å’Œè¯·æ±‚urlçš„æ˜ å°„å…³ç³»
 					this.urlLookup.add(url, mapping);
 				}
 

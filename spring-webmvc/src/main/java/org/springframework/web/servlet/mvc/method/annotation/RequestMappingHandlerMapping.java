@@ -123,7 +123,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		this.embeddedValueResolver = resolver;
 	}
 
-	// RequestMappingHandlerMappingÊµÏÖÁËInitializingBean½Ó¿Ú£¬ËùÓĞÔÚBean³õÊ¼»¯µÄÊ±ºò£¬»áµ÷ÓÃafterPropertiesSet·½·¨
+	// RequestMappingHandlerMappingå®ç°äº†InitializingBeanæ¥å£ï¼Œæ‰€æœ‰åœ¨Beanåˆå§‹åŒ–çš„æ—¶å€™ï¼Œä¼šè°ƒç”¨afterPropertiesSetæ–¹æ³•
 	@Override
 	public void afterPropertiesSet() {
 		this.config = new RequestMappingInfo.BuilderConfiguration();
@@ -134,7 +134,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		this.config.setRegisteredSuffixPatternMatch(this.useRegisteredSuffixPatternMatch);
 		this.config.setContentNegotiationManager(getContentNegotiationManager());
 
-		// µ÷ÓÃ¸¸ÀàAbstractHandlerMethodMappingµÄafterPropertiesSet·½·¨
+		// è°ƒç”¨çˆ¶ç±»AbstractHandlerMethodMappingçš„afterPropertiesSetæ–¹æ³•
 		super.afterPropertiesSet();
 	}
 
@@ -191,13 +191,13 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Override
 	@Nullable
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		// »ñÈ¡Ö¸¶¨method¶ÔÓ¦µÄRequestMapping×¢½âĞÅÏ¢
+		// è·å–æŒ‡å®šmethodå¯¹åº”çš„RequestMappingæ³¨è§£ä¿¡æ¯
 		RequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
-			// »ñÈ¡Ö¸¶¨bean¶ÔÓ¦µÄRequestMapping×¢½âĞÅÏ¢
+			// è·å–æŒ‡å®šbeanå¯¹åº”çš„RequestMappingæ³¨è§£ä¿¡æ¯
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
-				// ½«beanÉÏÃæµÄRequestMappingĞÅÏ¢ºÍmethodÉÏÃæµÄRequestMappingĞÅÏ¢½øĞĞºÏ²¢
+				// å°†beanä¸Šé¢çš„RequestMappingä¿¡æ¯å’Œmethodä¸Šé¢çš„RequestMappingä¿¡æ¯è¿›è¡Œåˆå¹¶
 				info = typeInfo.combine(info);
 			}
 		}
@@ -213,11 +213,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	@Nullable
 	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
-		// ²éÕÒRequestMapping×¢½âÖĞµÄĞÅÏ¢£¬·â×°µ½RequestMapping¶ÔÏóÖĞ
+		// æŸ¥æ‰¾RequestMappingæ³¨è§£ä¸­çš„ä¿¡æ¯ï¼Œå°è£…åˆ°RequestMappingå¯¹è±¡ä¸­
 		RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
 		RequestCondition<?> condition = (element instanceof Class ?
 				getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
-		// Í¨¹ı¹¹½¨Æ÷Ä£Ê½£¬´´½¨RequestMappingInfo¶ÔÏó
+		// é€šè¿‡æ„å»ºå™¨æ¨¡å¼ï¼Œåˆ›å»ºRequestMappingInfoå¯¹è±¡
 		return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
 	}
 
@@ -262,7 +262,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
 
-		// Í¨¹ı¹¹½¨Æ÷Ä£Ê½£¬´´½¨RequestMappingInfo¶ÔÏó
+		// é€šè¿‡æ„å»ºå™¨æ¨¡å¼ï¼Œåˆ›å»ºRequestMappingInfoå¯¹è±¡
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())

@@ -121,11 +121,11 @@ public abstract class AopProxyUtils {
 			// No user-specified interfaces: check whether target class is an interface.
 			Class<?> targetClass = advised.getTargetClass();
 			if (targetClass != null) {
-				// Ä¿±êÀàÊÇ·ñÊÇ½Ó¿Ú
+				// ç›®æ ‡ç±»æ˜¯å¦æ˜¯æ¥å£
 				if (targetClass.isInterface()) {
 					advised.setInterfaces(targetClass);
 				}
-				// Ä¿±êÀàÊÇ·ñÊÇProxyÀà
+				// ç›®æ ‡ç±»æ˜¯å¦æ˜¯Proxyç±»
 				else if (Proxy.isProxyClass(targetClass)) {
 					advised.setInterfaces(targetClass.getInterfaces());
 				}
@@ -226,7 +226,7 @@ public abstract class AopProxyUtils {
 		if (ObjectUtils.isEmpty(arguments)) {
 			return new Object[0];
 		}
-		// Èç¹û¸Ã·½·¨ÉùÃ÷Îª²ÉÓÃ¿É±äÊıÁ¿µÄ²ÎÊı£¬Ôò·µ»Øtrue; ·ñÔò·µ»Øfalse¡£
+		// å¦‚æœè¯¥æ–¹æ³•å£°æ˜ä¸ºé‡‡ç”¨å¯å˜æ•°é‡çš„å‚æ•°ï¼Œåˆ™è¿”å›true; å¦åˆ™è¿”å›falseã€‚
 		if (method.isVarArgs()) {
 			Class<?>[] paramTypes = method.getParameterTypes();
 			if (paramTypes.length == arguments.length) {

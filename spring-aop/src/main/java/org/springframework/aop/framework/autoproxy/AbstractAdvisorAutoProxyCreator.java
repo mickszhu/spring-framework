@@ -1,4 +1,5 @@
 /*
+/*
  * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,7 +74,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 
-		// ·¢ÏÖºÏÊÊµÄAdvisor
+		// å‘ç°åˆé€‚çš„Advisor
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
@@ -92,10 +93,10 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
-		// ÏÈÕÒµ½ºòÑ¡µÄAdvisors(»ñÈ¡×¢½âºÍxmlÖĞµÄËùÓĞadvisor)
-		// Èç¹ûÊÇÊ¹ÓÃ×¢½â·½Ê½È¥±ê¼Çadvisor
+		// å…ˆæ‰¾åˆ°å€™é€‰çš„Advisors(è·å–æ³¨è§£å’Œxmlä¸­çš„æ‰€æœ‰advisor)
+		// å¦‚æœæ˜¯ä½¿ç”¨æ³¨è§£æ–¹å¼å»æ ‡è®°advisor
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		// ÔÙÕÒµ½ºÏ¸ñµÄAdvisors
+		// å†æ‰¾åˆ°åˆæ ¼çš„Advisors
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		
 		extendAdvisors(eligibleAdvisors);
@@ -128,10 +129,10 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
-			// »ñÈ¡¿ÉÓÃµÄaop advisor
-			// ½«Ã¿¸öadvisorÈ¥Æ¥ÅäbeanClass£¬¿´¿´ÊÇ·ñ¿ÉÒÔÈ¥ÔöÇ¿¸ÃÀàµÄÄ¿±ê·½·¨
-			// ClassFilterÊ×ÏÈ¹ıÂËÀà
-			// MethodMatcherÈ¥¹ıÂË·½·¨
+			// è·å–å¯ç”¨çš„aop advisor
+			// å°†æ¯ä¸ªadvisorå»åŒ¹é…beanClassï¼Œçœ‹çœ‹æ˜¯å¦å¯ä»¥å»å¢å¼ºè¯¥ç±»çš„ç›®æ ‡æ–¹æ³•
+			// ClassFilteré¦–å…ˆè¿‡æ»¤ç±»
+			// MethodMatcherå»è¿‡æ»¤æ–¹æ³•
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);
 		}
 		finally {

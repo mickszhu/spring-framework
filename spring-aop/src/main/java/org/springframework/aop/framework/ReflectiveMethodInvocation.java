@@ -159,40 +159,40 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	@Nullable
 	public Object proceed() throws Throwable {
 		// We start with an index of -1 and increment early.
-		// Èç¹ûÖ´ĞĞµ½Á´ÌõµÄÄ©Î² ÔòÖ±½Óµ÷ÓÃÁ¬½Óµã·½·¨ ¼´ Ö±½Óµ÷ÓÃÄ¿±ê·½·¨
+		// å¦‚æœæ‰§è¡Œåˆ°é“¾æ¡çš„æœ«å°¾ åˆ™ç›´æ¥è°ƒç”¨è¿æ¥ç‚¹æ–¹æ³• å³ ç›´æ¥è°ƒç”¨ç›®æ ‡æ–¹æ³•
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
 			return invokeJoinpoint();
 		}
 
-		// »ñÈ¡¼¯ºÏÖĞµÄ MethodInterceptor
+		// è·å–é›†åˆä¸­çš„ MethodInterceptor
 		Object interceptorOrInterceptionAdvice = this.interceptorsAndDynamicMethodMatchers
 				.get(++this.currentInterceptorIndex);
-		// Èç¹ûÊÇInterceptorAndDynamicMethodMatcherÀàĞÍ£¨¶¯Ì¬Æ¥Åä£©
+		// å¦‚æœæ˜¯InterceptorAndDynamicMethodMatcherç±»å‹ï¼ˆåŠ¨æ€åŒ¹é…ï¼‰
 		if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) {
 			// Evaluate dynamic method matcher here: static part will already have
 			// been evaluated and found to match.
 			InterceptorAndDynamicMethodMatcher dm =
 					(InterceptorAndDynamicMethodMatcher) interceptorOrInterceptionAdvice;
-			// ÕâÀïÃ¿Ò»´Î¶¼È¥Æ¥ÅäÊÇ·ñÊÊÓÃÓÚÕâ¸öÄ¿±ê·½·¨
+			// è¿™é‡Œæ¯ä¸€æ¬¡éƒ½å»åŒ¹é…æ˜¯å¦é€‚ç”¨äºè¿™ä¸ªç›®æ ‡æ–¹æ³•
 			if (dm.methodMatcher.matches(this.method, this.targetClass, this.arguments)) {
-				// Èç¹ûÆ¥ÅäÔòÖ±½Óµ÷ÓÃ MethodInterceptorµÄinvoke·½·¨
-				// ×¢ÒâÕâÀï´«ÈëµÄ²ÎÊıÊÇthis ÎÒÃÇÏÂÃæ¿´Ò»ÏÂ ReflectiveMethodInvocationµÄÀàĞÍ
+				// å¦‚æœåŒ¹é…åˆ™ç›´æ¥è°ƒç”¨ MethodInterceptorçš„invokeæ–¹æ³•
+				// æ³¨æ„è¿™é‡Œä¼ å…¥çš„å‚æ•°æ˜¯this æˆ‘ä»¬ä¸‹é¢çœ‹ä¸€ä¸‹ ReflectiveMethodInvocationçš„ç±»å‹
 				return dm.interceptor.invoke(this);
 			}
 			else {
 				// Dynamic matching failed.
 				// Skip this interceptor and invoke the next in the chain.
-				// Èç¹û²»ÊÊÓÃÓÚ´ËÄ¿±ê·½·¨ Ôò¼ÌĞøÖ´ĞĞÏÂÒ»¸öÁ´Ìõ
-				// µİ¹éµ÷ÓÃ
+				// å¦‚æœä¸é€‚ç”¨äºæ­¤ç›®æ ‡æ–¹æ³• åˆ™ç»§ç»­æ‰§è¡Œä¸‹ä¸€ä¸ªé“¾æ¡
+				// é€’å½’è°ƒç”¨
 				return proceed();
 			}
 		}
 		else {
 			// It's an interceptor, so we just invoke it: The pointcut will have
 			// been evaluated statically before this object was constructed.
-			// ËµÃ÷ÊÇÊÊÓÃÓÚ´ËÄ¿±ê·½·¨µÄ Ö±½Óµ÷ÓÃ MethodInterceptorµÄinvoke·½·¨
-			// ´«Èëthis¼´ReflectiveMethodInvocationÊµÀı
-			// ´«Èëthis½øÈë ÕâÑù¾Í¿ÉÒÔĞÎ³ÉÒ»¸öµ÷ÓÃµÄÁ´ÌõÁË
+			// è¯´æ˜æ˜¯é€‚ç”¨äºæ­¤ç›®æ ‡æ–¹æ³•çš„ ç›´æ¥è°ƒç”¨ MethodInterceptorçš„invokeæ–¹æ³•
+			// ä¼ å…¥thiså³ReflectiveMethodInvocationå®ä¾‹
+			// ä¼ å…¥thisè¿›å…¥ è¿™æ ·å°±å¯ä»¥å½¢æˆä¸€ä¸ªè°ƒç”¨çš„é“¾æ¡äº†
 			return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 		}
 	}
@@ -205,9 +205,9 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	 */
 	@Nullable
 	protected Object invokeJoinpoint() throws Throwable {
-		// this.target Ä¿±ê¶ÔÏó
-		// this.method Ä¿±ê·½·¨
-		// this.arguments Ä¿±ê·½·¨²ÎÊıĞÅÏ¢
+		// this.target ç›®æ ‡å¯¹è±¡
+		// this.method ç›®æ ‡æ–¹æ³•
+		// this.arguments ç›®æ ‡æ–¹æ³•å‚æ•°ä¿¡æ¯
 		return AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
 	}
 

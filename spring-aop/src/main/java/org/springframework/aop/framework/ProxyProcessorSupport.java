@@ -102,15 +102,15 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 * @param proxyFactory the ProxyFactory for the bean
 	 */
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {
-		// »ñÈ¡Ä¿±êÀàµÄËùÓĞ½Ó¿Ú
+		// è·å–ç›®æ ‡ç±»çš„æ‰€æœ‰æ¥å£
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
-		// ÊÇ·ñ¾ßÓĞºÏÀíµÄ´úÀí½Ó¿Ú
+		// æ˜¯å¦å…·æœ‰åˆç†çš„ä»£ç†æ¥å£
 		boolean hasReasonableProxyInterface = false;
 		for (Class<?> ifc : targetInterfaces) {
-			/* ½Ó¿ÚÅĞ¶ÏÊÇ·ñÓĞºÏÀíµÄ´úÀí½Ó¿Ú
-			 * 	1£ºÅÅ³ıInitializingBeanµÈÈİÆ÷»Øµ÷½Ó¿Ú
-			 * 	2£ºÅÅ³ıÊÇÒ»Ğ©ÓïÑÔÏà¹Ø½Ó¿Ú
-			 *  3£ºÅÅ³ı±ê¼Ç½Ó¿Ú£¨ÎŞ·½·¨ÊµÏÖµÄ½Ó¿Ú£©
+			/* æ¥å£åˆ¤æ–­æ˜¯å¦æœ‰åˆç†çš„ä»£ç†æ¥å£
+			 * 	1ï¼šæ’é™¤InitializingBeanç­‰å®¹å™¨å›è°ƒæ¥å£
+			 * 	2ï¼šæ’é™¤æ˜¯ä¸€äº›è¯­è¨€ç›¸å…³æ¥å£
+			 *  3ï¼šæ’é™¤æ ‡è®°æ¥å£ï¼ˆæ— æ–¹æ³•å®ç°çš„æ¥å£ï¼‰
 			 */			
 			if (!isConfigurationCallbackInterface(ifc) && !isInternalLanguageInterface(ifc) &&
 					ifc.getMethods().length > 0) {
@@ -118,16 +118,16 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 				break;
 			}
 		}
-		// Èç¹ûÓĞºÏÀíµÄ´úÀí½Ó¿Ú,Ôò½øĞĞJDK¶¯Ì¬´úÀí
+		// å¦‚æœæœ‰åˆç†çš„ä»£ç†æ¥å£,åˆ™è¿›è¡ŒJDKåŠ¨æ€ä»£ç†
 		if (hasReasonableProxyInterface) {
 			// Must allow for introductions; can't just set interfaces to the target's interfaces only.
 			for (Class<?> ifc : targetInterfaces) {
-				// ½«½Ó¿ÚÌí¼Óµ½´úÀí¹¤³§ÖĞ
+				// å°†æ¥å£æ·»åŠ åˆ°ä»£ç†å·¥å‚ä¸­
 				proxyFactory.addInterface(ifc);
 			}
 		}
 		else {
-			//CGLib¶¯Ì¬´úÀí
+			//CGLibåŠ¨æ€ä»£ç†
 			proxyFactory.setProxyTargetClass(true);
 		}
 	}

@@ -96,7 +96,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	private ParseState parseState = new ParseState();
 
 	/**
-	 * element : ¾ÍÊÇ<aop:config>±êÇ©ÔªËØ¶ÔÏó
+	 * element : å°±æ˜¯<aop:config>æ ‡ç­¾å…ƒç´ å¯¹è±¡
 	 */
 	@Override
 	@Nullable
@@ -105,32 +105,32 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(compositeDef);
 
-		// ÏòIoCÈİÆ÷ÖĞ×¢²á AspectJAwareAdvisorAutoProxyCreator ÀàµÄBeanDefinition£º£¨ÓÃÓÚ´´½¨AOP´úÀí¶ÔÏóµÄ£©
-		// BeanPostProcessor¿ÉÒÔ¶ÔÊµÀı»¯Ö®ºóµÄbean½øĞĞÒ»Ğ©²Ù×÷
-		// AspectJAwareAdvisorAutoProxyCreator ÊµÏÖÁËBeanPostProcessor½Ó¿Ú,¿ÉÒÔ¶ÔÄ¿±ê¶ÔÏóÊµÀı»¯Ö®ºó£¬´´½¨¶ÔÓ¦µÄ´úÀí¶ÔÏó
+		// å‘IoCå®¹å™¨ä¸­æ³¨å†Œ AspectJAwareAdvisorAutoProxyCreator ç±»çš„BeanDefinitionï¼šï¼ˆç”¨äºåˆ›å»ºAOPä»£ç†å¯¹è±¡çš„ï¼‰
+		// BeanPostProcessorå¯ä»¥å¯¹å®ä¾‹åŒ–ä¹‹åçš„beanè¿›è¡Œä¸€äº›æ“ä½œ
+		// AspectJAwareAdvisorAutoProxyCreator å®ç°äº†BeanPostProcessoræ¥å£,å¯ä»¥å¯¹ç›®æ ‡å¯¹è±¡å®ä¾‹åŒ–ä¹‹åï¼Œåˆ›å»ºå¯¹åº”çš„ä»£ç†å¯¹è±¡
 		configureAutoProxyCreator(parserContext, element);
 
-		// »ñÈ¡<aop:config>±êÇ©µÄ×Ó±êÇ©<aop:aspect>¡¢<aop:advisor> ¡¢<aop:pointcut>
+		// è·å–<aop:config>æ ‡ç­¾çš„å­æ ‡ç­¾<aop:aspect>ã€<aop:advisor> ã€<aop:pointcut>
 		List<Element> childElts = DomUtils.getChildElements(element);
 		for (Element elt: childElts) {
-			// »ñÈ¡×Ó±êÇ©µÄ½ÚµãÃû³Æ»òÕß½ĞÔªËØÃû³Æ
+			// è·å–å­æ ‡ç­¾çš„èŠ‚ç‚¹åç§°æˆ–è€…å«å…ƒç´ åç§°
 			String localName = parserContext.getDelegate().getLocalName(elt);
 			if (POINTCUT.equals(localName)) {
-				// ½âÎö<aop:pointcut>±êÇ© 
-				// ²úÉúÒ»¸öAspectJExpressionPointcutµÄBeanDefinition¶ÔÏó£¬²¢×¢²á
+				// è§£æ<aop:pointcut>æ ‡ç­¾ 
+				// äº§ç”Ÿä¸€ä¸ªAspectJExpressionPointcutçš„BeanDefinitionå¯¹è±¡ï¼Œå¹¶æ³¨å†Œ
 				parsePointcut(elt, parserContext);
 			}
 			else if (ADVISOR.equals(localName)) {
-				// ½âÎö<aop:advisor>±êÇ©
-				// ²úÉúÒ»¸öDefaultBeanFactoryPointcutAdvisorµÄBeanDefinition¶ÔÏó£¬²¢×¢²á
+				// è§£æ<aop:advisor>æ ‡ç­¾
+				// äº§ç”Ÿä¸€ä¸ªDefaultBeanFactoryPointcutAdvisorçš„BeanDefinitionå¯¹è±¡ï¼Œå¹¶æ³¨å†Œ
 				parseAdvisor(elt, parserContext);
 			}
 			else if (ASPECT.equals(localName)) {
-				// ½âÎö<aop:aspect>±êÇ©
-				// ²úÉúÁËºÜ¶àBeanDefinition¶ÔÏó
-				// aop:afterµÈ±êÇ©¶ÔÓ¦5¸öBeanDefinition¶ÔÏó
-				// aop:after±êÇ©µÄmethodÊôĞÔ¶ÔÓ¦1¸öBeanDefinition¶ÔÏó
-				// ×îÖÕµÄAspectJPointcutAdvisor BeanDefinitionÀà
+				// è§£æ<aop:aspect>æ ‡ç­¾
+				// äº§ç”Ÿäº†å¾ˆå¤šBeanDefinitionå¯¹è±¡
+				// aop:afterç­‰æ ‡ç­¾å¯¹åº”5ä¸ªBeanDefinitionå¯¹è±¡
+				// aop:afteræ ‡ç­¾çš„methodå±æ€§å¯¹åº”1ä¸ªBeanDefinitionå¯¹è±¡
+				// æœ€ç»ˆçš„AspectJPointcutAdvisor BeanDefinitionç±»
 				
 				parseAspect(elt, parserContext);
 			}
@@ -147,7 +147,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * @see AopNamespaceUtils
 	 */
 	private void configureAutoProxyCreator(ParserContext parserContext, Element element) {
-		// ×¢²áAspectJAwareAdvisorAutoProxyCreatorÀàµÄBeanDefinition
+		// æ³¨å†ŒAspectJAwareAdvisorAutoProxyCreatorç±»çš„BeanDefinition
 		AopNamespaceUtils.registerAspectJAutoProxyCreatorIfNecessary(parserContext, element);
 	}
 
@@ -157,15 +157,15 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * with the supplied {@link BeanDefinitionRegistry}.
 	 */
 	private void parseAdvisor(Element advisorElement, ParserContext parserContext) {
-		// ´´½¨Ä¬ÈÏµÄÔöÇ¿Æ÷BeanDefinition£ºDefaultBeanFactoryPointcutAdvisor
+		// åˆ›å»ºé»˜è®¤çš„å¢å¼ºå™¨BeanDefinitionï¼šDefaultBeanFactoryPointcutAdvisor
 		AbstractBeanDefinition advisorDef = createAdvisorBeanDefinition(advisorElement, parserContext);
-		// »ñÈ¡idÊôĞÔ
+		// è·å–idå±æ€§
 		String id = advisorElement.getAttribute(ID);
 
 		try {
 			this.parseState.push(new AdvisorEntry(id));
 			String advisorBeanName = id;
-			// ×¢²áDefaultBeanFactoryPointcutAdvisor¶ÔÓ¦µÄBeanDefinition¶ÔÏóµ½×¢²áÆ÷ÖĞ
+			// æ³¨å†ŒDefaultBeanFactoryPointcutAdvisorå¯¹åº”çš„BeanDefinitionå¯¹è±¡åˆ°æ³¨å†Œå™¨ä¸­
 			if (StringUtils.hasText(advisorBeanName)) {
 				parserContext.getRegistry().registerBeanDefinition(advisorBeanName, advisorDef);
 			}
@@ -173,7 +173,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				advisorBeanName = parserContext.getReaderContext().registerWithGeneratedName(advisorDef);
 			}
 
-			// »ñÈ¡ÇĞÈëµãÊôĞÔ
+			// è·å–åˆ‡å…¥ç‚¹å±æ€§
 			Object pointcut = parsePointcutProperty(advisorElement, parserContext);
 			if (pointcut instanceof BeanDefinition) {
 				advisorDef.getPropertyValues().add(POINTCUT, pointcut);
@@ -196,18 +196,18 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * parse any associated '{@code pointcut}' or '{@code pointcut-ref}' attributes.
 	 */
 	private AbstractBeanDefinition createAdvisorBeanDefinition(Element advisorElement, ParserContext parserContext) {
-		// ´´½¨Ä¬ÈÏµÄÔöÇ¿Æ÷BeanDefinition£ºDefaultBeanFactoryPointcutAdvisor
+		// åˆ›å»ºé»˜è®¤çš„å¢å¼ºå™¨BeanDefinitionï¼šDefaultBeanFactoryPointcutAdvisor
 		RootBeanDefinition advisorDefinition = new RootBeanDefinition(DefaultBeanFactoryPointcutAdvisor.class);
 		advisorDefinition.setSource(parserContext.extractSource(advisorElement));
 
-		// »ñÈ¡<aop:advisor>±êÇ©µÄadvice-refÊôĞÔ£¬¸ÃÊôĞÔÖµ¶ÔÓ¦Ò»¸öAdvice
+		// è·å–<aop:advisor>æ ‡ç­¾çš„advice-refå±æ€§ï¼Œè¯¥å±æ€§å€¼å¯¹åº”ä¸€ä¸ªAdvice
 		String adviceRef = advisorElement.getAttribute(ADVICE_REF);
-		// Èç¹û<aop:advisor>±êÇ©µÄadvice-refÊôĞÔÎª¿Õ£¬Ôò±¨´í
+		// å¦‚æœ<aop:advisor>æ ‡ç­¾çš„advice-refå±æ€§ä¸ºç©ºï¼Œåˆ™æŠ¥é”™
 		if (!StringUtils.hasText(adviceRef)) {
 			parserContext.getReaderContext().error(
 					"'advice-ref' attribute contains empty value.", advisorElement, this.parseState.snapshot());
 		}
-		// ÉèÖÃDefaultBeanFactoryPointcutAdvisorÀàµÄadviceBeanNameÊôĞÔ:<aop:advisor>±êÇ©µÄadvice-refÊôĞÔÒıÓÃ
+		// è®¾ç½®DefaultBeanFactoryPointcutAdvisorç±»çš„adviceBeanNameå±æ€§:<aop:advisor>æ ‡ç­¾çš„advice-refå±æ€§å¼•ç”¨
 		else {
 			advisorDefinition.getPropertyValues().add(
 					ADVICE_BEAN_NAME, new RuntimeBeanNameReference(adviceRef));
@@ -222,9 +222,9 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	}
 
 	private void parseAspect(Element aspectElement, ParserContext parserContext) {
-		// »ñÈ¡<aop:aspect>±êÇ©µÄidÊôĞÔÖµ
+		// è·å–<aop:aspect>æ ‡ç­¾çš„idå±æ€§å€¼
 		String aspectId = aspectElement.getAttribute(ID);
-		// »ñÈ¡<aop:aspect>±êÇ©µÄrefÊôĞÔÖµ£¬Ò²¾ÍÊÇÔöÇ¿ÀàµÄÒıÓÃÃû³Æ
+		// è·å–<aop:aspect>æ ‡ç­¾çš„refå±æ€§å€¼ï¼Œä¹Ÿå°±æ˜¯å¢å¼ºç±»çš„å¼•ç”¨åç§°
 		String aspectName = aspectElement.getAttribute(REF);
 
 		try {
@@ -232,7 +232,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			List<BeanDefinition> beanDefinitions = new ArrayList<>();
 			List<BeanReference> beanReferences = new ArrayList<>();
 
-			// ´¦Àí<aop:aspect>±êÇ©µÄ<aop:declare-parents>×Ó±êÇ©
+			// å¤„ç†<aop:aspect>æ ‡ç­¾çš„<aop:declare-parents>å­æ ‡ç­¾
 			List<Element> declareParents = DomUtils.getChildElementsByTagName(aspectElement, DECLARE_PARENTS);
 			for (int i = METHOD_INDEX; i < declareParents.size(); i++) {
 				Element declareParentsElement = declareParents.get(i);
@@ -241,12 +241,12 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 			// We have to parse "advice" and all the advice kinds in one loop, to get the
 			// ordering semantics right.
-			// »ñÈ¡<aop:aspect>±êÇ©µÄËùÓĞ×Ó±êÇ©
+			// è·å–<aop:aspect>æ ‡ç­¾çš„æ‰€æœ‰å­æ ‡ç­¾
 			NodeList nodeList = aspectElement.getChildNodes();
 			boolean adviceFoundAlready = false;
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node node = nodeList.item(i);
-				// ÅĞ¶ÏÊÇ·ñÊÇ<aop:before>¡¢<aop:after>¡¢<aop:after-returning>¡¢<aop:after-throwing method="">¡¢<aop:around method="">ÕâÎå¸ö±êÇ©
+				// åˆ¤æ–­æ˜¯å¦æ˜¯<aop:before>ã€<aop:after>ã€<aop:after-returning>ã€<aop:after-throwing method="">ã€<aop:around method="">è¿™äº”ä¸ªæ ‡ç­¾
 				if (isAdviceNode(node, parserContext)) {
 					if (!adviceFoundAlready) {
 						adviceFoundAlready = true;
@@ -258,11 +258,11 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 						}
 						beanReferences.add(new RuntimeBeanReference(aspectName));
 					}
-					// ½âÎö<aop:before>µÈÎå¸ö×Ó±êÇ©
-					// ·½·¨Ö÷Òª×öÁËÈı¼şÊÂ£º
-					//		1¡¢¸ù¾İÖ¯Èë·½Ê½£¨before¡¢afterÕâĞ©£©´´½¨RootBeanDefinition£¬ÃûÎªadviceDef¼´advice¶¨Òå
-					//		2¡¢½«ÉÏÒ»²½´´½¨µÄRootBeanDefinitionĞ´ÈëÒ»¸öĞÂµÄRootBeanDefinition£¬¹¹ÔìÒ»¸öĞÂµÄ¶ÔÏó£¬ÃûÎªadvisorDefinition£¬¼´advisor¶¨Òå
-					//		3¡¢½«advisorDefinition×¢²áµ½DefaultListableBeanFactoryÖĞ
+					// è§£æ<aop:before>ç­‰äº”ä¸ªå­æ ‡ç­¾
+					// æ–¹æ³•ä¸»è¦åšäº†ä¸‰ä»¶äº‹ï¼š
+					//		1ã€æ ¹æ®ç»‡å…¥æ–¹å¼ï¼ˆbeforeã€afterè¿™äº›ï¼‰åˆ›å»ºRootBeanDefinitionï¼Œåä¸ºadviceDefå³adviceå®šä¹‰
+					//		2ã€å°†ä¸Šä¸€æ­¥åˆ›å»ºçš„RootBeanDefinitionå†™å…¥ä¸€ä¸ªæ–°çš„RootBeanDefinitionï¼Œæ„é€ ä¸€ä¸ªæ–°çš„å¯¹è±¡ï¼Œåä¸ºadvisorDefinitionï¼Œå³advisorå®šä¹‰
+					//		3ã€å°†advisorDefinitionæ³¨å†Œåˆ°DefaultListableBeanFactoryä¸­
 					AbstractBeanDefinition advisorDefinition = parseAdvice(
 							aspectName, i, aspectElement, (Element) node, parserContext, beanDefinitions, beanReferences);
 					beanDefinitions.add(advisorDefinition);
@@ -273,10 +273,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					aspectElement, aspectId, beanDefinitions, beanReferences, parserContext);
 			parserContext.pushContainingComponent(aspectComponentDefinition);
 
-			// µÃµ½ËùÓĞ<aop:aspect>ÏÂµÄ<aop:pointcut>×Ó±êÇ©
+			// å¾—åˆ°æ‰€æœ‰<aop:aspect>ä¸‹çš„<aop:pointcut>å­æ ‡ç­¾
 			List<Element> pointcuts = DomUtils.getChildElementsByTagName(aspectElement, POINTCUT);
 			for (Element pointcutElement : pointcuts) {
-				// ½âÎö<aop:pointcut>×Ó±êÇ©
+				// è§£æ<aop:pointcut>å­æ ‡ç­¾
 				parsePointcut(pointcutElement, parserContext);
 			}
 
@@ -358,35 +358,35 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			this.parseState.push(new AdviceEntry(parserContext.getDelegate().getLocalName(adviceElement)));
 
 			// create the method factory bean
-			// ´´½¨·½·¨¹¤³§BeanµÄBeanDefinition¶ÔÏó£ºÓÃÓÚ»ñÈ¡AdviceÔöÇ¿ÀàµÄMethod¶ÔÏó
+			// åˆ›å»ºæ–¹æ³•å·¥å‚Beançš„BeanDefinitionå¯¹è±¡ï¼šç”¨äºè·å–Adviceå¢å¼ºç±»çš„Methodå¯¹è±¡
 			RootBeanDefinition methodDefinition = new RootBeanDefinition(MethodLocatingFactoryBean.class);
-			// ÉèÖÃMethodLocatingFactoryBeanµÄtargetBeanNameÎªadviceÀàµÄÒıÓÃÃû³Æ
+			// è®¾ç½®MethodLocatingFactoryBeançš„targetBeanNameä¸ºadviceç±»çš„å¼•ç”¨åç§°
 			methodDefinition.getPropertyValues().add("targetBeanName", aspectName);
-			// ÉèÖÃMethodLocatingFactoryBeanµÄmethodNameÎª<aop:after>±êÇ©µÄmethodÊôĞÔÖµ£¨Ò²¾ÍÊÇadvice·½·¨Ãû³Æ£©
+			// è®¾ç½®MethodLocatingFactoryBeançš„methodNameä¸º<aop:after>æ ‡ç­¾çš„methodå±æ€§å€¼ï¼ˆä¹Ÿå°±æ˜¯adviceæ–¹æ³•åç§°ï¼‰
 			methodDefinition.getPropertyValues().add("methodName", adviceElement.getAttribute("method"));
 			methodDefinition.setSynthetic(true);
 
 			// create instance factory definition
-			// ´´½¨ÊµÀı¹¤³§BeanDefinition£ºÓÃÓÚ´´½¨ÔöÇ¿ÀàµÄÊµÀı
+			// åˆ›å»ºå®ä¾‹å·¥å‚BeanDefinitionï¼šç”¨äºåˆ›å»ºå¢å¼ºç±»çš„å®ä¾‹
 			RootBeanDefinition aspectFactoryDef =
 					new RootBeanDefinition(SimpleBeanFactoryAwareAspectInstanceFactory.class);
-			// ÉèÖÃSimpleBeanFactoryAwareAspectInstanceFactoryµÄaspectBeanNameÎªadviceÀàµÄÒıÓÃÃû³Æ
+			// è®¾ç½®SimpleBeanFactoryAwareAspectInstanceFactoryçš„aspectBeanNameä¸ºadviceç±»çš„å¼•ç”¨åç§°
 			aspectFactoryDef.getPropertyValues().add("aspectBeanName", aspectName);
 			aspectFactoryDef.setSynthetic(true);
-			//ÒÔÉÏµÄÁ½¸öBeanDefinitionµÄ×÷ÓÃÖ÷ÒªÊÇÍ¨¹ı·´Éäµ÷ÓÃAdvice¶ÔÏóµÄÖ¸¶¨·½·¨
+			//ä»¥ä¸Šçš„ä¸¤ä¸ªBeanDefinitionçš„ä½œç”¨ä¸»è¦æ˜¯é€šè¿‡åå°„è°ƒç”¨Adviceå¯¹è±¡çš„æŒ‡å®šæ–¹æ³•
 			// method.invoke(obj,args)
 
 			// register the pointcut
-			// Í¨ÖªÔöÇ¿ÀàµÄBeanDefinition¶ÔÏó£¨ºËĞÄ£©
+			// é€šçŸ¥å¢å¼ºç±»çš„BeanDefinitionå¯¹è±¡ï¼ˆæ ¸å¿ƒï¼‰
 			AbstractBeanDefinition adviceDef = createAdviceDefinition(
 					adviceElement, parserContext, aspectName, order, methodDefinition, aspectFactoryDef,
 					beanDefinitions, beanReferences);
 
 			// configure the advisor
-			// Í¨ÖªÆ÷ÀàµÄBeanDefinition¶ÔÏó
+			// é€šçŸ¥å™¨ç±»çš„BeanDefinitionå¯¹è±¡
 			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class);
 			advisorDefinition.setSource(parserContext.extractSource(adviceElement));
-			// ¸øÍ¨ÖªÆ÷ÀàÉèÖÃAdvice¶ÔÏóÊôĞÔÖµ
+			// ç»™é€šçŸ¥å™¨ç±»è®¾ç½®Adviceå¯¹è±¡å±æ€§å€¼
 			advisorDefinition.getConstructorArgumentValues().addGenericArgumentValue(adviceDef);
 			if (aspectElement.hasAttribute(ORDER_PROPERTY)) {
 				advisorDefinition.getPropertyValues().add(
@@ -394,7 +394,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			// register the final advisor
-			// ½«advisorDefinition×¢²áµ½IoCÈİÆ÷ÖĞ
+			// å°†advisorDefinitionæ³¨å†Œåˆ°IoCå®¹å™¨ä¸­
 			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition);
 
 			return advisorDefinition;
@@ -415,15 +415,15 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition methodDef, RootBeanDefinition aspectFactoryDef,
 			List<BeanDefinition> beanDefinitions, List<BeanReference> beanReferences) {
 
-		// ¸ù¾İÍ¨ÖªÀàĞÍµÄ²»Í¬£¬·Ö±ğ´´½¨¶ÔÓ¦µÄBeanDefinition¶ÔÏó(¿ÉÒÔÈ¥¿´¿´getAdviceClass·½·¨)
+		// æ ¹æ®é€šçŸ¥ç±»å‹çš„ä¸åŒï¼Œåˆ†åˆ«åˆ›å»ºå¯¹åº”çš„BeanDefinitionå¯¹è±¡(å¯ä»¥å»çœ‹çœ‹getAdviceClassæ–¹æ³•)
 		RootBeanDefinition adviceDefinition = new RootBeanDefinition(getAdviceClass(adviceElement, parserContext));
 		adviceDefinition.setSource(parserContext.extractSource(adviceElement));
 
-		// Îª²»Í¬µÄÔöÇ¿Í¨ÖªÀà£¬Ìí¼ÓÍ³Ò»µÄÊôĞÔÖµ
+		// ä¸ºä¸åŒçš„å¢å¼ºé€šçŸ¥ç±»ï¼Œæ·»åŠ ç»Ÿä¸€çš„å±æ€§å€¼
 		adviceDefinition.getPropertyValues().add(ASPECT_NAME_PROPERTY, aspectName);
 		adviceDefinition.getPropertyValues().add(DECLARATION_ORDER_PROPERTY, order);
 
-		// Îª²»Í¬µÄÔöÇ¿Í¨ÖªÀà£¬Ìí¼Ó¶ÔÓ¦µÄÊôĞÔÖµ
+		// ä¸ºä¸åŒçš„å¢å¼ºé€šçŸ¥ç±»ï¼Œæ·»åŠ å¯¹åº”çš„å±æ€§å€¼
 		if (adviceElement.hasAttribute(RETURNING)) {
 			adviceDefinition.getPropertyValues().add(
 					RETURNING_PROPERTY, adviceElement.getAttribute(RETURNING));
@@ -437,14 +437,14 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					ARG_NAMES_PROPERTY, adviceElement.getAttribute(ARG_NAMES));
 		}
 
-		// ÉèÖÃ¹¹Ôì²ÎÊı
+		// è®¾ç½®æ„é€ å‚æ•°
 		ConstructorArgumentValues cav = adviceDefinition.getConstructorArgumentValues();
-		// ÉèÖÃµÚÒ»¸ö¹¹Ôì²ÎÊı£º·½·¨¹¤³§¶ÔÏóµÄBeanDefinition
+		// è®¾ç½®ç¬¬ä¸€ä¸ªæ„é€ å‚æ•°ï¼šæ–¹æ³•å·¥å‚å¯¹è±¡çš„BeanDefinition
 		cav.addIndexedArgumentValue(METHOD_INDEX, methodDef);
 
-		// ½âÎö<aop:before>¡¢<aop:after>¡¢<aop:after-returning>±êÇ©ÖĞµÄpointcut»òÕßpointcut-refÊôĞÔ
+		// è§£æ<aop:before>ã€<aop:after>ã€<aop:after-returning>æ ‡ç­¾ä¸­çš„pointcutæˆ–è€…pointcut-refå±æ€§
 		Object pointcut = parsePointcutProperty(adviceElement, parserContext);
-		// ÉèÖÃµÚ¶ş¸ö¹¹Ôì²ÎÊı£ºÇĞÈëµãBeanDefinition
+		// è®¾ç½®ç¬¬äºŒä¸ªæ„é€ å‚æ•°ï¼šåˆ‡å…¥ç‚¹BeanDefinition
 		if (pointcut instanceof BeanDefinition) {
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcut);
 			beanDefinitions.add((BeanDefinition) pointcut);
@@ -454,7 +454,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcutRef);
 			beanReferences.add(pointcutRef);
 		}
-		// ÉèÖÃµÚÈı¸ö¹¹Ôì²ÎÊı£ºÊµÀı¹¤³§BeanDefinition
+		// è®¾ç½®ç¬¬ä¸‰ä¸ªæ„é€ å‚æ•°ï¼šå®ä¾‹å·¥å‚BeanDefinition
 		cav.addIndexedArgumentValue(ASPECT_INSTANCE_FACTORY_INDEX, aspectFactoryDef);
 
 		return adviceDefinition;
@@ -464,25 +464,25 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * Gets the advice implementation class corresponding to the supplied {@link Element}.
 	 */
 	private Class<?> getAdviceClass(Element adviceElement, ParserContext parserContext) {
-		// »ñÈ¡±êÇ©Ãû³Æ£¬±ÈÈçaop:before±êÇ©¶ÔÓ¦µÄ±êÇ©ÃûÊÇbefore
+		// è·å–æ ‡ç­¾åç§°ï¼Œæ¯”å¦‚aop:beforeæ ‡ç­¾å¯¹åº”çš„æ ‡ç­¾åæ˜¯before
 		String elementName = parserContext.getDelegate().getLocalName(adviceElement);
-		// ´¦Àí<aop:before>±êÇ©
+		// å¤„ç†<aop:before>æ ‡ç­¾
 		if (BEFORE.equals(elementName)) {
 			return AspectJMethodBeforeAdvice.class;
 		}
-		// ´¦Àí<aop:after>±êÇ©
+		// å¤„ç†<aop:after>æ ‡ç­¾
 		else if (AFTER.equals(elementName)) {
 			return AspectJAfterAdvice.class;
 		}
-		// ´¦Àí<aop:after-returning>±êÇ©
+		// å¤„ç†<aop:after-returning>æ ‡ç­¾
 		else if (AFTER_RETURNING_ELEMENT.equals(elementName)) {
 			return AspectJAfterReturningAdvice.class;
 		}
-		// ´¦Àí<aop:after-throwing>±êÇ©
+		// å¤„ç†<aop:after-throwing>æ ‡ç­¾
 		else if (AFTER_THROWING_ELEMENT.equals(elementName)) {
 			return AspectJAfterThrowingAdvice.class;
 		}
-		// ´¦Àí<aop:aroud>±êÇ©
+		// å¤„ç†<aop:aroud>æ ‡ç­¾
 		else if (AROUND.equals(elementName)) {
 			return AspectJAroundAdvice.class;
 		}
@@ -496,26 +496,26 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * Pointcut with the BeanDefinitionRegistry.
 	 */
 	private AbstractBeanDefinition parsePointcut(Element pointcutElement, ParserContext parserContext) {
-		// <aop:pointcut>±êÇ©µÄidÊôĞÔ
+		// <aop:pointcut>æ ‡ç­¾çš„idå±æ€§
 		String id = pointcutElement.getAttribute(ID);
-		// <aop:pointcut>±êÇ©µÄexpressionÊôĞÔ
+		// <aop:pointcut>æ ‡ç­¾çš„expressionå±æ€§
 		String expression = pointcutElement.getAttribute(EXPRESSION);
 
 		AbstractBeanDefinition pointcutDefinition = null;
 
 		try {
 			this.parseState.push(new PointcutEntry(id));
-			// ´Ë´¦´´½¨Ò»¸ö AspectJExpressionPointcut Àà¶ÔÓ¦µÄBeanDefinition¶ÔÏó£¬´¦Àípointcut
+			// æ­¤å¤„åˆ›å»ºä¸€ä¸ª AspectJExpressionPointcut ç±»å¯¹åº”çš„BeanDefinitionå¯¹è±¡ï¼Œå¤„ç†pointcut
 			pointcutDefinition = createPointcutDefinition(expression);
-			// ½âÎöÔ´ÊÇ<aop:pointcut>
+			// è§£ææºæ˜¯<aop:pointcut>
 			pointcutDefinition.setSource(parserContext.extractSource(pointcutElement));
 
 			String pointcutBeanName = id;
-			// Èç¹ûÅäÖÃidÊôĞÔ£¬Ôò×ßÏÂÃæ´úÂë
+			// å¦‚æœé…ç½®idå±æ€§ï¼Œåˆ™èµ°ä¸‹é¢ä»£ç 
 			if (StringUtils.hasText(pointcutBeanName)) {
 				parserContext.getRegistry().registerBeanDefinition(pointcutBeanName, pointcutDefinition);
 			}
-			// Èç¹ûÃ»ÓĞÅäÖÃidÊôĞÔ£¬Ôò×ßÏÂÃæ´úÂë
+			// å¦‚æœæ²¡æœ‰é…ç½®idå±æ€§ï¼Œåˆ™èµ°ä¸‹é¢ä»£ç 
 			else {
 				pointcutBeanName = parserContext.getReaderContext().registerWithGeneratedName(pointcutDefinition);
 			}
@@ -544,16 +544,16 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					element, this.parseState.snapshot());
 			return null;
 		}
-		else if (element.hasAttribute(POINTCUT)) { // ½âÎöpointcutÊôĞÔ
+		else if (element.hasAttribute(POINTCUT)) { // è§£æpointcutå±æ€§
 			// Create a pointcut for the anonymous pc and register it.
 			String expression = element.getAttribute(POINTCUT);
-			// ´´½¨ÇĞÈëµãÀàAspectJExpressionPointcutµÄBeanDefinition¶ÔÏó
-			// ×¢Òâ£ºAspectJExpressionPointcutÊÇÔ­ĞÍµÄ
+			// åˆ›å»ºåˆ‡å…¥ç‚¹ç±»AspectJExpressionPointcutçš„BeanDefinitionå¯¹è±¡
+			// æ³¨æ„ï¼šAspectJExpressionPointcutæ˜¯åŸå‹çš„
 			AbstractBeanDefinition pointcutDefinition = createPointcutDefinition(expression);
 			pointcutDefinition.setSource(parserContext.extractSource(element));
 			return pointcutDefinition;
 		}
-		else if (element.hasAttribute(POINTCUT_REF)) {// ½âÎöpointcut-refÊôĞÔ
+		else if (element.hasAttribute(POINTCUT_REF)) {// è§£æpointcut-refå±æ€§
 			String pointcutRef = element.getAttribute(POINTCUT_REF);
 			if (!StringUtils.hasText(pointcutRef)) {
 				parserContext.getReaderContext().error(
@@ -578,7 +578,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
 		beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		beanDefinition.setSynthetic(true);
-		// ÉèÖÃÇĞÈëµã±í´ïÊ½
+		// è®¾ç½®åˆ‡å…¥ç‚¹è¡¨è¾¾å¼
 		beanDefinition.getPropertyValues().add(EXPRESSION, expression);
 		return beanDefinition;
 	}

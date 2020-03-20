@@ -245,13 +245,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		Object cacheKey = getCacheKey(beanClass, beanName);
 
-		// Èç¹ûbeanNameÎª¿Õ»òÕßtargetSourcedBeans¼¯ºÏÖĞÒÑ¾­°üº¬ÁË¸ÃbeanName
+		// å¦‚æœbeanNameä¸ºç©ºæˆ–è€…targetSourcedBeansé›†åˆä¸­å·²ç»åŒ…å«äº†è¯¥beanName
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			// Èç¹ûadvisedBeans¼¯ºÏÖĞÒÑ¾­°üº¬ÁË¸ÃbeanµÄname»òÕßclassĞÅÏ¢£¬Ôò²»´¦Àí
+			// å¦‚æœadvisedBeansé›†åˆä¸­å·²ç»åŒ…å«äº†è¯¥beançš„nameæˆ–è€…classä¿¡æ¯ï¼Œåˆ™ä¸å¤„ç†
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
-			// Èç¹ûÊÇ»ù´¡ÉèÊ©ÀàAdvice\Pointcut\Advisor\AopInfrastructureBean»òÕß¸ÃbeanÊÇÒ»¸öaspectµÄbean£¬Ôò²»´¦Àí
+			// å¦‚æœæ˜¯åŸºç¡€è®¾æ–½ç±»Advice\Pointcut\Advisor\AopInfrastructureBeanæˆ–è€…è¯¥beanæ˜¯ä¸€ä¸ªaspectçš„beanï¼Œåˆ™ä¸å¤„ç†
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -266,9 +266,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (StringUtils.hasLength(beanName)) {
 				this.targetSourcedBeans.add(beanName);
 			}
-			// Õë¶ÔÄ¿±ê¶ÔÏó»ñÈ¡ºÏÊÊµÄadvisorÔöÇ¿Àà¼¯ºÏ
+			// é’ˆå¯¹ç›®æ ‡å¯¹è±¡è·å–åˆé€‚çš„advisorå¢å¼ºç±»é›†åˆ
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
-			// Õë¶ÔÔöÇ¿Àà²úÉú´úÀí¶ÔÏó
+			// é’ˆå¯¹å¢å¼ºç±»äº§ç”Ÿä»£ç†å¯¹è±¡
 			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
@@ -302,13 +302,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) throws BeansException {
 		if (bean != null) {
-			// cacheKey¾ÍÊÇbeanName»òÕßbeanClass
+			// cacheKeyå°±æ˜¯beanNameæˆ–è€…beanClass
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
-				// Ê¹ÓÃ¶¯Ì¬´úÀí¼¼Êõ£¬²úÉú´úÀí¶ÔÏó
-				// bean : Ä¿±ê¶ÔÏó
-				// beanName £ºÄ¿±ê¶ÔÏóÃû³Æ
-				// cacheKey:¾ÍÊÇbeanName»òÕßbeanClass
+				// ä½¿ç”¨åŠ¨æ€ä»£ç†æŠ€æœ¯ï¼Œäº§ç”Ÿä»£ç†å¯¹è±¡
+				// bean : ç›®æ ‡å¯¹è±¡
+				// beanName ï¼šç›®æ ‡å¯¹è±¡åç§°
+				// cacheKey:å°±æ˜¯beanNameæˆ–è€…beanClass
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}
@@ -348,36 +348,36 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
-		// Èç¹ûÒÑ¾­ÔöÇ¿ÁË£¬Ôò²»ĞèÒªÔÙÉú³É´úÀíÁË
+		// å¦‚æœå·²ç»å¢å¼ºäº†ï¼Œåˆ™ä¸éœ€è¦å†ç”Ÿæˆä»£ç†äº†
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
-		// isInfrastructureClass·½·¨£ºAdvice/Pointcut/Advisor/AopInfrastructureBean½Ó¿ÚµÄbeanClass²»½øĞĞ´úÀí
-		// shouldSkip·½·¨£º¶ÔbeanNameÎªaopÄÚµÄÇĞÃæbeanNameÃûÒ²²»½øĞĞ´úÀí
-		// ´Ë´¦¿É²é¿´×ÓÀà¸´Ğ´µÄshouldSkip()·½·¨
+		// isInfrastructureClassæ–¹æ³•ï¼šAdvice/Pointcut/Advisor/AopInfrastructureBeanæ¥å£çš„beanClassä¸è¿›è¡Œä»£ç†
+		// shouldSkipæ–¹æ³•ï¼šå¯¹beanNameä¸ºaopå†…çš„åˆ‡é¢beanNameåä¹Ÿä¸è¿›è¡Œä»£ç†
+		// æ­¤å¤„å¯æŸ¥çœ‹å­ç±»å¤å†™çš„shouldSkip()æ–¹æ³•
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
 		// Create proxy if we have advice.
-		// ²éÕÒ¶Ô´úÀíÀàÏà¹ØµÄadvisor¶ÔÏó¼¯ºÏ£¬´Ë´¦¾ÍÓëponit-cut±í´ïÊ½ÓĞ¹ØÁË
+		// æŸ¥æ‰¾å¯¹ä»£ç†ç±»ç›¸å…³çš„advisorå¯¹è±¡é›†åˆï¼Œæ­¤å¤„å°±ä¸ponit-cutè¡¨è¾¾å¼æœ‰å…³äº†
 		// execution(* *..*.method(args))
-		// µÚÒ»²½£º²éÕÒºòÑ¡Advisor£¨ÔöÇ¿Æ÷£©
-		// µÚ¶ş²½£ºÕë¶ÔÄ¿±ê¶ÔÏó»ñÈ¡ºÏÊÊµÄAdvisor£¨ÔöÇ¿Æ÷£©
+		// ç¬¬ä¸€æ­¥ï¼šæŸ¥æ‰¾å€™é€‰Advisorï¼ˆå¢å¼ºå™¨ï¼‰
+		// ç¬¬äºŒæ­¥ï¼šé’ˆå¯¹ç›®æ ‡å¯¹è±¡è·å–åˆé€‚çš„Advisorï¼ˆå¢å¼ºå™¨ï¼‰
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
-		// ¶ÔÏàÓ¦µÄadvisor²»Îª¿Õ²Å²ÉÈ¡´úÀí
+		// å¯¹ç›¸åº”çš„advisorä¸ä¸ºç©ºæ‰é‡‡å–ä»£ç†
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			// Í¨¹ıjdk¶¯Ì¬´úÀí»òÕßcglib¶¯Ì¬´úÀí£¬²úÉú´úÀí¶ÔÏó
-			// µÚÈı²½£ºÕë¶ÔÄ¿±ê¶ÔÏó²úÉú´úÀí¶ÔÏó
+			// é€šè¿‡jdkåŠ¨æ€ä»£ç†æˆ–è€…cglibåŠ¨æ€ä»£ç†ï¼Œäº§ç”Ÿä»£ç†å¯¹è±¡
+			// ç¬¬ä¸‰æ­¥ï¼šé’ˆå¯¹ç›®æ ‡å¯¹è±¡äº§ç”Ÿä»£ç†å¯¹è±¡
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
-			// ·ÅÈë´úÀíÀàĞÍ»º´æ
+			// æ”¾å…¥ä»£ç†ç±»å‹ç¼“å­˜
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
-		// ·ÅÈëÍ¨Öª»º´æ
+		// æ”¾å…¥é€šçŸ¥ç¼“å­˜
 		this.advisedBeans.put(cacheKey, Boolean.FALSE);
 		return bean;
 	}
@@ -468,38 +468,38 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) this.beanFactory, beanName, beanClass);
 		}
 
-		// ´´½¨´úÀí¹¤³§¶ÔÏó
+		// åˆ›å»ºä»£ç†å·¥å‚å¯¹è±¡
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.copyFrom(this);
 
-		//Èç¹ûÃ»ÓĞÊ¹ÓÃCGLib´úÀí
-		// isProxyTargetClass:¾ÍÊÇÅĞ¶Ïaop:config±êÇ©µÄProxyTargetClassÊôĞÔ£¬Ä¬ÈÏÊÇfalse
+		//å¦‚æœæ²¡æœ‰ä½¿ç”¨CGLibä»£ç†
+		// isProxyTargetClass:å°±æ˜¯åˆ¤æ–­aop:configæ ‡ç­¾çš„ProxyTargetClasså±æ€§ï¼Œé»˜è®¤æ˜¯false
 		if (!proxyFactory.isProxyTargetClass()) {
-			// ÊÇ·ñ¿ÉÄÜÊ¹ÓÃCGLib´úÀí
+			// æ˜¯å¦å¯èƒ½ä½¿ç”¨CGLibä»£ç†
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
-				// ²é¿´beanClass¶ÔÓ¦µÄÀàÊÇ·ñº¬ÓĞInitializingBean.class/DisposableBean.class/Aware.class½Ó¿Ú
-				// ÎŞÔò²ÉÓÃJDK¶¯Ì¬´úÀí£¬ÓĞÔò²ÉÓÃCGLib¶¯Ì¬´úÀí
+				// æŸ¥çœ‹beanClasså¯¹åº”çš„ç±»æ˜¯å¦å«æœ‰InitializingBean.class/DisposableBean.class/Aware.classæ¥å£
+				// æ— åˆ™é‡‡ç”¨JDKåŠ¨æ€ä»£ç†ï¼Œæœ‰åˆ™é‡‡ç”¨CGLibåŠ¨æ€ä»£ç†
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}
-		// ½«AdviceºÍAdvisor¶¼ÊÊÅä³ÉAdvisor£¬·½±ãºóÃæÍ³Ò»´¦Àí
+		// å°†Adviceå’ŒAdvisoréƒ½é€‚é…æˆAdvisorï¼Œæ–¹ä¾¿åé¢ç»Ÿä¸€å¤„ç†
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
 		proxyFactory.addAdvisors(advisors);
-		// ´Ë´¦µÄtargetSourceÒ»°ãÎªSingletonTargetSource
+		// æ­¤å¤„çš„targetSourceä¸€èˆ¬ä¸ºSingletonTargetSource
 		proxyFactory.setTargetSource(targetSource);
-		// ¿ÕµÄÊµÏÖ
+		// ç©ºçš„å®ç°
 		customizeProxyFactory(proxyFactory);
 
 		proxyFactory.setFrozen(this.freezeProxy);
-		// ÊÇ·ñÉèÖÃÔ¤¹ıÂËÄ£Ê½£¬´Ë´¦Õë¶Ô±¾ÎÄÎªtrue
+		// æ˜¯å¦è®¾ç½®é¢„è¿‡æ»¤æ¨¡å¼ï¼Œæ­¤å¤„é’ˆå¯¹æœ¬æ–‡ä¸ºtrue
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);
 		}
 
-		// »ñÈ¡Ê¹ÓÃJDK¶¯Ì¬´úÀí»òÕßcglib¶¯Ì¬´úÀí²úÉúµÄ¶ÔÏó
+		// è·å–ä½¿ç”¨JDKåŠ¨æ€ä»£ç†æˆ–è€…cglibåŠ¨æ€ä»£ç†äº§ç”Ÿçš„å¯¹è±¡
 		return proxyFactory.getProxy(getProxyClassLoader());
 	}
 
@@ -564,7 +564,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		Advisor[] advisors = new Advisor[allInterceptors.size()];
 		for (int i = 0; i < allInterceptors.size(); i++) {
-			// ½«ËùÓĞAdvice¶¼·â×°³ÉAdvisor
+			// å°†æ‰€æœ‰Adviceéƒ½å°è£…æˆAdvisor
 			advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));
 		}
 		return advisors;

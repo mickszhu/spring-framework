@@ -59,12 +59,12 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		try {
-			// Ö´ĞĞÇĞÈëµã·½·¨
+			// æ‰§è¡Œåˆ‡å…¥ç‚¹æ–¹æ³•
 			return mi.proceed();
 		}
 		catch (Throwable ex) {
 			if (shouldInvokeOnThrowing(ex)) {
-				// Ö»ÓĞ³öÏÖÒì³£²Åµ÷ÓÃÔöÇ¿ÀàµÄ·½·¨
+				// åªæœ‰å‡ºç°å¼‚å¸¸æ‰è°ƒç”¨å¢å¼ºç±»çš„æ–¹æ³•
 				invokeAdviceMethod(getJoinPointMatch(), null, ex);
 			}
 			throw ex;

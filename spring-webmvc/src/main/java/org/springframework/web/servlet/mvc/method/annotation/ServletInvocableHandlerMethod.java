@@ -99,7 +99,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// Ö´ĞĞ²ÎÊı½âÎöÁ÷³Ì¡¢HandlerMethod´¦ÀíÁ÷³Ì£¬²¢·µ»Ø½á¹û
+		// æ‰§è¡Œå‚æ•°è§£ææµç¨‹ã€HandlerMethodå¤„ç†æµç¨‹ï¼Œå¹¶è¿”å›ç»“æœ
 		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
 		setResponseStatus(webRequest);
 
@@ -117,9 +117,9 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 		mavContainer.setRequestHandled(false);
 		Assert.state(this.returnValueHandlers != null, "No return value handlers");
 		try {
-			// Ö´ĞĞ·µ»ØÖµ½âÎöÁ÷³Ì£¨Ö÷ÒªÁË½âResponseBody×¢½âĞŞÊÎµÄ·µ»ØÖµ½âÎö£©
-			// ±éÀúµ±Ç°ÈİÆ÷ÖĞËùÓĞReturnValueHandler£¬ÅĞ¶ÏÄÄÖÖhandlerÖ§³Öµ±Ç°·µ»ØÖµµÄ´¦Àí£¬
-	        // Èç¹ûÖ§³Ö£¬ÔòÊ¹ÓÃ¸Ãhandler´¦Àí¸Ã·µ»ØÖµ
+			// æ‰§è¡Œè¿”å›å€¼è§£ææµç¨‹ï¼ˆä¸»è¦äº†è§£ResponseBodyæ³¨è§£ä¿®é¥°çš„è¿”å›å€¼è§£æï¼‰
+			// éå†å½“å‰å®¹å™¨ä¸­æ‰€æœ‰ReturnValueHandlerï¼Œåˆ¤æ–­å“ªç§handleræ”¯æŒå½“å‰è¿”å›å€¼çš„å¤„ç†ï¼Œ
+	        // å¦‚æœæ”¯æŒï¼Œåˆ™ä½¿ç”¨è¯¥handlerå¤„ç†è¯¥è¿”å›å€¼
 			this.returnValueHandlers.handleReturnValue(
 					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
 		}

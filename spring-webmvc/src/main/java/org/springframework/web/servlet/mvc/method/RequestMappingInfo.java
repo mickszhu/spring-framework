@@ -225,7 +225,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			return null;
 		}
 
-		// »ñÈ¡µ½RequestMapping×¢½âÖÐvalueÊôÐÔµÄÖµ
+		// èŽ·å–åˆ°RequestMappingæ³¨è§£ä¸­valueå±žæ€§çš„å€¼
 		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request);
 		if (patterns == null) {
 			return null;

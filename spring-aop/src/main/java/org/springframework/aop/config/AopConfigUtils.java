@@ -84,7 +84,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-		// ×¢²áAspectJAwareAdvisorAutoProxyCreatorµÄBeanDefinitionµ½BeanFactoryÖĞ
+		// æ³¨å†ŒAspectJAwareAdvisorAutoProxyCreatorçš„BeanDefinitionåˆ°BeanFactoryä¸­
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -120,17 +120,17 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
-		// ÅĞ¶ÏÊÇ·ñBeanDefinitionRegistryÖĞÊÇ·ñÓĞinternalAutoProxyCreator¶ÔÓ¦µÄBeanDefinition 
+		// åˆ¤æ–­æ˜¯å¦BeanDefinitionRegistryä¸­æ˜¯å¦æœ‰internalAutoProxyCreatorå¯¹åº”çš„BeanDefinition 
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
-			// »ñÈ¡internalAutoProxyCreator¶ÔÓ¦µÄBeanDefinition 
+			// è·å–internalAutoProxyCreatorå¯¹åº”çš„BeanDefinition 
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
-			// Èç¹ûinternalAutoProxyCreator¶ÔÓ¦µÄBeanµÄÀàÃûºÍµÚÒ»¸öÈë²Î²»Ò»Ñù£¬ÇÒ¿¼ÂÇÊÇ·ñĞèÒªÍê³É¸²¸Ç
+			// å¦‚æœinternalAutoProxyCreatorå¯¹åº”çš„Beançš„ç±»åå’Œç¬¬ä¸€ä¸ªå…¥å‚ä¸ä¸€æ ·ï¼Œä¸”è€ƒè™‘æ˜¯å¦éœ€è¦å®Œæˆè¦†ç›–
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
-				// µ±Ç°internalAutoProxyCreator¶ÔÓ¦BeanµÄÓÅÏÈ¼¶
+				// å½“å‰internalAutoProxyCreatorå¯¹åº”Beançš„ä¼˜å…ˆçº§
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
-				// ĞèÒªµÄÓÅÏÈ¼¶Ò²¾ÍÊÇµÚÒ»¸öÈë²Î¶ÔÓ¦µÄBeanµÄÓÅÏÈ¼¶
+				// éœ€è¦çš„ä¼˜å…ˆçº§ä¹Ÿå°±æ˜¯ç¬¬ä¸€ä¸ªå…¥å‚å¯¹åº”çš„Beançš„ä¼˜å…ˆçº§
 				int requiredPriority = findPriorityForClass(cls);
-				// Èç¹ûĞèÒªµÄÓÅÏÈ¼¶£¬±ÈinternalAutoProxyCreatorÏÖÔÚ¶ÔÓ¦µÄBeanµÄÓÅÏÈ¼¶¸ß£¬Ôò½øĞĞÌæ»»²Ù×÷
+				// å¦‚æœéœ€è¦çš„ä¼˜å…ˆçº§ï¼Œæ¯”internalAutoProxyCreatorç°åœ¨å¯¹åº”çš„Beançš„ä¼˜å…ˆçº§é«˜ï¼Œåˆ™è¿›è¡Œæ›¿æ¢æ“ä½œ
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}
@@ -142,7 +142,7 @@ public abstract class AopConfigUtils {
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		// ÍùBeanFactory×¢²áÖ¸¶¨ÀàµÄBeanDefinitionĞÅÏ¢,beanName¾ÍÊÇorg.springframework.aop.config.internalAutoProxyCreator
+		// å¾€BeanFactoryæ³¨å†ŒæŒ‡å®šç±»çš„BeanDefinitionä¿¡æ¯,beanNameå°±æ˜¯org.springframework.aop.config.internalAutoProxyCreator
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}

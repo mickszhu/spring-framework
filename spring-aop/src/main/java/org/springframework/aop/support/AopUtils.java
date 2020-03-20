@@ -222,11 +222,11 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
-		// ÏÈÊ¹ÓÃClassFilter¶ÔÀà¼¶±ğ½øĞĞÆ¥Åä
+		// å…ˆä½¿ç”¨ClassFilterå¯¹ç±»çº§åˆ«è¿›è¡ŒåŒ¹é…
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
-		// ÔÙÊ¹ÓÃMethodMatcherÕë¶ÔÀàÖĞµÄ·½·¨½øĞĞÆ¥Åä
+		// å†ä½¿ç”¨MethodMatcheré’ˆå¯¹ç±»ä¸­çš„æ–¹æ³•è¿›è¡ŒåŒ¹é…
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
@@ -238,15 +238,15 @@ public abstract class AopUtils {
 			introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;
 		}
 
-		//½«µ±Ç°ÀàºÍËüµÄ½Ó¿Ú¶¼¼ÓÈëclasses¼¯ºÏ
+		//å°†å½“å‰ç±»å’Œå®ƒçš„æ¥å£éƒ½åŠ å…¥classesé›†åˆ
 		Set<Class<?>> classes = new LinkedHashSet<>();
 		if (!Proxy.isProxyClass(targetClass)) {
 			classes.add(ClassUtils.getUserClass(targetClass));
 		}
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
-		// Ê¹ÓÃMethodMatcherÆ¥ÅäÄ¿±êÀàµÄ·½·¨
-		// ²»Ö»ÊÇÆ¥ÅäÄ¿±êÀà¡¢»¹»áÆ¥Åä¸¸ÀàºÍ½Ó¿ÚÀà
+		// ä½¿ç”¨MethodMatcheråŒ¹é…ç›®æ ‡ç±»çš„æ–¹æ³•
+		// ä¸åªæ˜¯åŒ¹é…ç›®æ ‡ç±»ã€è¿˜ä¼šåŒ¹é…çˆ¶ç±»å’Œæ¥å£ç±»
 		for (Class<?> clazz : classes) {
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
@@ -287,8 +287,8 @@ public abstract class AopUtils {
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
-		// PointcutAdvisor°üº¬ÁËPointcutºÍAdviceÕâÁ½¸ö¶ÔÏóµÄ
-		// PointcutAdvisorÊÇÕë¶Ô·½·¨¼¶±ğ½øĞĞ¹¦ÄÜÔöÇ¿µÄ
+		// PointcutAdvisoråŒ…å«äº†Pointcutå’ŒAdviceè¿™ä¸¤ä¸ªå¯¹è±¡çš„
+		// PointcutAdvisoræ˜¯é’ˆå¯¹æ–¹æ³•çº§åˆ«è¿›è¡ŒåŠŸèƒ½å¢å¼ºçš„
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
@@ -312,15 +312,15 @@ public abstract class AopUtils {
 			return candidateAdvisors;
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
-		// Òı½éÔöÇ¿Æ÷
-		// IntroductionAdvisor£ºÖ»ÒªÊÇÕë¶ÔÀà£¬ÔöÇ¿¹¦ÄÜÊÇÕë¶ÔÀà¼¶±ğµÄ£¬Ëµ°×ÁË¾ÍÊÇ¸øÀàÈ¥¼Ó½Ó¿ÚÀ´ÊµÏÖÔöÇ¿¹¦ÄÜ
+		// å¼•ä»‹å¢å¼ºå™¨
+		// IntroductionAdvisorï¼šåªè¦æ˜¯é’ˆå¯¹ç±»ï¼Œå¢å¼ºåŠŸèƒ½æ˜¯é’ˆå¯¹ç±»çº§åˆ«çš„ï¼Œè¯´ç™½äº†å°±æ˜¯ç»™ç±»å»åŠ æ¥å£æ¥å®ç°å¢å¼ºåŠŸèƒ½
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
 		}
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
-		// ÆÕÍ¨ÔöÇ¿Æ÷
+		// æ™®é€šå¢å¼ºå™¨
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed

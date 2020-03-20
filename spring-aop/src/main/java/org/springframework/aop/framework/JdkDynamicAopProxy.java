@@ -118,10 +118,10 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating JDK dynamic proxy: target source is " + this.advised.getTargetSource());
 		}
-		// »ñÈ¡ÍêÕûµÄ´úÀí½Ó¿Ú
+		// è·å–å®Œæ•´çš„ä»£ç†æ¥å£
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
-		// µ÷ÓÃJDK¶¯Ì¬´úÀí·½·¨
+		// è°ƒç”¨JDKåŠ¨æ€ä»£ç†æ–¹æ³•
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
 	}
 
@@ -159,7 +159,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		Object oldProxy = null;
 		boolean setProxyContext = false;
 
-		// TargetSourceÖ÷ÒªÊÇ¶ÔÄ¿±ê¶ÔÏó½øĞĞ·â×°
+		// TargetSourceä¸»è¦æ˜¯å¯¹ç›®æ ‡å¯¹è±¡è¿›è¡Œå°è£…
 		TargetSource targetSource = this.advised.targetSource;
 		Object target = null;
 
@@ -179,7 +179,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			else if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&
 					method.getDeclaringClass().isAssignableFrom(Advised.class)) {
 				// Service invocations on ProxyConfig with the proxy config...
-				// Á¬½Óµã¾ÍÊÇÄ¿±ê¶ÔÏóµÄ·½·¨
+				// è¿æ¥ç‚¹å°±æ˜¯ç›®æ ‡å¯¹è±¡çš„æ–¹æ³•
 				return AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
 			}
 
@@ -193,45 +193,45 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 			// Get as late as possible to minimize the time we "own" the target,
 			// in case it comes from a pool.
-			// »ñÈ¡Ä¿±ê¶ÔÏó
+			// è·å–ç›®æ ‡å¯¹è±¡
 			target = targetSource.getTarget();
-			// »ñÈ¡Ä¿±ê¶ÔÏóµÄÀàĞÍ
+			// è·å–ç›®æ ‡å¯¹è±¡çš„ç±»å‹
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
 			// Get the interception chain for this method.
-			// »ñÈ¡Õë¶Ô¸ÃÄ¿±ê¶ÔÏóµÄËùÓĞÔöÇ¿Æ÷£¨advisor£©£¬ÕâĞ©advisor¶¼ÊÇÓĞË³ĞòµÄ£¬ËûÃÇ»á°´ÕÕË³Ğò½øĞĞÁ´Ê½µ÷ÓÃ
+			// è·å–é’ˆå¯¹è¯¥ç›®æ ‡å¯¹è±¡çš„æ‰€æœ‰å¢å¼ºå™¨ï¼ˆadvisorï¼‰ï¼Œè¿™äº›advisoréƒ½æ˜¯æœ‰é¡ºåºçš„ï¼Œä»–ä»¬ä¼šæŒ‰ç…§é¡ºåºè¿›è¡Œé“¾å¼è°ƒç”¨
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
 			// reflective invocation of the target, and avoid creating a MethodInvocation.
 
-			// ¼ì²éÊÇ·ñÎÒÃÇÓĞÒ»Ğ©Í¨Öª¡£Èç¹ûÎÒÃÇÃ»ÓĞ£¬ÎÒÃÇ¿ÉÒÔÖ±½Ó¶ÔÄ¿±êÀà½øĞĞ·´Éäµ÷ÓÃ£¬±ÜÃâ´´½¨MethodInvocationÀà
+			// æ£€æŸ¥æ˜¯å¦æˆ‘ä»¬æœ‰ä¸€äº›é€šçŸ¥ã€‚å¦‚æœæˆ‘ä»¬æ²¡æœ‰ï¼Œæˆ‘ä»¬å¯ä»¥ç›´æ¥å¯¹ç›®æ ‡ç±»è¿›è¡Œåå°„è°ƒç”¨ï¼Œé¿å…åˆ›å»ºMethodInvocationç±»
 
-			// µ÷ÓÃÄ¿±êÀàµÄ·½·¨
+			// è°ƒç”¨ç›®æ ‡ç±»çš„æ–¹æ³•
 			if (chain.isEmpty()) {
 				// We can skip creating a MethodInvocation: just invoke the target directly
 				// Note that the final invoker must be an InvokerInterceptor so we know it does
 				// nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
 				// fancy proxying.
-				// ´¦Àí¿É±ä³¤²ÎÊı
+				// å¤„ç†å¯å˜é•¿å‚æ•°
 				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
-				// Í¨¹ı·´Éäµ÷ÓÃÄ¿±ê¶ÔÏóµÄ·½·¨£¬´ËÊ±Ã»ÓĞ½øĞĞ¹¦ÄÜÔöÇ¿
+				// é€šè¿‡åå°„è°ƒç”¨ç›®æ ‡å¯¹è±¡çš„æ–¹æ³•ï¼Œæ­¤æ—¶æ²¡æœ‰è¿›è¡ŒåŠŸèƒ½å¢å¼º
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 			}
 			else {
 				// We need to create a method invocation...
-				// ÎÒÃÇĞèÒª´´½¨Ò»¸ö·½·¨µ÷ÓÃ
-				// proxy:Éú³ÉµÄ¶¯Ì¬´úÀí¶ÔÏó
-				// target:Ä¿±ê¶ÔÏó
-				// method:Ä¿±ê·½·¨
-				// args:Ä¿±ê·½·¨²ÎÊı
-				// targetClass:Ä¿±êÀà¶ÔÏó
-				// chain: AOPÀ¹½ØÆ÷Ö´ĞĞÁ´ ÊÇÒ»¸öMethodInterceptorµÄ¼¯ºÏ Õâ¸öÁ´ÌõµÄ»ñÈ¡¹ı³Ì²Î¿¼ÎÒÃÇÉÏÒ»ÆªÎÄÕÂµÄÄÚÈİ
+				// æˆ‘ä»¬éœ€è¦åˆ›å»ºä¸€ä¸ªæ–¹æ³•è°ƒç”¨
+				// proxy:ç”Ÿæˆçš„åŠ¨æ€ä»£ç†å¯¹è±¡
+				// target:ç›®æ ‡å¯¹è±¡
+				// method:ç›®æ ‡æ–¹æ³•
+				// args:ç›®æ ‡æ–¹æ³•å‚æ•°
+				// targetClass:ç›®æ ‡ç±»å¯¹è±¡
+				// chain: AOPæ‹¦æˆªå™¨æ‰§è¡Œé“¾ æ˜¯ä¸€ä¸ªMethodInterceptorçš„é›†åˆ è¿™ä¸ªé“¾æ¡çš„è·å–è¿‡ç¨‹å‚è€ƒæˆ‘ä»¬ä¸Šä¸€ç¯‡æ–‡ç« çš„å†…å®¹
 				MethodInvocation invocation =
 						new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
 				// Proceed to the joinpoint through the interceptor chain.
-				// Í¨¹ıÀ¹½ØÆ÷Á´½øÈëÁ¬½Óµã
-				// ¿ªÊ¼Ö´ĞĞAOPµÄÀ¹½Ø¹ı³Ì
+				// é€šè¿‡æ‹¦æˆªå™¨é“¾è¿›å…¥è¿æ¥ç‚¹
+				// å¼€å§‹æ‰§è¡ŒAOPçš„æ‹¦æˆªè¿‡ç¨‹
 				retVal = invocation.proceed();
 			}
 

@@ -46,8 +46,8 @@ public abstract class AspectJProxyUtils {
 			for (Advisor advisor : advisors) {
 				// Be careful not to get the Advice without a guard, as
 				// this might eagerly instantiate a non-singleton AspectJ aspect
-				// Ğ¡ĞÄ²»ÒªÔÚÃ»ÓĞ±£»¤µÄÇé¿öÏÂ»ñµÃÍ¨Öª£¬ÒòÎªÕâ¿ÉÄÜ¼±ÇĞµØÊµÀı»¯Ò»¸ö·Çµ¥ÀıAspectJÇĞÃæÀà
-				// È·¶¨¸ø³öµÄbeanÊÇ·ñÊÇÒ»¸öAspectJµÄÍ¨Öª
+				// å°å¿ƒä¸è¦åœ¨æ²¡æœ‰ä¿æŠ¤çš„æƒ…å†µä¸‹è·å¾—é€šçŸ¥ï¼Œå› ä¸ºè¿™å¯èƒ½æ€¥åˆ‡åœ°å®ä¾‹åŒ–ä¸€ä¸ªéå•ä¾‹AspectJåˆ‡é¢ç±»
+				// ç¡®å®šç»™å‡ºçš„beanæ˜¯å¦æ˜¯ä¸€ä¸ªAspectJçš„é€šçŸ¥
 				if (isAspectJAdvice(advisor)) {
 					foundAspectJAdvice = true;
 				}

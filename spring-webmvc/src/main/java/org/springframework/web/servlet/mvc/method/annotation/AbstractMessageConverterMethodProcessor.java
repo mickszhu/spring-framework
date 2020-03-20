@@ -219,20 +219,20 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 		else {
 			HttpServletRequest request = inputMessage.getServletRequest();
-			// »ñÈ¡¿Í»§¶ËAcceptÇëÇóÍ·ÖĞµÄÃ½ÌåÀàĞÍ
+			// è·å–å®¢æˆ·ç«¯Acceptè¯·æ±‚å¤´ä¸­çš„åª’ä½“ç±»å‹
 			List<MediaType> requestedMediaTypes = getAcceptableMediaTypes(request);
-			// »ñÈ¡·şÎñÆ÷¶ËContentTypeÏìÓ¦Í·ÖĞµÄÃ½ÌåÀàĞÍ
+			// è·å–æœåŠ¡å™¨ç«¯ContentTypeå“åº”å¤´ä¸­çš„åª’ä½“ç±»å‹
 			List<MediaType> producibleMediaTypes = getProducibleMediaTypes(request, valueType, declaredType);
 
 			if (outputValue != null && producibleMediaTypes.isEmpty()) {
 				throw new HttpMessageNotWritableException(
 						"No converter found for return value of type: " + valueType);
 			}
-			// ¿ÉÒÔ´¦ÀíµÄÃ½ÌåÀàĞÍ
+			// å¯ä»¥å¤„ç†çš„åª’ä½“ç±»å‹
 			mediaTypesToUse = new ArrayList<>();
 			for (MediaType requestedType : requestedMediaTypes) {
 				for (MediaType producibleType : producibleMediaTypes) {
-					//¿Í»§¶ËÒªµÄÃ½ÌåÀàĞÍºÍ·şÎñÆ÷¶ËÌá¹©µÄÃ½ÌåÀàĞÍÊÇ·ñÄÜ¶ÔÓ¦ÆğÀ´
+					//å®¢æˆ·ç«¯è¦çš„åª’ä½“ç±»å‹å’ŒæœåŠ¡å™¨ç«¯æä¾›çš„åª’ä½“ç±»å‹æ˜¯å¦èƒ½å¯¹åº”èµ·æ¥
 					if (requestedType.isCompatibleWith(producibleType)) {
 						mediaTypesToUse.add(getMostSpecificMediaType(requestedType, producibleType));
 					}
@@ -247,7 +247,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			MediaType.sortBySpecificityAndQuality(mediaTypesToUse);
 		}
 
-		// Ñ¡ÔñÒ»¸öÃ½ÌåÀàĞÍ
+		// é€‰æ‹©ä¸€ä¸ªåª’ä½“ç±»å‹
 		MediaType selectedMediaType = null;
 		for (MediaType mediaType : mediaTypesToUse) {
 			if (mediaType.isConcrete()) {
@@ -260,13 +260,13 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 		}
 
-		// ´¦ÀíÖ¸¶¨Ã½ÌåÀàĞÍµÄ·µ»ØÖµ
+		// å¤„ç†æŒ‡å®šåª’ä½“ç±»å‹çš„è¿”å›å€¼
 		if (selectedMediaType != null) {
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter ?
 						(GenericHttpMessageConverter<?>) converter : null);
-				// ÅĞ¶ÏÖ¸¶¨µÄÏûÏ¢×ª»»Æ÷ÄÜ·ñ´¦Àí¸Ã·µ»ØÖµ
+				// åˆ¤æ–­æŒ‡å®šçš„æ¶ˆæ¯è½¬æ¢å™¨èƒ½å¦å¤„ç†è¯¥è¿”å›å€¼
 				if (genericConverter != null ?
 						((GenericHttpMessageConverter) converter).canWrite(declaredType, valueType, selectedMediaType) :
 						converter.canWrite(valueType, selectedMediaType)) {
@@ -279,7 +279,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 							genericConverter.write(outputValue, declaredType, selectedMediaType, outputMessage);
 						}
 						else {
-							// Í¨¹ıÏûÏ¢×ª»»Æ÷£¬½«·µ»ØÖµ½øĞĞ´¦ÀíÖ®ºó£¬ÒÔÖ¸¶¨µÄÃ½ÌåÀàĞÍ£¬Ğ´µ½¿Í»§¶Ë
+							// é€šè¿‡æ¶ˆæ¯è½¬æ¢å™¨ï¼Œå°†è¿”å›å€¼è¿›è¡Œå¤„ç†ä¹‹åï¼Œä»¥æŒ‡å®šçš„åª’ä½“ç±»å‹ï¼Œå†™åˆ°å®¢æˆ·ç«¯
 							((HttpMessageConverter) converter).write(outputValue, selectedMediaType, outputMessage);
 						}
 						if (logger.isDebugEnabled()) {
