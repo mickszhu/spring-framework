@@ -1,9 +1,9 @@
-package com.lin.service;
+package com.micks.service;
 
 import org.springframework.stereotype.Service;
 
 /**
- * Create by ljc on 2019/11/6
+ * Create by micks on 2019/11/6
  */
 
 @Service("testService")

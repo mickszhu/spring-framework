@@ -1,11 +1,10 @@
-package com.lin.temp;
+package com.micks.temp;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
 
 /**
- * Create by ljc on 2019/11/12
+ * Create by micks on 2019/11/12
  */
 
 //@Component

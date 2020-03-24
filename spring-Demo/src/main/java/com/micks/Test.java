@@ -1,9 +1,7 @@
-package com.lin;
+package com.micks;
 
-import com.lin.service.TestService;
-import org.springframework.context.ApplicationContext;
+import com.micks.service.TestService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Create by ljc on 2019/11/6
